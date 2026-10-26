@@ -1,305 +1,352 @@
 
-<!-- SEÇÃO DE EMPREENDIMENTOS ECON -->
-<section id="empreendimentos-econ">
-  <h2>Conheça nossos empreendimentos</h2>
-  <p class="subtitulo-econ">
-    Encontre seu apartamento e fale comigo para receber mais informações.
-  </p>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#103c2c">
+<meta name="description" content="Conheça os empreendimentos Econ e fale com a Empreendimentos Buenos SP pelo WhatsApp.">
+<title>Empreendimentos | Buenos SP</title>
+<style>
+:root {
+  --green:#103c2c; --green-dark:#09291f; --lime:#c7f36b;
+  --lime-dark:#a8df48; --background:#f7f9f6; --text:#17251d;
+  --muted:#657168; --border:#e1e8df; --radius:18px;
+  --shadow:0 16px 45px rgba(16,60,44,.09);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:95px}
+body{margin:0;font-family:"DM Sans",Arial,sans-serif;color:var(--text);background:var(--background);line-height:1.65}
+a{color:inherit;text-decoration:none}
+button,input,select{font:inherit}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--lime-dark);outline-offset:3px}
+.header{position:sticky;top:0;z-index:20;min-height:82px;padding:14px 6%;display:flex;align-items:center;justify-content:space-between;gap:24px;background:rgba(255,255,255,.97);border-bottom:1px solid var(--border);backdrop-filter:blur(12px)}
+.logo{display:inline-flex;align-items:center;gap:11px;color:var(--green);font-size:11px;font-weight:700;letter-spacing:1px;line-height:1.5}
+.logo-icon{display:grid;place-items:center;width:43px;height:43px;flex-shrink:0;border-radius:12px;background:var(--green);color:var(--lime);font-size:27px;font-weight:800}
+.logo strong{display:block;font-size:17px;letter-spacing:.5px}
+.nav{display:flex;align-items:center;gap:26px;font-size:13px;font-weight:600}
+.nav a:not(.button):hover{color:#477b35}
+.menu-toggle{display:none;border:0;background:transparent;color:var(--green);font-size:27px;cursor:pointer}
+.button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:13px 20px;border:1px solid transparent;border-radius:10px;background:var(--lime);color:var(--green-dark);font-size:13px;font-weight:800;transition:transform .2s,background .2s;cursor:pointer}
+.button:hover{background:var(--lime-dark);transform:translateY(-1px)}
+.button-small{min-height:40px;padding:10px 15px}
+.button-outline{background:transparent;color:white;border-color:rgba(255,255,255,.45)}
+.button-outline:hover{background:rgba(255,255,255,.1);color:white}
+.hero{position:relative;overflow:hidden;background:linear-gradient(120deg,var(--green-dark),var(--green));color:white;padding:66px 6% 60px}
+.hero::after{content:"";position:absolute;width:420px;height:420px;right:-130px;top:-190px;border:1px solid rgba(199,243,107,.18);border-radius:50%;box-shadow:0 0 0 55px rgba(199,243,107,.035),0 0 0 110px rgba(199,243,107,.025);pointer-events:none}
+.hero-inner{position:relative;z-index:1;width:min(1120px,100%);margin:auto}
+.eyebrow{display:inline-block;margin-bottom:12px;color:var(--lime);font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase}
+.hero h1{max-width:780px;margin:0 0 18px;font-size:clamp(34px,5vw,58px);line-height:1.08;letter-spacing:-1.7px}
+.hero h1 span{color:var(--lime)}
+.hero p{max-width:650px;margin:0 0 26px;color:#e0e9e2;font-size:16px}
+.hero-actions{display:flex;flex-wrap:wrap;gap:12px}
+.hero-note{display:flex;flex-wrap:wrap;gap:18px;margin-top:24px;color:#e0e9e2;font-size:12px}
+.hero-note span::before{content:"✓";margin-right:7px;color:var(--lime);font-weight:900}
+main{width:min(1120px,100%);margin:auto;padding:52px 24px 70px}
+.section-heading{margin-bottom:25px}
+.section-heading .eyebrow{color:#477b35;margin-bottom:7px}
+.section-heading h2{margin:0 0 8px;color:var(--green);font-size:clamp(26px,3vw,36px);line-height:1.2}
+.section-heading p{margin:0;color:var(--muted)}
+.filters{display:grid;grid-template-columns:minmax(0,2fr) minmax(220px,1fr);gap:12px;margin:25px 0 18px}
+.filters input,.filters select{width:100%;min-width:0;min-height:50px;padding:13px 15px;border:1px solid var(--border);border-radius:10px;background:white;color:var(--text)}
+.counter{margin:0 0 16px;color:var(--muted);font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+.card{display:flex;flex-direction:column;min-width:0;overflow:hidden;border:1px solid var(--border);border-radius:var(--radius);background:white;box-shadow:var(--shadow);transition:transform .2s,box-shadow .2s}
+.card:hover{transform:translateY(-4px);box-shadow:0 20px 48px rgba(16,60,44,.15)}
+.photo{position:relative;height:225px;overflow:hidden;background:linear-gradient(135deg,#e7eee4,#d4e2d0)}
+.photo img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .35s}
+.card:hover .photo img{transform:scale(1.035)}
+.photo-fallback{height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;padding:20px;text-align:center;color:var(--green)}
+.photo-fallback[hidden]{display:none}
+.photo-fallback .building{font-size:43px;line-height:1}
+.photo-fallback small{color:var(--muted)}
+.status{position:absolute;top:12px;left:12px;z-index:2;max-width:calc(100% - 24px);padding:6px 10px;border-radius:7px;background:var(--lime);color:var(--green-dark);font-size:10px;font-weight:900;text-transform:uppercase;box-shadow:0 3px 10px #0001}
+.card-content{display:flex;flex:1;flex-direction:column;padding:19px}
+.card h3{margin:0 0 8px;color:var(--green);font-size:21px;line-height:1.25}
+.location{margin:0 0 14px;color:var(--muted);font-size:13px}
+.details{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:18px}
+.detail{padding:6px 9px;border-radius:7px;background:#f0f5ec;color:#38533c;font-size:11px}
+.card-actions{display:grid;gap:9px;margin-top:auto}
+.whatsapp-button{width:100%;background:var(--lime)}
+.official-link{padding:5px;text-align:center;color:#477b35;font-size:12px;font-weight:700}
+.official-link:hover{text-decoration:underline}
+.empty,.loading,.error{grid-column:1/-1;padding:30px 20px;border:1px solid var(--border);border-radius:12px;background:white;color:var(--muted);text-align:center}
+.catalog{margin-top:44px;padding:32px;border:1px solid var(--border);border-radius:var(--radius);background:white;text-align:center}
+.catalog h2{margin:0 0 8px;color:var(--green)}
+.catalog p{max-width:680px;margin:0 auto 20px;color:var(--muted)}
+.footer{padding:30px 20px;background:var(--green-dark);color:white;text-align:center}
+.footer-brand{margin-bottom:8px;font-weight:800;letter-spacing:1px}
+.footer-brand span{color:var(--lime)}
+.footer p{margin:5px;color:#d5e2d7;font-size:12px}
+.footer a{color:var(--lime)}
+.floating-whatsapp{position:fixed;right:18px;bottom:18px;z-index:15;padding:13px 18px;border-radius:50px;background:var(--lime);color:var(--green-dark);font-size:13px;font-weight:900;box-shadow:0 6px 22px #0003}
+@media(max-width:900px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.nav{gap:16px}}
+@media(max-width:650px){
+.header{min-height:72px;padding:12px 5%}.menu-toggle{display:block}
+.nav{display:none;position:absolute;top:100%;left:0;right:0;padding:18px 5% 22px;align-items:stretch;flex-direction:column;gap:16px;background:white;border-bottom:1px solid var(--border)}
+.nav.open{display:flex}.nav .button{width:fit-content}
+.hero{padding:48px 6% 43px}.hero h1{letter-spacing:-1px}
+main{padding:38px 16px 55px}.filters{grid-template-columns:1fr}
+.grid{grid-template-columns:1fr}.photo{height:245px}
+.catalog{padding:26px 18px}.floating-whatsapp{right:12px;bottom:12px}
+}
+</style>
+</head>
+<body>
+<header class="header">
+  <a class="logo" href="index.html" aria-label="Buenos SP - início">
+    <span class="logo-icon">B</span>
+    <span>EMPREENDIMENTOS<strong>BUENOS SP</strong></span>
+  </a>
+  <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false">☰</button>
+  <nav class="nav" id="mainNav" aria-label="Navegação principal">
+    <a href="index.html">Início</a>
+    <a href="empreendimentos.html" aria-current="page">Empreendimentos</a>
+    <a href="privacidade.html">Privacidade</a>
+    <a class="button button-small" href="https://wa.me/5511945167897" target="_blank" rel="noopener noreferrer">Fale conosco ↗</a>
+  </nav>
+</header>
 
-  <div class="econ-grade" id="econ-grade"></div>
+<section class="hero">
+  <div class="hero-inner">
+    <span class="eyebrow">Catálogo de empreendimentos Econ</span>
+    <h1>Encontre seu próximo apartamento <span>com mais clareza.</span></h1>
+    <p>Explore os empreendimentos, conheça os projetos e fale diretamente com um consultor para consultar condições e disponibilidade.</p>
+    <div class="hero-actions">
+      <a class="button" href="#lista">Ver empreendimentos ↓</a>
+      <a class="button button-outline" href="https://wa.me/5511945167897?text=Ol%C3%A1%21%20Quero%20conhecer%20os%20empreendimentos%20Econ." target="_blank" rel="noopener noreferrer">Falar com um consultor ↗</a>
+    </div>
+    <div class="hero-note"><span>Atendimento personalizado</span><span>Catálogo de empreendimentos Econ</span></div>
+  </div>
 </section>
 
-<style>
-  #empreendimentos-econ {
-    width: 100%;
-    max-width: 1200px;
-    margin: 35px auto;
-    padding: 20px;
-    font-family: Arial, sans-serif;
-  }
+<main id="lista">
+  <section class="section-heading">
+    <span class="eyebrow">Encontre uma opção para você</span>
+    <h2>Nossos empreendimentos</h2>
+    <p>Pesquise pelo nome do projeto ou filtre pelo estágio informado no catálogo.</p>
+  </section>
 
-  #empreendimentos-econ h2 {
-    text-align: center;
-    color: #173653;
-    font-size: 30px;
-    margin-bottom: 10px;
-  }
+  <section class="filters" aria-label="Filtros de empreendimentos">
+    <input type="search" id="searchInput" placeholder="Buscar empreendimento..." aria-label="Buscar empreendimento">
+    <select id="statusFilter" aria-label="Filtrar por estágio">
+      <option value="">Todos os estágios</option>
+      <option>Breve Lançamento</option>
+      <option>Futuro Lançamento</option>
+      <option>Lançamento</option>
+      <option>Em Construção</option>
+      <option>Pronto para Morar</option>
+    </select>
+  </section>
 
-  .subtitulo-econ {
-    text-align: center;
-    color: #666;
-    margin-bottom: 25px;
-    line-height: 1.6;
-  }
+  <p class="counter" id="counter" aria-live="polite">Carregando empreendimentos...</p>
+  <section class="grid" id="projectsGrid" aria-label="Lista de empreendimentos">
+    <div class="loading">Carregando catálogo...</div>
+  </section>
 
-  .econ-grade {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 22px;
-  }
+  <section class="catalog">
+    <h2>Precisa de mais detalhes?</h2>
+    <p>Consulte o catálogo oficial da Econ para ver fotos, informações, disponibilidade e condições de cada empreendimento.</p>
+    <a class="button" href="https://www.econconstrutora.com.br/imoveis" target="_blank" rel="noopener noreferrer">Ver catálogo oficial da Econ ↗</a>
+  </section>
+</main>
 
-  .econ-card {
-    background: #fff;
-    border: 1px solid #e1e5e9;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 14px #0000000d;
-    display: flex;
-    flex-direction: column;
-  }
+<footer class="footer">
+  <div class="footer-brand">EMPREENDIMENTOS <span>BUENOS SP</span></div>
+  <p>Atendimento imobiliário pelo WhatsApp.</p>
+  <p>Consulte disponibilidade, valores e condições atualizadas.</p>
+  <p><a href="privacidade.html">Política de privacidade</a></p>
+  <p>© <span id="year"></span> Empreendimentos Buenos SP</p>
+</footer>
 
-  .econ-card img {
-    width: 100%;
-    height: 220px;
-    object-fit: cover;
-    display: block;
-    background: #e9edf0;
-  }
-
-  .econ-card-conteudo {
-    padding: 18px;
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-  }
-
-  .econ-card h3 {
-    color: #173653;
-    margin: 0 0 10px;
-    font-size: 20px;
-  }
-
-  .econ-card p {
-    color: #626b74;
-    font-size: 14px;
-    line-height: 1.5;
-    margin: 0 0 16px;
-  }
-
-  .econ-botoes {
-    display: grid;
-    gap: 10px;
-    margin-top: auto;
-  }
-
-  .econ-botao {
-    display: block;
-    padding: 12px;
-    text-align: center;
-    text-decoration: none;
-    font-weight: bold;
-    border-radius: 7px;
-    font-size: 14px;
-  }
-
-  .econ-botao-ver {
-    color: white;
-    background: #173653;
-  }
-
-  .econ-botao-whats {
-    color: white;
-    background: #168b50;
-  }
-
-  .econ-botao:hover {
-    opacity: .88;
-  }
-
-  @media (max-width: 850px) {
-    .econ-grade {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-
-  @media (max-width: 560px) {
-    .econ-grade {
-      grid-template-columns: 1fr;
-    }
-
-    #empreendimentos-econ h2 {
-      font-size: 25px;
-    }
-  }
-</style>
+<a class="floating-whatsapp" href="https://wa.me/5511945167897?text=Ol%C3%A1%21%20Vim%20pelo%20site%20Buenos%20SP." target="_blank" rel="noopener noreferrer">WhatsApp ↗</a>
 
 <script>
-(function () {
-  // IMPORTANTE:
-  // Coloque seu WhatsApp com código do Brasil e DDD.
-  // Exemplo: 5511999999999
-  // Somente números, sem +, espaços ou traços.
-  const MEU_WHATSAPP = "5511999999999";
+"use strict";
 
-  const CATALOGO_ECON = [
-    {
-      nome: "Volt Santana",
-      local: "Santana — Zona Norte",
-      url: "https://www.econconstrutora.com.br/imoveis"
-    },
-    {
-      nome: "Best Barra Funda",
-      local: "Barra Funda — Zona Oeste",
-      url: "https://www.econconstrutora.com.br/imoveis"
-    },
-    {
-      nome: "Tech Zona Sul",
-      local: "Pedreira — Zona Sul",
-      url: "https://www.econconstrutora.com.br/imoveis"
-    },
-    {
-      nome: "Beat Jardim Botânico",
-      local: "Sacomã — Zona Sul",
-      url: "https://www.econconstrutora.com.br/imoveis"
-    },
-    {
-      nome: "Ikon Limão",
-      local: "Limão — Zona Norte",
-      url: "https://www.econconstrutora.com.br/imoveis"
-    },
-    {
-      nome: "Free - Liberdade",
-      local: "Liberdade — Centro",
-      url: "https://www.econconstrutora.com.br/imoveis"
-    },
-    {
-      nome: "New Vila Ema",
-      local: "Vila Ema — Zona Leste",
-      url: "https://www.econconstrutora.com.br/imoveis"
-    },
-    {
-      nome: "Vero Encanto",
-      local: "Consulte a localização no catálogo oficial",
-      url: "https://www.econconstrutora.com.br/imoveis"
-    },
-    {
-      nome: "Vero Harmonia",
-      local: "Consulte a localização no catálogo oficial",
-      url: "https://www.econconstrutora.com.br/imoveis"
-    },
-    {
-      nome: "Like - Casa Verde",
-      local: "Casa Verde — Zona Norte",
-      url: "https://www.econconstrutora.com.br/imoveis"
-    },
-    {
-      nome: "Epic Jaguaré",
-      local: "Jaguaré — Zona Oeste",
-      url: "https://www.econconstrutora.com.br/imoveis"
-    },
-    {
-      nome: "Grid Interlagos",
-      local: "Interlagos — Zona Sul",
-      url: "https://www.econconstrutora.com.br/imoveis"
-    },
-    {
-      nome: "Vision Campestre",
-      local: "Campestre — Santo André",
-      url: "https://www.econconstrutora.com.br/imoveis"
-    },
-    {
-      nome: "Inov Zona Sul",
-      local: "Zona Sul de São Paulo",
-      url: "https://www.econconstrutora.com.br/imoveis"
-    },
-    {
-      nome: "Soul Pari",
-      local: "Pari — São Paulo",
-      url: "https://www.econconstrutora.com.br/imoveis"
-    },
-    {
-      nome: "Gran Spot",
-      local: "Consulte a localização no catálogo oficial",
-      url: "https://www.econconstrutora.com.br/imoveis"
-    },
-    {
-      nome: "Gran Sky",
-      local: "Consulte a localização no catálogo oficial",
-      url: "https://www.econconstrutora.com.br/imoveis"
-    },
-    {
-      nome: "Fast Interlagos",
-      local: "Interlagos — Zona Sul",
-      url: "https://www.econconstrutora.com.br/imoveis"
-    },
-    {
-      nome: "Peak Vila Olímpia",
-      local: "Vila Olímpia — São Paulo",
-      url: "https://www.econconstrutora.com.br/imoveis"
-    },
-    {
-      nome: "Go Lapa",
-      local: "Lapa — Zona Oeste",
-      url: "https://www.econconstrutora.com.br/imoveis"
-    },
-    {
-      nome: "Link Sapopemba",
-      local: "Sapopemba — Zona Leste",
-      url: "https://www.econconstrutora.com.br/imoveis"
-    },
-    {
-      nome: "Manacá",
-      local: "Consulte a localização no catálogo oficial",
-      url: "https://www.econconstrutora.com.br/imoveis"
-    },
-    {
-      nome: "Rangel Brás",
-      local: "Brás — São Paulo",
-      url: "https://www.econconstrutora.com.br/imoveis"
-    },
-    {
-      nome: "Park Guarulhos",
-      local: "Guarulhos — SP",
-      url: "https://www.econconstrutora.com.br/imoveis"
-    }
-  ];
+const CATALOGO_URL = "https://www.econconstrutora.com.br/imoveis";
+const WHATSAPP = "5511945167897";
 
-  const grade = document.getElementById("econ-grade");
-  if (!grade) return;
+/*
+  Para mostrar a foto real de cada projeto, preencha o campo imagem
+  com o endereço direto da imagem, usando HTTPS.
+  O link link abre a página oficial do empreendimento quando conhecido.
+*/
+const EMPREENDIMENTOS = [
+  {nome:"Volt Santana",regiao:"Zona Norte",bairro:"Santana",dormitorios:"2 dorms.",status:"Breve Lançamento",imagem:"",link:CATALOGO_URL},
+  {nome:"Best Barra Funda",regiao:"Zona Oeste",bairro:"Barra Funda",dormitorios:"Consultar plantas",status:"Breve Lançamento",imagem:"",link:CATALOGO_URL},
+  {nome:"Tech Zona Sul",regiao:"Zona Sul",bairro:"Pedreira",dormitorios:"Consultar plantas",status:"Breve Lançamento",imagem:"",link:CATALOGO_URL},
+  {nome:"Beat Jardim Botânico",regiao:"Zona Sul",bairro:"Sacomã",dormitorios:"Consultar plantas",status:"Lançamento",imagem:"",link:CATALOGO_URL},
+  {nome:"Ikon Limão",regiao:"Zona Norte",bairro:"Limão",dormitorios:"Consultar plantas",status:"Futuro Lançamento",imagem:"",link:CATALOGO_URL},
+  {nome:"Free - Liberdade",regiao:"Centro",bairro:"Liberdade",dormitorios:"Consultar plantas",status:"Lançamento",imagem:"",link:CATALOGO_URL},
+  {nome:"New Vila Ema",regiao:"Zona Leste",bairro:"Vila Ema",dormitorios:"Consultar plantas",status:"Em Construção",imagem:"",link:CATALOGO_URL},
+  {nome:"Vero Encanto",regiao:"Zona Leste",bairro:"Consultar bairro",dormitorios:"Consultar plantas",status:"Pronto para Morar",imagem:"",link:CATALOGO_URL},
+  {nome:"Vero Harmonia",regiao:"Zona Leste",bairro:"Consultar bairro",dormitorios:"Consultar plantas",status:"Pronto para Morar",imagem:"",link:CATALOGO_URL},
+  {nome:"Like - Casa Verde",regiao:"Zona Norte",bairro:"Casa Verde",dormitorios:"Consultar plantas",status:"Pronto para Morar",imagem:"",link:CATALOGO_URL},
+  {nome:"Epic Jaguaré",regiao:"Zona Oeste",bairro:"Jaguaré",dormitorios:"Consultar plantas",status:"Em Construção",imagem:"",link:CATALOGO_URL},
+  {nome:"Grid Interlagos",regiao:"Zona Sul",bairro:"Interlagos",dormitorios:"Consultar plantas",status:"Em Construção",imagem:"",link:CATALOGO_URL},
+  {nome:"Vision Campestre",regiao:"Santo André",bairro:"Campestre",dormitorios:"Consultar plantas",status:"Em Construção",imagem:"",link:CATALOGO_URL},
+  {nome:"Inov Zona Sul",regiao:"Zona Sul",bairro:"Consultar bairro",dormitorios:"Consultar plantas",status:"Em Construção",imagem:"",link:CATALOGO_URL},
+  {nome:"Soul Pari",regiao:"São Paulo",bairro:"Pari",dormitorios:"Consultar plantas",status:"Em Construção",imagem:"",link:CATALOGO_URL},
+  {nome:"Gran Spot",regiao:"São Paulo",bairro:"Consultar bairro",dormitorios:"Consultar plantas",status:"Em Construção",imagem:"",link:CATALOGO_URL},
+  {nome:"Gran Sky",regiao:"São Paulo",bairro:"Consultar bairro",dormitorios:"Consultar plantas",status:"Em Construção",imagem:"",link:CATALOGO_URL},
+  {nome:"Fast Interlagos",regiao:"Zona Sul",bairro:"Interlagos",dormitorios:"Consultar plantas",status:"Em Construção",imagem:"",link:CATALOGO_URL},
+  {nome:"Peak Vila Olímpia",regiao:"Zona Sul",bairro:"Vila Olímpia",dormitorios:"Consultar plantas",status:"Em Construção",imagem:"",link:CATALOGO_URL},
+  {nome:"Go Lapa",regiao:"Zona Oeste",bairro:"Lapa",dormitorios:"Consultar plantas",status:"Em Construção",imagem:"",link:CATALOGO_URL},
+  {nome:"Link Sapopemba",regiao:"Zona Leste",bairro:"Sapopemba",dormitorios:"Consultar plantas",status:"Em Construção",imagem:"",link:CATALOGO_URL},
+  {nome:"Manacá",regiao:"São Paulo",bairro:"Consultar bairro",dormitorios:"Consultar plantas",status:"Em Construção",imagem:"",link:CATALOGO_URL},
+  {nome:"Rangel Brás",regiao:"Centro",bairro:"Brás",dormitorios:"Consultar plantas",status:"Em Construção",imagem:"",link:CATALOGO_URL},
+  {nome:"Park Guarulhos",regiao:"Guarulhos",bairro:"Consultar bairro",dormitorios:"Consultar plantas",status:"Em Construção",imagem:"",link:CATALOGO_URL},
+  {nome:"Buono Bom Retiro",regiao:"Centro",bairro:"Bom Retiro",dormitorios:"Consultar plantas",status:"Lançamento",imagem:"",link:CATALOGO_URL},
+  {nome:"Vibe Aricanduva",regiao:"Zona Leste",bairro:"Aricanduva",dormitorios:"Consultar plantas",status:"Lançamento",imagem:"",link:CATALOGO_URL},
+  {nome:"Green Park Embira",regiao:"Zona Norte",bairro:"Freguesia do Ó",dormitorios:"Consultar plantas",status:"Lançamento",imagem:"",link:CATALOGO_URL},
+  {nome:"Verdí Tiquatira",regiao:"Zona Leste",bairro:"Penha",dormitorios:"Consultar plantas",status:"Lançamento",imagem:"",link:CATALOGO_URL},
+  {nome:"Bio Parque Nabuco",regiao:"Zona Sul",bairro:"Jardim Jabaquara",dormitorios:"Consultar plantas",status:"Lançamento",imagem:"",link:CATALOGO_URL},
+  {nome:"Class Prime",regiao:"Zona Leste",bairro:"Vila Prudente",dormitorios:"Consultar plantas",status:"Lançamento",imagem:"",link:CATALOGO_URL},
+  {nome:"Class Select",regiao:"Zona Leste",bairro:"Vila Prudente",dormitorios:"Consultar plantas",status:"Lançamento",imagem:"",link:CATALOGO_URL},
+  {nome:"Tee Marajoara",regiao:"Zona Sul",bairro:"Vila Campo Grande",dormitorios:"Consultar plantas",status:"Lançamento",imagem:"",link:CATALOGO_URL},
+  {nome:"Evo Diadema",regiao:"Diadema",bairro:"Canhema",dormitorios:"Consultar plantas",status:"Lançamento",imagem:"",link:CATALOGO_URL},
+  {nome:"Spin Zona Sul",regiao:"Zona Sul",bairro:"Pedreira",dormitorios:"Consultar plantas",status:"Lançamento",imagem:"",link:CATALOGO_URL},
+  {nome:"Flow - Limão",regiao:"Zona Norte",bairro:"Limão",dormitorios:"Consultar plantas",status:"Lançamento",imagem:"",link:CATALOGO_URL}
+];
 
-  CATALOGO_ECON.forEach(function (projeto) {
-    const mensagem = "Olá! Tenho interesse no empreendimento " +
-      projeto.nome + ". Pode me passar mais informações?";
+const grid = document.getElementById("projectsGrid");
+const searchInput = document.getElementById("searchInput");
+const statusFilter = document.getElementById("statusFilter");
+const counter = document.getElementById("counter");
 
-    const whatsapp = "https://wa.me/" +
-      MEU_WHATSAPP + "?text=" + encodeURIComponent(mensagem);
+document.getElementById("year").textContent = new Date().getFullYear();
 
-    const card = document.createElement("article");
-    card.className = "econ-card";
+const menuToggle = document.getElementById("menuToggle");
+const mainNav = document.getElementById("mainNav");
+menuToggle.addEventListener("click", () => {
+  const open = mainNav.classList.toggle("open");
+  menuToggle.setAttribute("aria-expanded", String(open));
+  menuToggle.textContent = open ? "×" : "☰";
+});
 
-    // Não inventamos links de imagens: o visitante pode abrir o
-    // catálogo oficial e consultar as fotos reais do empreendimento.
-    const conteudo = document.createElement("div");
-    conteudo.className = "econ-card-conteudo";
+function safeUrl(value, fallback) {
+  try {
+    const url = new URL(value || fallback, window.location.href);
+    return ["https:", "http:"].includes(url.protocol) ? url.href : fallback;
+  } catch {
+    return fallback;
+  }
+}
 
-    const titulo = document.createElement("h3");
-    titulo.textContent = projeto.nome;
+function createCard(item) {
+  const card = document.createElement("article");
+  card.className = "card";
 
-    const local = document.createElement("p");
-    local.textContent = projeto.local;
+  const photo = document.createElement("div");
+  photo.className = "photo";
 
-    const botoes = document.createElement("div");
-    botoes.className = "econ-botoes";
+  const status = document.createElement("span");
+  status.className = "status";
+  status.textContent = item.status || "Consulte a Econ";
+  photo.appendChild(status);
 
-    const ver = document.createElement("a");
-    ver.className = "econ-botao econ-botao-ver";
-    ver.href = projeto.url;
-    ver.target = "_blank";
-    ver.rel = "noopener noreferrer";
-    ver.textContent = "Ver empreendimento";
+  const fallback = document.createElement("div");
+  fallback.className = "photo-fallback";
+  const building = document.createElement("div");
+  building.className = "building";
+  building.textContent = "⌂";
+  const fallbackName = document.createElement("strong");
+  fallbackName.textContent = item.nome;
+  const fallbackNote = document.createElement("small");
+  fallbackNote.textContent = "Veja as fotos no catálogo oficial";
+  fallback.append(building, fallbackName, fallbackNote);
+  photo.appendChild(fallback);
 
-    const falar = document.createElement("a");
-    falar.className = "econ-botao econ-botao-whats";
-    falar.href = whatsapp;
-    falar.target = "_blank";
-    falar.rel = "noopener noreferrer";
-    falar.textContent = "Fale conosco no WhatsApp";
+  if (item.imagem) {
+    const img = document.createElement("img");
+    img.src = safeUrl(item.imagem, "");
+    img.alt = "Foto do empreendimento " + item.nome;
+    img.loading = "lazy";
+    fallback.hidden = true;
+    img.onerror = () => {
+      img.remove();
+      fallback.hidden = false;
+    };
+    photo.insertBefore(img, fallback);
+  }
 
-    botoes.append(ver, falar);
-    conteudo.append(titulo, local, botoes);
-    card.appendChild(conteudo);
-    grade.appendChild(card);
+  const content = document.createElement("div");
+  content.className = "card-content";
+
+  const title = document.createElement("h3");
+  title.textContent = item.nome;
+
+  const location = document.createElement("p");
+  location.className = "location";
+  location.textContent = [item.regiao, item.bairro].filter(Boolean).join(" • ") || "Consulte a localização oficial";
+
+  const details = document.createElement("div");
+  details.className = "details";
+  [item.dormitorios, item.status].filter(Boolean).forEach(text => {
+    const chip = document.createElement("span");
+    chip.className = "detail";
+    chip.textContent = text;
+    details.appendChild(chip);
   });
-})();
+
+  const actions = document.createElement("div");
+  actions.className = "card-actions";
+
+  const message = encodeURIComponent(
+    "Olá! Tenho interesse no empreendimento " + item.nome + ". Pode me passar mais informações?"
+  );
+
+  const whatsapp = document.createElement("a");
+  whatsapp.className = "button whatsapp-button";
+  whatsapp.href = "https://wa.me/" + WHATSAPP + "?text=" + message;
+  whatsapp.target = "_blank";
+  whatsapp.rel = "noopener noreferrer";
+  whatsapp.textContent = "Fale conosco pelo WhatsApp ↗";
+
+  const official = document.createElement("a");
+  official.className = "official-link";
+  official.href = safeUrl(item.link, CATALOGO_URL);
+  official.target = "_blank";
+  official.rel = "noopener noreferrer";
+  official.textContent = "Ver empreendimento na Econ ↗";
+
+  actions.append(whatsapp, official);
+  content.append(title, location, details, actions);
+  card.append(photo, content);
+  return card;
+}
+
+function renderProjects() {
+  const term = searchInput.value.trim().toLocaleLowerCase("pt-BR");
+  const selected = statusFilter.value;
+
+  const filtered = EMPREENDIMENTOS.filter(item => {
+    const searchable = [
+      item.nome, item.regiao, item.bairro, item.status
+    ].join(" ").toLocaleLowerCase("pt-BR");
+    return searchable.includes(term) && (!selected || item.status === selected);
+  });
+
+  grid.replaceChildren();
+
+  if (!filtered.length) {
+    const empty = document.createElement("div");
+    empty.className = "empty";
+    empty.textContent = "Nenhum empreendimento encontrado. Tente outra busca.";
+    grid.appendChild(empty);
+  } else {
+    filtered.forEach(item => grid.appendChild(createCard(item)));
+  }
+
+  counter.textContent = filtered.length +
+    (filtered.length === 1 ? " empreendimento encontrado" : " empreendimentos encontrados");
+}
+
+searchInput.addEventListener("input", renderProjects);
+statusFilter.addEventListener("change", renderProjects);
+renderProjects();
 </script>
-<!-- FIM DA SEÇÃO DE EMPREENDIMENTOS ECON -->
+</body>
+</html>
+
