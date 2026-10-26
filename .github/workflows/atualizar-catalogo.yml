@@ -3,7 +3,7 @@ name: Atualizar catalogo Econ
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 9 * * *"
+    - cron: "0 12 * * *"
 
 permissions:
   contents: write
@@ -34,8 +34,3 @@ jobs:
           git add empreendimentos.json
           git diff --cached --quiet || git commit -m "Atualiza catalogo Econ"
           git push
-            echo "Nenhuma alteracao no catalogo."
-          else
-            git commit -m "Atualiza catalogo de empreendimentos"
-            git push
-          fi
