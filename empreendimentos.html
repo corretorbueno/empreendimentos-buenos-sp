@@ -1,335 +1,278 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Conheça a política de privacidade da Empreendimentos Buenos SP e saiba como tratamos as informações fornecidas no atendimento comercial.">
   <meta name="theme-color" content="#103c2c">
-  <meta name="description" content="Conheça os empreendimentos Econ em São Paulo e região. Consulte opções e fale com a Empreendimentos Buenos SP pelo WhatsApp.">
-  <title>Empreendimentos | Buenos SP</title>
+  <title>Política de Privacidade | Empreendimentos Buenos SP</title>
+  <link rel="stylesheet" href="styles.css">
   <style>
-    :root {
-      --green: #103c2c;
-      --green-dark: #09291f;
-      --lime: #c7f36b;
-      --lime-dark: #a8df48;
-      --white: #fff;
-      --background: #f7f9f6;
-      --text: #17251d;
-      --muted: #657168;
-      --border: #e1e8df;
-      --radius: 18px;
-      --shadow: 0 16px 45px rgba(16, 60, 44, .09);
-    }
-
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; scroll-padding-top: 95px; }
-    body {
-      margin: 0;
-      font-family: "DM Sans", Arial, sans-serif;
-      color: var(--text);
-      background: var(--background);
-      line-height: 1.65;
-    }
-    a { color: inherit; text-decoration: none; }
-    button, input, select { font: inherit; }
-    a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
-      outline: 3px solid var(--lime-dark);
-      outline-offset: 3px;
-    }
-
-    .header {
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      min-height: 82px;
-      padding: 14px 6%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 24px;
-      background: rgba(255,255,255,.97);
-      border-bottom: 1px solid var(--border);
-      backdrop-filter: blur(12px);
-    }
-    .logo {
-      display: inline-flex;
-      align-items: center;
-      gap: 11px;
-      color: var(--green);
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      line-height: 1.5;
-    }
-    .logo-icon {
-      display: grid;
-      place-items: center;
-      width: 43px;
-      height: 43px;
-      flex-shrink: 0;
-      border-radius: 12px;
-      background: var(--green);
-      color: var(--lime);
-      font-size: 27px;
-      font-weight: 800;
-    }
-    .logo strong {
-      display: block;
-      font-size: 17px;
-      letter-spacing: .5px;
-    }
-    .nav {
-      display: flex;
-      align-items: center;
-      gap: 26px;
-      font-size: 13px;
-      font-weight: 600;
-    }
-    .nav a:not(.button):hover { color: #477b35; }
-    .menu-toggle {
-      display: none;
-      border: 0;
-      background: transparent;
-      color: var(--green);
-      font-size: 27px;
-      cursor: pointer;
-    }
-
-    .button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      min-height: 48px;
-      padding: 13px 20px;
-      border: 1px solid transparent;
-      border-radius: 10px;
-      background: var(--lime);
-      color: var(--green-dark);
-      font-size: 13px;
-      font-weight: 800;
-      transition: transform .2s, background .2s;
-      cursor: pointer;
-    }
-    .button:hover { background: var(--lime-dark); transform: translateY(-1px); }
-    .button-small { min-height: 40px; padding: 10px 15px; }
-    .button-outline {
-      background: transparent;
+    .privacy-hero {
+      padding: 55px 6%;
+      background: #103c2c;
       color: white;
-      border-color: rgba(255,255,255,.45);
     }
-    .button-outline:hover { background: rgba(255,255,255,.1); color: white; }
 
-    .hero {
-      position: relative;
-      overflow: hidden;
-      background: linear-gradient(120deg, var(--green-dark), var(--green));
-      color: white;
-      padding: 66px 6% 60px;
+    .privacy-hero h1 {
+      max-width: 850px;
+      margin: 0 auto 12px;
+      font-size: clamp(30px, 5vw, 44px);
     }
-    .hero::after {
-      content: "";
-      position: absolute;
-      width: 420px;
-      height: 420px;
-      right: -130px;
-      top: -190px;
-      border: 1px solid rgba(199,243,107,.18);
-      border-radius: 50%;
-      box-shadow: 0 0 0 55px rgba(199,243,107,.035), 0 0 0 110px rgba(199,243,107,.025);
-      pointer-events: none;
-    }
-    .hero-inner {
-      position: relative;
-      z-index: 1;
-      width: min(1120px, 100%);
+
+    .privacy-hero p {
+      max-width: 850px;
       margin: auto;
+      color: #e0eae2;
     }
-    .eyebrow {
-      display: inline-block;
+
+    .privacy-content {
+      max-width: 850px;
+      margin: 0 auto;
+      padding: 45px 24px 70px;
+      line-height: 1.8;
+      color: #35443a;
+    }
+
+    .privacy-content h2 {
+      margin-top: 30px;
+      margin-bottom: 10px;
+      color: #103c2c;
+      font-size: 22px;
+    }
+
+    .privacy-content p,
+    .privacy-content li {
       margin-bottom: 12px;
-      color: var(--lime);
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
-    .hero h1 {
-      max-width: 780px;
-      margin: 0 0 18px;
-      font-size: clamp(34px, 5vw, 58px);
-      line-height: 1.08;
-      letter-spacing: -1.7px;
-    }
-    .hero h1 span { color: var(--lime); }
-    .hero p {
-      max-width: 650px;
-      margin: 0 0 26px;
-      color: #e0e9e2;
-      font-size: 16px;
-    }
-    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
-    .hero-note {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 18px;
-      margin-top: 24px;
-      color: #e0e9e2;
-      font-size: 12px;
-    }
-    .hero-note span::before { content: "✓"; margin-right: 7px; color: var(--lime); font-weight: 900; }
-
-    main { width: min(1120px, 100%); margin: auto; padding: 52px 24px 70px; }
-    .section-heading { margin-bottom: 25px; }
-    .section-heading .eyebrow { color: #477b35; margin-bottom: 7px; }
-    .section-heading h2 { margin: 0 0 8px; color: var(--green); font-size: clamp(26px, 3vw, 36px); line-height: 1.2; }
-    .section-heading p { margin: 0; color: var(--muted); }
-    .filters {
-      display: grid;
-      grid-template-columns: minmax(0, 2fr) minmax(220px, 1fr);
-      gap: 12px;
-      margin: 25px 0 18px;
-    }
-    .filters input, .filters select {
-      width: 100%;
-      min-width: 0;
-      min-height: 50px;
-      padding: 13px 15px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      background: white;
-      color: var(--text);
-    }
-    .filters input:focus, .filters select:focus { border-color: #7da34a; }
-    .counter { margin: 0 0 16px; color: var(--muted); font-size: 13px; }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 22px;
-    }
-    .card {
-      display: flex;
-      flex-direction: column;
-      min-width: 0;
-      overflow: hidden;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      background: white;
-      box-shadow: var(--shadow);
-      transition: transform .2s, box-shadow .2s;
-    }
-    .card:hover { transform: translateY(-4px); box-shadow: 0 20px 48px rgba(16,60,44,.15); }
-    .photo {
-      position: relative;
-      height: 225px;
-      overflow: hidden;
-      background: linear-gradient(135deg, #e7eee4, #d4e2d0);
-    }
-    .photo img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .35s; }
-    .card:hover .photo img { transform: scale(1.035); }
-    .photo-fallback[hidden] { display: none !important; }
-    .photo-fallback {
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 5px;
-      padding: 20px;
-      text-align: center;
-      color: var(--green);
-    }
-    .photo-fallback .building { font-size: 43px; line-height: 1; }
-    .photo-fallback small { color: var(--muted); }
-    .status {
-      position: absolute;
-      top: 12px;
-      left: 12px;
-      z-index: 2;
-      max-width: calc(100% - 24px);
-      padding: 6px 10px;
-      border-radius: 7px;
-      background: var(--lime);
-      color: var(--green-dark);
-      font-size: 10px;
-      font-weight: 900;
-      text-transform: uppercase;
-      box-shadow: 0 3px 10px #0001;
-    }
-    .card-content { display: flex; flex: 1; flex-direction: column; padding: 19px; }
-    .card h3 { margin: 0 0 8px; color: var(--green); font-size: 21px; line-height: 1.25; }
-    .location { margin: 0 0 14px; color: var(--muted); font-size: 13px; }
-    .details { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 18px; }
-    .detail { padding: 6px 9px; border-radius: 7px; background: #f0f5ec; color: #38533c; font-size: 11px; }
-    .card-actions { display: grid; gap: 9px; margin-top: auto; }
-    .whatsapp-button { width: 100%; }
-    .official-link { padding: 5px; text-align: center; color: #477b35; font-size: 12px; font-weight: 700; }
-    .official-link:hover { text-decoration: underline; }
-    .empty, .loading, .error {
-      grid-column: 1 / -1;
-      padding: 30px 20px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: white;
-      color: var(--muted);
-      text-align: center;
-    }
-    .catalog {
-      margin-top: 44px;
-      padding: 32px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      background: white;
-      text-align: center;
-    }
-    .catalog h2 { margin: 0 0 8px; color: var(--green); }
-    .catalog p { max-width: 680px; margin: 0 auto 20px; color: var(--muted); }
-    .footer { padding: 30px 20px; background: var(--green-dark); color: white; text-align: center; }
-    .footer .footer-brand { margin-bottom: 8px; font-weight: 800; letter-spacing: 1px; }
-    .footer .footer-brand span { color: var(--lime); }
-    .footer p { margin: 5px; color: #d5e2d7; font-size: 12px; }
-    .footer a { color: var(--lime); }
-    .floating-whatsapp {
-      position: fixed;
-      right: 18px;
-      bottom: 18px;
-      z-index: 15;
-      padding: 13px 18px;
-      border-radius: 50px;
-      background: var(--lime);
-      color: var(--green-dark);
-      font-size: 13px;
-      font-weight: 900;
-      box-shadow: 0 6px 22px #0003;
     }
 
-    @media (max-width: 900px) {
-      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .nav { gap: 16px; }
+    .privacy-content ul {
+      padding-left: 24px;
     }
-    @media (max-width: 650px) {
-      .header { min-height: 72px; padding: 12px 5%; }
-      .menu-toggle { display: block; }
-      .nav {
-        display: none;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        padding: 18px 5% 22px;
-        align-items: stretch;
-        flex-direction: column;
-        gap: 16px;
-        background: white;
-        border-bottom: 1px solid var(--border);
-      }
-      .nav.open { display: flex; }
-      .nav .button { width: fit-content; }
-      .hero { padding: 48px 6% 43px; }
-      .hero h1 { letter-spacing: -1px; }
-      main { padding: 38px 16px 55px; }
-      .filters { grid-template-columns: 1fr; }
-      .grid { grid-template-columns: 1fr; }
-      .catalog { padding: 25px 18px; }
+
+    .privacy-content a {
+      color: #176b42;
+      overflow-wrap: anywhere;
+    }
+
+    .privacy-warning {
+      margin-top: 28px;
+      padding: 18px;
+      border-left: 4px solid #a6d957;
+      background: #f3f7ef;
+      border-radius: 5px;
+    }
+
+    @media (max-width: 600px) {
+      .privacy-content { padding: 30px 20px 50px; }
     }
   </style>
+</head>
+
+<body>
+  <header class="header">
+    <a class="logo" href="index.html">
+      <span class="logo-icon">B</span>
+      <span>EMPREENDIMENTOS <strong>BUENOS SP</strong></span>
+    </a>
+
+    <button class="menu-toggle" id="menu-toggle"
+      aria-label="Abrir menu" aria-expanded="false">☰</button>
+
+    <nav class="nav" id="nav">
+      <a href="index.html">Início</a>
+      <a href="empreendimentos.html">Empreendimentos</a>
+      <a href="index.html#minha-casa">Minha Casa, Minha Vida</a>
+      <a class="button button-small"
+         href="https://wa.me/5511945167897"
+         target="_blank" rel="noopener noreferrer">Fale conosco ↗</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="privacy-hero">
+      <h1>Política de Privacidade</h1>
+      <p>Empreendimentos Buenos SP · Última atualização: 26 de outubro de 2026</p>
+    </section>
+
+    <article class="privacy-content">
+      <p>
+        A Empreendimentos Buenos SP valoriza a privacidade dos visitantes
+        e busca tratar suas informações com transparência e responsabilidade.
+        Esta página explica como as informações fornecidas voluntariamente
+        podem ser utilizadas durante o atendimento comercial.
+      </p>
+
+      <h2>1. Quais informações podemos solicitar?</h2>
+      <p>Nosso formulário de atendimento pode solicitar:</p>
+      <ul>
+        <li>Nome;</li>
+        <li>Número de WhatsApp;</li>
+        <li>Cidade ou região de interesse;</li>
+        <li>Faixa aproximada de renda familiar;</li>
+        <li>Informação aproximada sobre entrada disponível;</li>
+        <li>Interesse no programa Minha Casa, Minha Vida;</li>
+        <li>Observações que você decidir informar voluntariamente.</li>
+      </ul>
+
+      <p>
+        Não solicitamos CPF, senhas, dados de cartão ou informações bancárias
+        pelo formulário inicial. Não envie documentos pessoais ou informações
+        financeiras sensíveis por canais inadequados.
+      </p>
+
+      <h2>2. Para que utilizamos as informações?</h2>
+      <p>As informações podem ser utilizadas para:</p>
+      <ul>
+        <li>Entender sua busca por apartamentos na planta;</li>
+        <li>Identificar regiões e características de interesse;</li>
+        <li>Entrar em contato para atendimento comercial;</li>
+        <li>Apresentar opções e esclarecer dúvidas iniciais;</li>
+        <li>Responder à solicitação que você nos enviou.</li>
+      </ul>
+
+      <h2>3. Como funciona o contato pelo WhatsApp?</h2>
+      <p>
+        Ao preencher o formulário, o site poderá preparar uma mensagem com
+        as informações fornecidas e abrir o WhatsApp comercial pelo número
+        (11) 94516-7897.
+      </p>
+      <p>
+        Você deverá conferir e enviar a mensagem no próprio WhatsApp para
+        iniciar a conversa. Abrir o aplicativo não significa que a mensagem
+        foi enviada.
+      </p>
+      <p>
+        Na versão atual, o site não possui um banco de dados próprio para
+        armazenar automaticamente os formulários. Entretanto, as informações
+        que você enviar pelo WhatsApp poderão ser tratadas nos sistemas
+        utilizados por esse serviço, conforme as respectivas políticas.
+      </p>
+      <p>
+        Consulte a
+        <a href="https://www.whatsapp.com/legal/privacy-policy"
+           target="_blank" rel="noopener noreferrer">
+          Política de Privacidade do WhatsApp
+        </a>.
+      </p>
+
+      <h2>4. Compartilhamento de informações</h2>
+      <p>
+        Não vendemos informações pessoais. Os dados enviados por você poderão
+        ser tratados pelos serviços necessários para realizar o atendimento,
+        incluindo o WhatsApp, conforme o funcionamento desses serviços e a
+        legislação aplicável.
+      </p>
+      <p>
+        Caso sejam adicionadas ferramentas de anúncios, análise de acesso,
+        formulários externos ou sistemas de CRM, esta política deverá ser
+        atualizada para explicar o tratamento de dados correspondente.
+      </p>
+
+      <h2>5. Cookies e ferramentas de rastreamento</h2>
+      <p>
+        A versão inicial do site não foi planejada com ferramentas próprias
+        de análise de tráfego, pixels publicitários ou cookies de publicidade.
+        Serviços externos acessados pelo visitante poderão ter suas próprias
+        práticas de coleta de dados.
+      </p>
+      <p>
+        Se novas ferramentas forem instaladas, as informações sobre seu uso
+        deverão ser incluídas nesta política e os consentimentos necessários
+        deverão ser implementados, quando aplicável.
+      </p>
+
+      <h2>6. Seus direitos</h2>
+      <p>
+        Nos termos da Lei Geral de Proteção de Dados (Lei nº 13.709/2018),
+        você poderá ter direitos relativos aos seus dados pessoais, incluindo
+        solicitar confirmação de tratamento, acesso, correção, informações
+        sobre compartilhamento e, quando aplicável, eliminação de dados.
+      </p>
+      <p>
+        O atendimento a essas solicitações depende da identificação do
+        responsável pelo tratamento e da análise das obrigações legais
+        aplicáveis.
+      </p>
+
+      <h2>7. Por quanto tempo os dados são mantidos?</h2>
+      <p>
+        O período de conservação dependerá da finalidade do atendimento,
+        das obrigações legais aplicáveis e dos sistemas em que as informações
+        tenham sido fornecidas. Não declaramos possuir um banco de dados
+        próprio ou um sistema de armazenamento automático nesta versão.
+      </p>
+
+      <h2>8. Como entrar em contato?</h2>
+      <p>
+        Para dúvidas sobre o atendimento comercial, entre em contato pelo
+        WhatsApp:
+        <a href="https://wa.me/5511945167897"
+           target="_blank" rel="noopener noreferrer">
+          (11) 94516-7897
+        </a>.
+      </p>
+
+      <div class="privacy-warning">
+        <strong>Importante antes da publicação definitiva:</strong>
+        esta é uma versão inicial. É necessário identificar o responsável
+        legal pelo tratamento dos dados e definir um canal apropriado para
+        solicitações de privacidade. Não foram presumidos CNPJ, razão social,
+        endereço empresarial ou e-mail.
+      </div>
+
+      <h2>9. Atualizações desta política</h2>
+      <p>
+        Esta política poderá ser atualizada quando o funcionamento do site,
+        os serviços utilizados ou as práticas de tratamento de dados forem
+        alterados. Consulte esta página para verificar a versão vigente.
+      </p>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-main">
+      <a class="logo logo-footer" href="index.html">
+        <span class="logo-icon">B</span>
+        <span>EMPREENDIMENTOS <strong>BUENOS SP</strong></span>
+      </a>
+      <p>Atendimento comercial para apartamentos na planta na Grande São Paulo.</p>
+      <a href="https://wa.me/5511945167897"
+         target="_blank" rel="noopener noreferrer">(11) 94516-7897</a>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026 Empreendimentos Buenos SP</span>
+      <a href="privacidade.html">Política de Privacidade</a>
+      <a href="index.html">Voltar ao início</a>
+    </div>
+  </footer>
+
+  <script>
+    const menuToggle = document.getElementById("menu-toggle");
+    const nav = document.getElementById("nav");
+
+    if (menuToggle && nav) {
+      menuToggle.addEventListener("click", function () {
+        const isOpen = nav.classList.toggle("open");
+        menuToggle.setAttribute("aria-expanded", String(isOpen));
+        menuToggle.setAttribute(
+          "aria-label",
+          isOpen ? "Fechar menu" : "Abrir menu"
+        );
+        menuToggle.textContent = isOpen ? "✕" : "☰";
+      });
+
+      nav.querySelectorAll("a").forEach(function (link) {
+        link.addEventListener("click", function () {
+          nav.classList.remove("open");
+          menuToggle.setAttribute("aria-expanded", "false");
+          menuToggle.setAttribute("aria-label", "Abrir menu");
+          menuToggle.textContent = "☰";
+        });
+      });
+    }
+  </script>
+</body>
+</html>
