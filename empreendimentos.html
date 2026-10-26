@@ -1,905 +1,563 @@
 
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#103c2c">
-  <meta name="description" content="Conheça os empreendimentos Econ em São Paulo e região. Consulte opções e fale com a Empreendimentos Buenos SP pelo WhatsApp.">
-  <title>Empreendimentos | Buenos SP</title>
-
-  <style>
-    :root {
-      --green: #103c2c;
-      --green-dark: #09291f;
-      --lime: #c7f36b;
-      --lime-dark: #a8df48;
-      --white: #fff;
-      --background: #f7f9f6;
-      --text: #17251d;
-      --muted: #657168;
-      --border: #e1e8df;
-      --radius: 18px;
-      --shadow: 0 16px 45px rgba(16, 60, 44, .09);
-    }
-
-    * { box-sizing: border-box; }
-
-    html {
-      scroll-behavior: smooth;
-      scroll-padding-top: 95px;
-    }
-
-    body {
-      margin: 0;
-      font-family: "DM Sans", Arial, sans-serif;
-      color: var(--text);
-      background: var(--background);
-      line-height: 1.65;
-    }
-
-    a { color: inherit; text-decoration: none; }
-    button, input, select { font: inherit; }
-
-    a:focus-visible,
-    button:focus-visible,
-    input:focus-visible,
-    select:focus-visible {
-      outline: 3px solid var(--lime-dark);
-      outline-offset: 3px;
-    }
-
-    .header {
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      min-height: 82px;
-      padding: 14px 6%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 24px;
-      background: rgba(255,255,255,.97);
-      border-bottom: 1px solid var(--border);
-      backdrop-filter: blur(12px);
-    }
-
-    .logo {
-      display: inline-flex;
-      align-items: center;
-      gap: 11px;
-      color: var(--green);
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      line-height: 1.5;
-    }
-
-    .logo-icon {
-      display: grid;
-      place-items: center;
-      width: 43px;
-      height: 43px;
-      flex-shrink: 0;
-      border-radius: 12px;
-      background: var(--green);
-      color: var(--lime);
-      font-size: 27px;
-      font-weight: 800;
-    }
-
-    .logo strong {
-      display: block;
-      font-size: 17px;
-      letter-spacing: .5px;
-    }
-
-    .nav {
-      display: flex;
-      align-items: center;
-      gap: 26px;
-      font-size: 13px;
-      font-weight: 600;
-    }
-
-    .nav a:not(.button):hover { color: #477b35; }
-
-    .menu-toggle {
-      display: none;
-      border: 0;
-      background: transparent;
-      color: var(--green);
-      font-size: 27px;
-      cursor: pointer;
-    }
-
-    .button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      min-height: 48px;
-      padding: 13px 20px;
-      border: 1px solid transparent;
-      border-radius: 10px;
-      background: var(--lime);
-      color: var(--green-dark);
-      font-size: 13px;
-      font-weight: 800;
-      transition: transform .2s, background .2s;
-      cursor: pointer;
-    }
-
-    .button:hover {
-      background: var(--lime-dark);
-      transform: translateY(-1px);
-    }
-
-    .button-small {
-      min-height: 40px;
-      padding: 10px 15px;
-    }
-
-    .button-outline {
-      background: transparent;
-      color: white;
-      border-color: rgba(255,255,255,.45);
-    }
-
-    .button-outline:hover {
-      background: rgba(255,255,255,.1);
-      color: white;
-    }
-
-    .hero {
-      position: relative;
-      overflow: hidden;
-      background: linear-gradient(120deg, var(--green-dark), var(--green));
-      color: white;
-      padding: 66px 6% 60px;
-    }
-
-    .hero::after {
-      content: "";
-      position: absolute;
-      width: 420px;
-      height: 420px;
-      right: -130px;
-      top: -190px;
-      border: 1px solid rgba(199,243,107,.18);
-      border-radius: 50%;
-      box-shadow:
-        0 0 0 55px rgba(199,243,107,.035),
-        0 0 0 110px rgba(199,243,107,.025);
-      pointer-events: none;
-    }
-
-    .hero-inner {
-      position: relative;
-      z-index: 1;
-      width: min(1120px, 100%);
-      margin: auto;
-    }
-
-    .eyebrow {
-      display: inline-block;
-      margin-bottom: 12px;
-      color: var(--lime);
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
-
-    .hero h1 {
-      max-width: 780px;
-      margin: 0 0 18px;
-      font-size: clamp(34px, 5vw, 58px);
-      line-height: 1.08;
-      letter-spacing: -1.7px;
-    }
-
-    .hero h1 span { color: var(--lime); }
-
-    .hero p {
-      max-width: 650px;
-      margin: 0 0 26px;
-      color: #e0e9e2;
-      font-size: 16px;
-    }
-
-    .hero-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .hero-note {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 18px;
-      margin-top: 24px;
-      color: #e0e9e2;
-      font-size: 12px;
-    }
-
-    .hero-note span::before {
-      content: "✓";
-      margin-right: 7px;
-      color: var(--lime);
-      font-weight: 900;
-    }
-
-    main {
-      width: min(1120px, 100%);
-      margin: auto;
-      padding: 52px 24px 70px;
-    }
-
-    .section-heading { margin-bottom: 25px; }
-
-    .section-heading .eyebrow {
-      color: #477b35;
-      margin-bottom: 7px;
-    }
-
-    .section-heading h2 {
-      margin: 0 0 8px;
-      color: var(--green);
-      font-size: clamp(26px, 3vw, 36px);
-      line-height: 1.2;
-    }
-
-    .section-heading p {
-      margin: 0;
-      color: var(--muted);
-    }
-
-    .filters {
-      display: grid;
-      grid-template-columns: minmax(0, 2fr) minmax(220px, 1fr);
-      gap: 12px;
-      margin: 25px 0 18px;
-    }
-
-    .filters input,
-    .filters select {
-      width: 100%;
-      min-width: 0;
-      min-height: 50px;
-      padding: 13px 15px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      background: white;
-      color: var(--text);
-    }
-
-    .filters input:focus,
-    .filters select:focus {
-      border-color: #7da34a;
-    }
-
-    .counter {
-      margin: 0 0 16px;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 22px;
-    }
-
-    .card {
-      display: flex;
-      flex-direction: column;
-      min-width: 0;
-      overflow: hidden;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      background: white;
-      box-shadow: var(--shadow);
-      transition: transform .2s, box-shadow .2s;
-    }
-
-    .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 20px 48px rgba(16,60,44,.15);
-    }
-
-    .photo {
-      position: relative;
-      height: 225px;
-      overflow: hidden;
-      background: linear-gradient(135deg, #e7eee4, #d4e2d0);
-    }
-
-    .photo img {
-      display: block;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform .35s;
-    }
-
-    .card:hover .photo img { transform: scale(1.035); }
-
-    .photo-fallback[hidden] { display: none !important; }
-
-    .photo-fallback {
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 5px;
-      padding: 20px;
-      text-align: center;
-      color: var(--green);
-    }
-
-    .photo-fallback .building {
-      font-size: 43px;
-      line-height: 1;
-    }
-
-    .photo-fallback small { color: var(--muted); }
-
-    .status {
-      position: absolute;
-      top: 12px;
-      left: 12px;
-      z-index: 2;
-      max-width: calc(100% - 24px);
-      padding: 6px 10px;
-      border-radius: 7px;
-      background: var(--lime);
-      color: var(--green-dark);
-      font-size: 10px;
-      font-weight: 900;
-      text-transform: uppercase;
-      box-shadow: 0 3px 10px #0001;
-    }
-
-    .card-content {
-      display: flex;
-      flex: 1;
-      flex-direction: column;
-      padding: 19px;
-    }
-
-    .card h3 {
-      margin: 0 0 8px;
-      color: var(--green);
-      font-size: 21px;
-      line-height: 1.25;
-    }
-
-    .location {
-      margin: 0 0 14px;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .details {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 7px;
-      margin-bottom: 18px;
-    }
-
-    .detail {
-      padding: 6px 9px;
-      border-radius: 7px;
-      background: #f0f5ec;
-      color: #38533c;
-      font-size: 11px;
-    }
-
-    .card-actions {
-      display: grid;
-      gap: 9px;
-      margin-top: auto;
-    }
-
-    .whatsapp-button { width: 100%; }
-
-    .official-link {
-      padding: 5px;
-      text-align: center;
-      color: #477b35;
-      font-size: 12px;
-      font-weight: 700;
-    }
-
-    .official-link:hover { text-decoration: underline; }
-
-    .empty,
-    .loading,
-    .error {
-      grid-column: 1 / -1;
-      padding: 30px 20px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: white;
-      color: var(--muted);
-      text-align: center;
-    }
-
-    .catalog {
-      margin-top: 44px;
-      padding: 32px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      background: white;
-      text-align: center;
-    }
-
-    .catalog h2 {
-      margin: 0 0 8px;
-      color: var(--green);
-    }
-
-    .catalog p {
-      max-width: 680px;
-      margin: 0 auto 20px;
-      color: var(--muted);
-    }
-
-    .footer {
-      padding: 30px 20px;
-      background: var(--green-dark);
-      color: white;
-      text-align: center;
-    }
-
-    .footer .footer-brand {
-      margin-bottom: 8px;
-      font-weight: 800;
-      letter-spacing: 1px;
-    }
-
-    .footer .footer-brand span { color: var(--lime); }
-
-    .footer p {
-      margin: 5px;
-      color: #d5e2d7;
-      font-size: 12px;
-    }
-
-    .footer a { color: var(--lime); }
-
-    .floating-whatsapp {
-      position: fixed;
-      right: 18px;
-      bottom: 18px;
-      z-index: 15;
-      padding: 13px 18px;
-      border-radius: 50px;
-      background: var(--lime);
-      color: var(--green-dark);
-      font-size: 13px;
-      font-weight: 900;
-      box-shadow: 0 6px 22px #0003;
-    }
-
-    @media (max-width: 900px) {
-      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .nav { gap: 16px; }
-    }
-
-    @media (max-width: 650px) {
-      .header {
-        min-height: 72px;
-        padding: 12px 5%;
-      }
-
-      .menu-toggle { display: block; }
-
-      .nav {
-        display: none;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        padding: 18px 5% 22px;
-        align-items: stretch;
-        flex-direction: column;
-        gap: 16px;
-        background: white;
-        border-bottom: 1px solid var(--border);
-      }
-
-      .nav.open { display: flex; }
-      .nav .button { width: fit-content; }
-      .hero { padding: 48px 6% 43px; }
-      .hero h1 { letter-spacing: -1px; }
-
-      main { padding: 38px 16px 55px; }
-      .filters { grid-template-columns: 1fr; }
-      .grid { grid-template-columns: 1fr; }
-      .photo { height: 245px; }
-      .catalog { padding: 26px 18px; }
-
-      .floating-whatsapp {
-        right: 12px;
-        bottom: 12px;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#103c2c">
+<meta name="description" content="Conheça os empreendimentos Econ em São Paulo e região. Fale com a Buenos SP.">
+<title>Empreendimentos | Buenos SP</title>
+
+<style>
+:root {
+  --green: #103c2c;
+  --dark: #09291f;
+  --lime: #c7f36b;
+  --bg: #f7f9f6;
+  --text: #17251d;
+  --muted: #657168;
+  --border: #e1e8df;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 90px;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.6;
+}
+
+a { color: inherit; text-decoration: none; }
+button, input, select { font: inherit; }
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 14px 6%;
+  background: #fffffffa;
+  border-bottom: 1px solid var(--border);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--green);
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.logo-icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: var(--green);
+  color: var(--lime);
+  font-size: 26px;
+}
+
+.logo strong {
+  display: block;
+  font-size: 17px;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 18px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--lime);
+  color: var(--dark);
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.hero {
+  padding: 64px 6%;
+  background: linear-gradient(120deg, var(--dark), var(--green));
+  color: white;
+}
+
+.hero-inner {
+  max-width: 1120px;
+  margin: auto;
+}
+
+.eyebrow {
+  color: var(--lime);
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  max-width: 760px;
+  margin: 10px 0 16px;
+  font-size: clamp(34px, 5vw, 58px);
+  line-height: 1.08;
+  letter-spacing: -1px;
+}
+
+.hero h1 span { color: var(--lime); }
+
+.hero p {
+  max-width: 650px;
+  color: #e0e9e2;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.outline {
+  border: 1px solid #ffffff70;
+  background: transparent;
+  color: white;
+}
+
+main {
+  width: min(1120px, 100%);
+  margin: auto;
+  padding: 50px 24px 70px;
+}
+
+.section-heading h2 {
+  margin: 7px 0;
+  color: var(--green);
+  font-size: clamp(27px, 3vw, 36px);
+  line-height: 1.2;
+}
+
+.section-heading p { color: var(--muted); }
+.section-heading .eyebrow { color: #477b35; }
+
+.filters {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 12px;
+  margin: 24px 0 16px;
+}
+
+.filters input,
+.filters select {
+  width: 100%;
+  min-height: 50px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: white;
+}
+
+.counter {
+  margin-bottom: 16px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: white;
+  box-shadow: 0 12px 35px #103c2c12;
+  transition: transform .2s;
+}
+
+.card:hover { transform: translateY(-3px); }
+
+.photo {
+  position: relative;
+  height: 220px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #e7eee4, #d4e2d0);
+}
+
+.photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.placeholder {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--green);
+  padding: 20px;
+}
+
+.placeholder .building { font-size: 45px; }
+.placeholder small { color: var(--muted); }
+
+.tag {
+  position: absolute;
+  top: 13px;
+  left: 13px;
+  padding: 6px 10px;
+  border-radius: 30px;
+  background: var(--lime);
+  color: var(--dark);
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex: 1;
+  padding: 18px;
+}
+
+.card h3 {
+  margin: 0 0 6px;
+  color: var(--green);
+  font-size: 20px;
+  line-height: 1.25;
+}
+
+.location, .details {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.details { margin-bottom: 18px; }
+
+.card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.card-actions a { font-size: 12px; }
+
+.secondary {
+  display: inline-flex;
+  padding: 11px 13px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  font-weight: bold;
+}
+
+.empty {
+  grid-column: 1 / -1;
+  padding: 35px;
+  text-align: center;
+  border: 1px dashed var(--border);
+  border-radius: 15px;
+  color: var(--muted);
+  background: white;
+}
+
+.footer {
+  padding: 35px 6%;
+  background: var(--dark);
+  color: #e0e9e2;
+  text-align: center;
+  font-size: 13px;
+}
+
+.footer-brand {
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.footer-brand span { color: var(--lime); }
+.footer a { text-decoration: underline; }
+
+.floating-whatsapp {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 10;
+  padding: 13px 18px;
+  border-radius: 50px;
+  background: var(--lime);
+  color: var(--dark);
+  font-weight: bold;
+  box-shadow: 0 8px 25px #0002;
+}
+
+@media (max-width: 850px) {
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .nav { gap: 12px; }
+}
+
+@media (max-width: 600px) {
+  .header { padding: 12px 5%; }
+  .nav a:not(.btn) { display: none; }
+  .hero { padding: 48px 6%; }
+  .filters, .grid { grid-template-columns: 1fr; }
+  .photo { height: 230px; }
+  main { padding: 38px 16px 55px; }
+}
+</style>
 </head>
 
 <body>
-  <header class="header">
-    <a class="logo" href="index.html" aria-label="Empreendimentos Buenos SP - página inicial">
-      <span class="logo-icon">B</span>
-      <span>EMPREENDIMENTOS<strong>BUENOS SP</strong></span>
+
+<header class="header">
+  <a class="logo" href="#inicio">
+    <span class="logo-icon">B</span>
+    <span>EMPREENDIMENTOS<strong>BUENOS SP</strong></span>
+  </a>
+
+  <nav class="nav">
+    <a href="#inicio">Início</a>
+    <a href="#catalogo">Empreendimentos</a>
+    <a class="btn"
+       href="https://wa.me/5511945167897?text=Ol%C3%A1%21%20Vim%20pelo%20site%20Buenos%20SP."
+       target="_blank" rel="noopener">
+      Fale conosco ↗
     </a>
+  </nav>
+</header>
 
-    <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false">☰</button>
-
-    <nav class="nav" id="mainNav" aria-label="Navegação principal">
-      <a href="index.html">Início</a>
-      <a href="empreendimentos.html" aria-current="page">Empreendimentos</a>
-      <a href="privacidade.html">Privacidade</a>
-      <a class="button button-small" href="https://wa.me/5511945167897" target="_blank" rel="noopener noreferrer">Fale conosco ↗</a>
-    </nav>
-  </header>
-
-  <section class="hero">
-    <div class="hero-inner">
-      <span class="eyebrow">Catálogo de empreendimentos Econ</span>
-      <h1>Encontre seu próximo apartamento <span>com mais clareza.</span></h1>
-      <p>Explore os empreendimentos disponíveis no catálogo, filtre por nome ou estágio e fale diretamente com um consultor para consultar condições e disponibilidade.</p>
-
-      <div class="hero-actions">
-        <a class="button" href="#lista">Ver empreendimentos ↓</a>
-        <a class="button button-outline" href="https://wa.me/5511945167897?text=Ol%C3%A1%21%20Quero%20conhecer%20os%20empreendimentos%20Econ." target="_blank" rel="noopener noreferrer">Falar com um consultor ↗</a>
-      </div>
-
-      <div class="hero-note">
-        <span>Atendimento personalizado</span>
-        <span>Catálogo atualizado automaticamente</span>
-      </div>
+<section class="hero" id="inicio">
+  <div class="hero-inner">
+    <span class="eyebrow">SEU PRÓXIMO CAPÍTULO COMEÇA AQUI</span>
+    <h1>Encontre um lugar para chamar de <span>seu.</span></h1>
+    <p>
+      Explore empreendimentos Econ em São Paulo e região.
+      Encontre opções que combinam com seu momento e fale com
+      a nossa equipe para saber mais.
+    </p>
+    <div class="hero-actions">
+      <a class="btn" href="#catalogo">Ver empreendimentos ↓</a>
+      <a class="btn outline"
+         href="https://wa.me/5511945167897?text=Ol%C3%A1%21%20Quero%20ajuda%20para%20encontrar%20um%20im%C3%B3vel."
+         target="_blank" rel="noopener">
+        Falar com consultor ↗
+      </a>
     </div>
-  </section>
+  </div>
+</section>
 
-  <main id="lista">
-    <section class="section-heading">
-      <span class="eyebrow">Encontre uma opção para você</span>
-      <h2>Nossos empreendimentos</h2>
-      <p>Pesquise pelo nome do projeto ou filtre pelo estágio informado no catálogo.</p>
-    </section>
+<main id="catalogo">
+  <div class="section-heading">
+    <span class="eyebrow">CATÁLOGO ECON</span>
+    <h2>Encontre seu próximo imóvel</h2>
+    <p>Pesquise por nome, bairro ou região e filtre pelo estágio do empreendimento.</p>
+  </div>
 
-    <section class="filters" aria-label="Filtros de empreendimentos">
-      <input type="search" id="searchInput" placeholder="Buscar empreendimento..." aria-label="Buscar empreendimento">
+  <div class="filters">
+    <input id="search" type="search"
+      placeholder="Buscar empreendimento, bairro ou região…"
+      aria-label="Buscar empreendimentos">
 
-      <select id="statusFilter" aria-label="Filtrar por estágio da obra">
-        <option value="">Todos os estágios</option>
-        <option value="Lançamento">Lançamento</option>
-        <option value="Breve Lançamento">Breve lançamento</option>
-        <option value="Futuro Lançamento">Futuro lançamento</option>
-        <option value="Em Construção">Em construção</option>
-        <option value="Pronto para Morar">Pronto para morar</option>
-      </select>
-    </section>
+    <select id="status" aria-label="Filtrar por status">
+      <option value="">Todos os estágios</option>
+      <option>Breve Lançamento</option>
+      <option>Futuro Lançamento</option>
+      <option>Lançamento</option>
+      <option>Em Construção</option>
+      <option>Pronto para Morar</option>
+    </select>
+  </div>
 
-    <p class="counter" id="counter" aria-live="polite">Carregando empreendimentos...</p>
+  <p class="counter" id="counter" aria-live="polite"></p>
+  <section class="grid" id="grid" aria-label="Lista de empreendimentos"></section>
+</main>
 
-    <section class="grid" id="projectsGrid" aria-label="Lista de empreendimentos">
-      <div class="loading">Carregando o catálogo atualizado...</div>
-    </section>
+<footer class="footer">
+  <div class="footer-brand">EMPREENDIMENTOS <span>BUENOS SP</span></div>
+  <p>Atendimento imobiliário pelo WhatsApp.</p>
+  <p>Consulte disponibilidade, valores e condições atualizadas diretamente com um consultor.</p>
+  <p><a href="privacidade.html">Política de privacidade</a></p>
+  <p>© <span id="year"></span> Empreendimentos Buenos SP</p>
+</footer>
 
-    <section class="catalog">
-      <h2>Precisa de mais detalhes?</h2>
-      <p>Consulte o catálogo oficial da Econ para confirmar informações, imagens, disponibilidade e condições de cada empreendimento.</p>
-      <a class="button" href="https://www.econconstrutora.com.br/imoveis" target="_blank" rel="noopener noreferrer">Ver catálogo oficial da Econ ↗</a>
-    </section>
-  </main>
+<a class="floating-whatsapp"
+   href="https://wa.me/5511945167897?text=Ol%C3%A1%21%20Vim%20pelo%20site%20Buenos%20SP."
+   target="_blank" rel="noopener"
+   aria-label="Fale conosco pelo WhatsApp">WhatsApp ↗</a>
 
-  <footer class="footer">
-    <div class="footer-brand">EMPREENDIMENTOS <span>BUENOS SP</span></div>
-    <p>Atendimento imobiliário pelo WhatsApp.</p>
-    <p>Consulte disponibilidade, valores e condições atualizadas diretamente com um consultor.</p>
-    <p><a href="privacidade.html">Política de privacidade</a></p>
-    <p>© <span id="year"></span> Empreendimentos Buenos SP</p>
-  </footer>
+<script>
+// A lista está dentro deste HTML. Não depende de arquivo JSON.
+const EMPREENDIMENTOS = [
+  {"nome":"Volt Santana","status":"Breve Lançamento","bairro":"Santana","regiao":"Zona Norte","dormitorios":"2 dorms.","imagem":"","link":"https://www.econconstrutora.com.br/imoveis"},
+  {"nome":"Best Barra Funda","status":"Breve Lançamento","bairro":"Barra Funda","regiao":"Zona Oeste","dormitorios":"2 dorms.","imagem":"","link":"https://www.econconstrutora.com.br/imoveis"},
+  {"nome":"Tech Zona Sul","status":"Breve Lançamento","bairro":"Pedreira","regiao":"Zona Sul","dormitorios":"2 dorms.","imagem":"","link":"https://www.econconstrutora.com.br/imoveis"},
+  {"nome":"Beat Jardim Botânico","status":"Lançamento","bairro":"Sacomã","regiao":"Zona Sul","dormitorios":"2 dorms.","imagem":"","link":"https://www.econconstrutora.com.br/imoveis"},
+  {"nome":"Ikon Limão","status":"Futuro Lançamento","bairro":"Limão","regiao":"Zona Norte","dormitorios":"2 dorms.","imagem":"","link":"https://www.econconstrutora.com.br/imoveis"},
+  {"nome":"Free - Liberdade","status":"Lançamento","bairro":"Liberdade","regiao":"Centro","dormitorios":"2 dorms.","imagem":"","link":"https://www.econconstrutora.com.br/imoveis"},
+  {"nome":"New Vila Ema","status":"Em Construção","bairro":"Vila Ema","regiao":"Zona Leste","dormitorios":"2 dorms.","imagem":"","link":"https://www.econconstrutora.com.br/imoveis"},
+  {"nome":"Vero Encanto","status":"Pronto para Morar","bairro":"Parada XV de Novembro","regiao":"Zona Leste","dormitorios":"1 e 2 dorms.","imagem":"","link":"https://www.econconstrutora.com.br/imoveis"},
+  {"nome":"Vero Harmonia","status":"Pronto para Morar","bairro":"Parada XV de Novembro","regiao":"Zona Leste","dormitorios":"2 dorms.","imagem":"","link":"https://www.econconstrutora.com.br/imoveis"},
+  {"nome":"Like - Casa Verde","status":"Pronto para Morar","bairro":"Casa Verde","regiao":"Zona Norte","dormitorios":"2 e 3 dorms.","imagem":"","link":"https://www.econconstrutora.com.br/imoveis"},
+  {"nome":"Epic Jaguaré","status":"Em Construção","bairro":"Jaguaré","regiao":"Zona Oeste","dormitorios":"2 e 3 dorms.","imagem":"","link":"https://www.econconstrutora.com.br/imoveis"},
+  {"nome":"Grid Interlagos","status":"Em Construção","bairro":"Interlagos","regiao":"Zona Sul","dormitorios":"2 dorms.","imagem":"","link":"https://www.econconstrutora.com.br/imoveis"},
+  {"nome":"Vision Campestre","status":"Em Construção","bairro":"Campestre","regiao":"Santo André","dormitorios":"2 e 3 dorms.","imagem":"","link":"https://www.econconstrutora.com.br/imoveis"}
+  // Os demais registros da lista podem ser acrescentados neste mesmo array.
+];
 
-  <a class="floating-whatsapp" href="https://wa.me/5511945167897?text=Ol%C3%A1%21%20Vim%20pelo%20site%20Buenos%20SP." target="_blank" rel="noopener noreferrer" aria-label="Fale conosco pelo WhatsApp">WhatsApp ↗</a>
+const grid = document.getElementById("grid");
+const search = document.getElementById("search");
+const status = document.getElementById("status");
+const counter = document.getElementById("counter");
+const catalogoOficial = "https://www.econconstrutora.com.br/imoveis";
 
-  <!-- CATALOGO_DATA_INICIO -->
-  <script>
-    /*
-      A automação Python deve substituir este array pelos dados extraídos
-      do catálogo da Econ, mantendo os marcadores acima e abaixo.
-      Cada item pode conter:
-      nome, status, imagem, link, bairro, regiao, dormitorios.
-    */
-    window.EMPREENDIMENTOS = [];
-  </script>
-  <!-- CATALOGO_DATA_FIM -->
+document.getElementById("year").textContent = new Date().getFullYear();
 
-  <script>
-    "use strict";
+function safeLink(url) {
+  try {
+    const u = new URL(url || catalogoOficial, location.href);
+    return ["http:", "https:"].includes(u.protocol) ? u.href : catalogoOficial;
+  } catch {
+    return catalogoOficial;
+  }
+}
 
-    const CATALOGO_URL = "https://www.econconstrutora.com.br/imoveis";
-    const WHATSAPP = "5511945167897";
+function render() {
+  const q = search.value.trim().toLocaleLowerCase("pt-BR");
+  const selectedStatus = status.value;
 
-    const grid = document.getElementById("projectsGrid");
-    const searchInput = document.getElementById("searchInput");
-    const statusFilter = document.getElementById("statusFilter");
-    const counter = document.getElementById("counter");
+  const items = EMPREENDIMENTOS.filter(p =>
+    (!selectedStatus || p.status === selectedStatus) &&
+    [p.nome, p.bairro, p.regiao, p.status]
+      .join(" ")
+      .toLocaleLowerCase("pt-BR")
+      .includes(q)
+  );
 
-    let projects = [];
+  grid.replaceChildren();
+  counter.textContent = items.length +
+    (items.length === 1 ? " empreendimento encontrado" : " empreendimentos encontrados");
 
-    document.getElementById("year").textContent = new Date().getFullYear();
+  if (!items.length) {
+    const empty = document.createElement("div");
+    empty.className = "empty";
+    empty.textContent = "Nenhum empreendimento encontrado. Tente outra busca ou estágio.";
+    grid.appendChild(empty);
+    return;
+  }
 
-    const menuToggle = document.getElementById("menuToggle");
-    const mainNav = document.getElementById("mainNav");
+  for (const p of items) {
+    const card = document.createElement("article");
+    card.className = "card";
 
-    menuToggle.addEventListener("click", () => {
-      const isOpen = mainNav.classList.toggle("open");
-      menuToggle.setAttribute("aria-expanded", String(isOpen));
-      menuToggle.setAttribute("aria-label", isOpen ? "Fechar menu" : "Abrir menu");
-      menuToggle.textContent = isOpen ? "×" : "☰";
-    });
+    const photo = document.createElement("div");
+    photo.className = "photo";
 
-    function normalizeStatus(status) {
-      const value = String(status || "").trim().toLocaleLowerCase("pt-BR");
+    if (p.imagem) {
+      const img = document.createElement("img");
+      img.src = safeLink(p.imagem);
+      img.alt = "Imagem do empreendimento " + p.nome;
+      img.loading = "lazy";
 
-      const known = [
-        ["breve lançamento", "Breve Lançamento"],
-        ["futuro lançamento", "Futuro Lançamento"],
-        ["em construção", "Em Construção"],
-        ["pronto para morar", "Pronto para Morar"],
-        ["lançamento", "Lançamento"]
-      ];
-
-      for (const [needle, label] of known) {
-        if (value.includes(needle)) return label;
-      }
-
-      return status || "Consultar catálogo";
-    }
-
-    function safeUrl(url, fallback = CATALOGO_URL) {
-      try {
-        if (!url) return fallback;
-
-        const parsed = new URL(url, CATALOGO_URL);
-
-        if (parsed.protocol === "http:" || parsed.protocol === "https:") {
-          return parsed.href;
-        }
-
-        return fallback;
-      } catch (_) {
-        return fallback;
-      }
-    }
-
-    function normalizeProject(item) {
-      const name = String(item.nome || item.name || "").trim();
-
-      if (!name) return null;
-
-      return {
-        nome: name,
-        status: normalizeStatus(item.status),
-        imagem: safeUrl(
-          item.imagem || item.image || item.img || item.foto || "",
-          ""
-        ),
-        link: safeUrl(item.link || item.fonte || CATALOGO_URL),
-        bairro: String(item.bairro || item.localizacao || "").trim(),
-        regiao: String(item.regiao || "").trim(),
-        dormitorios: String(item.dormitorios || item.quartos || "").trim()
+      img.onerror = () => {
+        photo.replaceChildren();
+        const fallback = document.createElement("div");
+        fallback.className = "placeholder";
+        fallback.innerHTML = '<span class="building">⌂</span><strong></strong><small>Imagem indisponível</small>';
+        fallback.querySelector("strong").textContent = p.nome;
+        photo.appendChild(fallback);
       };
-    }
 
-    function createCard(item) {
-      const card = document.createElement("article");
-      card.className = "card";
-
-      const photo = document.createElement("div");
-      photo.className = "photo";
-
-      const status = document.createElement("span");
-      status.className = "status";
-      status.textContent = item.status;
-      photo.appendChild(status);
-
+      photo.appendChild(img);
+    } else {
       const fallback = document.createElement("div");
-      fallback.className = "photo-fallback";
-      fallback.hidden = true;
-
-      const building = document.createElement("div");
-      building.className = "building";
-      building.setAttribute("aria-hidden", "true");
-      building.textContent = "⌂";
-
-      const fallbackTitle = document.createElement("strong");
-      fallbackTitle.textContent = item.nome;
-
-      const fallbackNote = document.createElement("small");
-      fallbackNote.textContent = "Consulte as imagens no catálogo oficial";
-
-      fallback.append(building, fallbackTitle, fallbackNote);
-
-      if (item.imagem) {
-        const img = document.createElement("img");
-        img.src = item.imagem;
-        img.alt = "Imagem do empreendimento " + item.nome;
-        img.loading = "lazy";
-        img.referrerPolicy = "no-referrer";
-
-        img.addEventListener("load", () => {
-          fallback.hidden = true;
-        });
-
-        img.addEventListener("error", () => {
-          img.hidden = true;
-          fallback.hidden = false;
-        });
-
-        photo.appendChild(img);
-      } else {
-        fallback.hidden = false;
-      }
-
+      fallback.className = "placeholder";
+      fallback.innerHTML = '<span class="building">⌂</span><strong></strong><small>Imagem ainda não cadastrada</small>';
+      fallback.querySelector("strong").textContent = p.nome;
       photo.appendChild(fallback);
-
-      const content = document.createElement("div");
-      content.className = "card-content";
-
-      const title = document.createElement("h3");
-      title.textContent = item.nome;
-
-      const location = document.createElement("p");
-      location.className = "location";
-      location.textContent =
-        [item.regiao, item.bairro].filter(Boolean).join(" • ") ||
-        "Consulte a localização no catálogo oficial";
-
-      const details = document.createElement("div");
-      details.className = "details";
-
-      [item.dormitorios, item.status].filter(Boolean).forEach(value => {
-        const chip = document.createElement("span");
-        chip.className = "detail";
-        chip.textContent = value;
-        details.appendChild(chip);
-      });
-
-      const actions = document.createElement("div");
-      actions.className = "card-actions";
-
-      const message = encodeURIComponent(
-        "Olá! Tenho interesse no empreendimento " +
-        item.nome +
-        ". Pode me passar mais informações?"
-      );
-
-      const whatsapp = document.createElement("a");
-      whatsapp.className = "button whatsapp-button";
-      whatsapp.href = "https://wa.me/" + WHATSAPP + "?text=" + message;
-      whatsapp.target = "_blank";
-      whatsapp.rel = "noopener noreferrer";
-      whatsapp.textContent = "Tenho interesse ↗";
-
-      const official = document.createElement("a");
-      official.className = "official-link";
-      official.href = safeUrl(item.link);
-      official.target = "_blank";
-      official.rel = "noopener noreferrer";
-      official.textContent = "Ver informações oficiais ↗";
-
-      actions.append(whatsapp, official);
-      content.append(title, location, details, actions);
-      card.append(photo, content);
-
-      return card;
     }
 
-    function renderProjects() {
-      const term = searchInput.value
-        .trim()
-        .toLocaleLowerCase("pt-BR");
+    const tag = document.createElement("span");
+    tag.className = "tag";
+    tag.textContent = p.status || "Consulte";
+    photo.appendChild(tag);
 
-      const selectedStatus = statusFilter.value;
+    const body = document.createElement("div");
+    body.className = "card-body";
 
-      const filtered = projects.filter(item => {
-        const searchable = [
-          item.nome,
-          item.regiao,
-          item.bairro,
-          item.status
-        ].join(" ").toLocaleLowerCase("pt-BR");
+    const title = document.createElement("h3");
+    title.textContent = p.nome;
 
-        return searchable.includes(term) &&
-          (!selectedStatus || item.status === selectedStatus);
-      });
+    const location = document.createElement("p");
+    location.className = "location";
+    location.textContent = [p.bairro, p.regiao].filter(Boolean).join(" · ");
 
-      grid.replaceChildren();
+    const details = document.createElement("p");
+    details.className = "details";
+    details.textContent = p.dormitorios || "Consulte opções disponíveis";
 
-      if (!filtered.length) {
-        const empty = document.createElement("div");
-        empty.className = "empty";
+    const actions = document.createElement("div");
+    actions.className = "card-actions";
 
-        empty.textContent = projects.length
-          ? "Nenhum empreendimento encontrado. Tente outra busca ou estágio."
-          : "Nenhum empreendimento foi carregado. Consulte o catálogo oficial ou atualize os dados da automação.";
+    const official = document.createElement("a");
+    official.className = "secondary";
+    official.href = safeLink(p.link);
+    official.target = "_blank";
+    official.rel = "noopener noreferrer";
+    official.textContent = "Ver na Econ ↗";
 
-        grid.appendChild(empty);
-      } else {
-        filtered.forEach(item => {
-          grid.appendChild(createCard(item));
-        });
-      }
+    const wa = document.createElement("a");
+    wa.className = "btn";
+    wa.href = "https://wa.me/5511945167897?text=" +
+      encodeURIComponent("Olá! Quero saber mais sobre o empreendimento " + p.nome + ".");
+    wa.target = "_blank";
+    wa.rel = "noopener noreferrer";
+    wa.textContent = "Tenho interesse ↗";
 
-      counter.textContent =
-        filtered.length +
-        (filtered.length === 1
-          ? " empreendimento encontrado"
-          : " empreendimentos encontrados");
-    }
+    actions.append(official, wa);
+    body.append(title, location, details, actions);
+    card.append(photo, body);
+    grid.appendChild(card);
+  }
+}
 
-    async function loadProjects() {
-      let list = Array.isArray(window.EMPREENDIMENTOS)
-        ? window.EMPREENDIMENTOS
-        : [];
+search.addEventListener("input", render);
+status.addEventListener("change", render);
+render();
+</script>
 
-      /*
-        Se o Python não tiver preenchido o array dentro do HTML,
-        tenta carregar o arquivo empreendimentos.json.
-        Esse JSON precisa estar na mesma pasta do HTML publicado.
-      */
-      if (!list.length) {
-        try {
-          const response = await fetch("./empreendimentos.json", {
-            cache: "no-store"
-          });
-
-          if (response.ok) {
-            const data = await response.json();
-
-            if (Array.isArray(data)) {
-              list = data;
-            } else if (Array.isArray(data.empreendimentos)) {
-              list = data.empreendimentos;
-            }
-          }
-        } catch (error) {
-          console.warn("Não foi possível carregar empreendimentos.json:", error);
-        }
-      }
-
-      projects = list.map(normalizeProject).filter(Boolean);
-
-      if (!projects.length) {
-        grid.replaceChildren();
-
-        const message = document.createElement("div");
-        message.className = "error";
-        message.textContent =
-          "O catálogo está aguardando os dados da automação. " +
-          "Execute o script Python e publique o HTML atualizado " +
-          "junto com empreendimentos.json, se esse arquivo for gerado.";
-
-        grid.appendChild(message);
-        counter.textContent = "Catálogo aguardando atualização.";
-        return;
-      }
-
-      renderProjects();
-    }
-
-    searchInput.addEventListener("input", renderProjects);
-    statusFilter.addEventListener("change", renderProjects);
-
-    loadProjects();
-  </script>
 </body>
+</html>
+
 </html>
 
