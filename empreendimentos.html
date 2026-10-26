@@ -4,1208 +4,711 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#103c2c">
-  <meta name="description" content="Conheça os empreendimentos da Econ em São Paulo e região. Consulte opções e fale com a Empreendimentos Buenos SP pelo WhatsApp.">
-  <title>Empreendimentos | Buenos SP</title>
+  <meta name="theme-color" content="#102b46">
+  <meta name="description" content="Confira empreendimentos Econ, lançamentos, apartamentos em construção e imóveis prontos para morar.">
+  <title>Empreendimentos | Bueno's SP</title>
 
   <style>
     :root {
-      --green: #103c2c;
-      --green-dark: #09291f;
-      --lime: #c7f36b;
-      --lime-dark: #a8df48;
-      --white: #fff;
-      --background: #f7f9f6;
-      --text: #17251d;
-      --muted: #657168;
-      --border: #e1e8df;
-      --radius: 18px;
-      --shadow: 0 16px 45px rgba(16, 60, 44, .09);
+      --azul: #102b46;
+      --azul-claro: #204f76;
+      --dourado: #c9a45c;
+      --fundo: #f4f6f8;
+      --texto: #202a35;
+      --cinza: #697583;
+      --branco: #fff;
+      --borda: #e2e7ec;
     }
 
     * {
       box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-      scroll-padding-top: 95px;
+      margin: 0;
+      padding: 0;
     }
 
     body {
-      margin: 0;
-      font-family: "DM Sans", Arial, sans-serif;
-      color: var(--text);
-      background: var(--background);
-      line-height: 1.65;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--fundo);
+      color: var(--texto);
+      line-height: 1.5;
     }
 
     a {
       color: inherit;
-      text-decoration: none;
     }
 
-    button,
-    input,
-    select {
-      font: inherit;
+    .topo {
+      background: var(--azul);
+      color: white;
+      padding: 18px 5%;
     }
 
-    a:focus-visible,
-    button:focus-visible,
-    input:focus-visible,
-    select:focus-visible {
-      outline: 3px solid var(--lime-dark);
-      outline-offset: 3px;
-    }
-
-    .header {
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      min-height: 82px;
-      padding: 14px 6%;
+    .topo-conteudo {
+      max-width: 1280px;
+      margin: auto;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 24px;
-      background: rgba(255, 255, 255, .97);
-      border-bottom: 1px solid var(--border);
-      backdrop-filter: blur(12px);
+      flex-wrap: wrap;
     }
 
     .logo {
-      display: inline-flex;
-      align-items: center;
-      gap: 11px;
-      color: var(--green);
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      line-height: 1.5;
-    }
-
-    .logo-icon {
-      display: grid;
-      place-items: center;
-      width: 43px;
-      height: 43px;
-      flex-shrink: 0;
-      border-radius: 12px;
-      background: var(--green);
-      color: var(--lime);
-      font-size: 25px;
+      color: white;
+      text-decoration: none;
+      font-size: 23px;
       font-weight: 800;
+      letter-spacing: .5px;
     }
 
-    .logo span:last-child {
-      display: block;
+    .logo span {
+      color: var(--dourado);
     }
 
-    .logo small {
-      display: block;
-      color: var(--muted);
-      font-size: 10px;
-      letter-spacing: 2px;
-    }
-
-    .nav {
+    .menu {
       display: flex;
       align-items: center;
-      gap: 26px;
-      font-size: 14px;
-      font-weight: 600;
+      gap: 24px;
+      flex-wrap: wrap;
     }
 
-    .nav a:hover {
-      color: #4d7d22;
-    }
-
-    .nav .nav-cta {
-      padding: 10px 17px;
-      border-radius: 999px;
-      background: var(--green);
+    .menu a {
       color: white;
+      text-decoration: none;
+      font-size: 14px;
     }
 
-    .menu-toggle {
-      display: none;
-      width: 44px;
-      height: 44px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: white;
-      color: var(--green);
-      font-size: 24px;
-      cursor: pointer;
+    .menu a:hover {
+      color: var(--dourado);
     }
 
     .hero {
-      position: relative;
-      overflow: hidden;
-      padding: 84px 6% 78px;
-      background:
-        radial-gradient(circle at 85% 20%, rgba(199, 243, 107, .17), transparent 28%),
-        linear-gradient(125deg, var(--green-dark), var(--green));
+      background: linear-gradient(135deg, #102b46, #24577e);
       color: white;
+      padding: 65px 20px 58px;
+      text-align: center;
     }
 
-    .hero::after {
-      content: "";
-      position: absolute;
-      width: 420px;
-      height: 420px;
-      right: -160px;
-      bottom: -290px;
-      border: 1px solid rgba(199, 243, 107, .25);
-      border-radius: 50%;
-      box-shadow:
-        0 0 0 45px rgba(199, 243, 107, .04),
-        0 0 0 90px rgba(199, 243, 107, .03);
-      pointer-events: none;
-    }
-
-    .hero-content {
-      position: relative;
-      z-index: 1;
-      max-width: 850px;
-      margin: 0 auto;
-    }
-
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 9px;
-      margin: 0 0 17px;
-      color: var(--lime);
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
-
-    .eyebrow::before {
-      content: "";
+    .hero .etiqueta {
       display: inline-block;
-      width: 25px;
-      height: 2px;
-      background: var(--lime);
+      border: 1px solid #ffffff55;
+      border-radius: 30px;
+      padding: 6px 14px;
+      margin-bottom: 18px;
+      font-size: 12px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
     }
 
     .hero h1 {
-      max-width: 760px;
-      margin: 0;
-      font-size: clamp(36px, 5.4vw, 64px);
-      line-height: 1.08;
-      letter-spacing: -2px;
+      font-size: clamp(30px, 5vw, 48px);
+      line-height: 1.15;
+      margin-bottom: 16px;
     }
 
-    .hero h1 span {
-      color: var(--lime);
+    .hero p {
+      max-width: 690px;
+      margin: auto;
+      color: #e4edf5;
+      font-size: 16px;
     }
 
-    .hero-description {
-      max-width: 620px;
-      margin: 22px 0 0;
-      color: rgba(255, 255, 255, .8);
-      font-size: 17px;
+    .pagina {
+      max-width: 1280px;
+      margin: auto;
+      padding: 38px 22px 65px;
     }
 
-    .hero-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 13px;
-      margin-top: 30px;
-    }
-
-    .button {
-      display: inline-flex;
-      min-height: 46px;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 12px 19px;
-      border: 1px solid transparent;
-      border-radius: 999px;
-      font-size: 13px;
-      font-weight: 800;
-      text-align: center;
-      cursor: pointer;
-      transition: transform .2s, background .2s;
-    }
-
-    .button:hover {
-      transform: translateY(-2px);
-    }
-
-    .button-primary {
-      background: var(--lime);
-      color: var(--green-dark);
-    }
-
-    .button-primary:hover {
-      background: var(--lime-dark);
-    }
-
-    .button-outline {
-      border-color: rgba(255, 255, 255, .35);
-      color: white;
-    }
-
-    .button-outline:hover {
-      background: rgba(255, 255, 255, .08);
-    }
-
-    .section {
-      width: min(1200px, 88%);
-      margin: 0 auto;
-      padding: 65px 0;
-    }
-
-    .section-heading {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: 24px;
+    .introducao {
       margin-bottom: 28px;
     }
 
-    .section-kicker {
-      margin: 0 0 7px;
-      color: #5d842f;
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 1.8px;
-      text-transform: uppercase;
+    .introducao h2 {
+      font-size: 27px;
+      color: var(--azul);
+      margin-bottom: 7px;
     }
 
-    .section-heading h2 {
-      margin: 0;
-      color: var(--green);
-      font-size: clamp(28px, 3.5vw, 40px);
-      line-height: 1.15;
-      letter-spacing: -1px;
+    .introducao p {
+      color: var(--cinza);
+      font-size: 15px;
     }
 
-    .section-heading p {
-      max-width: 500px;
-      margin: 10px 0 0;
-      color: var(--muted);
+    .filtros {
+      background: white;
+      border: 1px solid var(--borda);
+      border-radius: 13px;
+      padding: 18px;
+      margin-bottom: 26px;
+      display: grid;
+      grid-template-columns: minmax(200px, 2fr) repeat(2, minmax(150px, 1fr));
+      gap: 12px;
+    }
+
+    .filtros input,
+    .filtros select {
+      width: 100%;
+      min-width: 0;
+      border: 1px solid #d7dee5;
+      border-radius: 8px;
+      padding: 13px 12px;
+      background: white;
+      color: var(--texto);
+      font-size: 14px;
+      outline: none;
+    }
+
+    .filtros input:focus,
+    .filtros select:focus {
+      border-color: var(--azul-claro);
+      box-shadow: 0 0 0 3px #204f7618;
+    }
+
+    .resumo {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      color: var(--cinza);
       font-size: 14px;
     }
 
-    .counter {
-      flex-shrink: 0;
-      padding: 9px 14px;
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      background: white;
-      color: var(--green);
-      font-size: 12px;
-      font-weight: 800;
+    .resumo strong {
+      color: var(--azul);
     }
 
-    .filters {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 230px;
-      gap: 13px;
-      margin-bottom: 27px;
-      padding: 16px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      background: white;
-      box-shadow: 0 7px 25px rgba(16, 60, 44, .035);
-    }
-
-    .input-wrap {
-      position: relative;
-    }
-
-    .input-wrap span {
-      position: absolute;
-      top: 50%;
-      left: 15px;
-      transform: translateY(-50%);
-      color: var(--muted);
-      font-size: 18px;
-      pointer-events: none;
-    }
-
-    .filters input,
-    .filters select {
-      width: 100%;
-      min-height: 48px;
-      padding: 11px 14px;
-      border: 1px solid var(--border);
-      border-radius: 11px;
-      background: #fbfcfa;
-      color: var(--text);
-      font-size: 13px;
-    }
-
-    .filters input {
-      padding-left: 43px;
-    }
-
-    .filters input:focus,
-    .filters select:focus {
-      border-color: #86b94b;
-      outline: 2px solid rgba(168, 223, 72, .25);
-    }
-
-    .projects-grid {
+    .catalogo {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 22px;
+      gap: 24px;
     }
 
     .card {
-      display: flex;
       min-width: 0;
-      flex-direction: column;
-      overflow: hidden;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
       background: white;
-      box-shadow: 0 8px 28px rgba(16, 60, 44, .045);
-      transition: transform .22s, box-shadow .22s;
+      border: 1px solid var(--borda);
+      border-radius: 13px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 5px 18px #102b460a;
+      transition: transform .2s ease, box-shadow .2s ease;
     }
 
     .card:hover {
       transform: translateY(-4px);
-      box-shadow: var(--shadow);
+      box-shadow: 0 12px 28px #102b4618;
     }
 
-    .photo {
+    .imagem {
+      height: 220px;
       position: relative;
-      display: grid;
-      min-height: 225px;
+      background: linear-gradient(135deg, #dce5ec, #b7c8d6);
       overflow: hidden;
-      place-items: center;
-      background: linear-gradient(145deg, #e8f0e1, #f7f9f5);
     }
 
-    .photo > img {
-      position: absolute;
-      inset: 0;
+    .imagem img {
       width: 100%;
       height: 100%;
+      display: block;
       object-fit: cover;
+    }
+
+    .imagem-sem-foto {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 9px;
+      color: var(--azul);
+      text-align: center;
+      padding: 15px;
+    }
+
+    .imagem-sem-foto .simbolo {
+      font-size: 42px;
+    }
+
+    .imagem-sem-foto span:last-child {
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
     }
 
     .status {
       position: absolute;
-      z-index: 2;
-      top: 14px;
-      left: 14px;
-      max-width: calc(100% - 28px);
-      padding: 7px 11px;
-      border-radius: 999px;
-      background: var(--lime);
-      color: var(--green-dark);
-      font-size: 10px;
-      font-weight: 800;
-      line-height: 1.3;
-    }
-
-    .photo-fallback {
-      display: flex;
-      width: 100%;
-      min-height: 225px;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 25px;
-      color: var(--green);
-      text-align: center;
-      background:
-        radial-gradient(circle at 50% 40%, rgba(199, 243, 107, .3), transparent 55%),
-        linear-gradient(145deg, #edf4e8, #f8faf6);
-    }
-
-    .photo-fallback[hidden] {
-      display: none;
-    }
-
-    .building {
-      display: grid;
-      width: 65px;
-      height: 65px;
-      place-items: center;
-      border-radius: 19px;
-      background: var(--green);
-      color: var(--lime);
-      font-size: 39px;
-      line-height: 1;
-    }
-
-    .photo-fallback strong {
-      max-width: 260px;
-      font-size: 17px;
-      line-height: 1.25;
-    }
-
-    .photo-fallback small {
-      color: var(--muted);
+      left: 12px;
+      top: 12px;
+      max-width: calc(100% - 24px);
+      background: white;
+      color: var(--azul);
+      border-radius: 5px;
+      padding: 6px 9px;
       font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      box-shadow: 0 2px 8px #00000012;
     }
 
-    .card-content {
-      display: flex;
+    .card-conteudo {
       flex: 1;
+      display: flex;
       flex-direction: column;
+      align-items: flex-start;
       padding: 20px;
     }
 
-    .card h3 {
-      margin: 0;
-      color: var(--green);
-      font-size: 20px;
-      line-height: 1.3;
-      letter-spacing: -.35px;
-      overflow-wrap: anywhere;
-    }
-
-    .location {
-      min-height: 43px;
-      margin: 10px 0 15px;
-      color: var(--muted);
+    .regiao {
+      color: #7a6339;
       font-size: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      margin-bottom: 7px;
     }
 
-    .details {
+    .card h3 {
+      color: var(--azul);
+      font-size: 21px;
+      line-height: 1.25;
+      margin-bottom: 12px;
+    }
+
+    .detalhes {
+      width: 100%;
       display: flex;
+      gap: 8px;
       flex-wrap: wrap;
-      gap: 7px;
       margin-bottom: 18px;
     }
 
-    .detail {
-      padding: 5px 9px;
-      border: 1px solid var(--border);
-      border-radius: 7px;
-      background: #f8faf7;
-      color: #46564a;
-      font-size: 10px;
-      font-weight: 700;
+    .detalhe {
+      display: inline-block;
+      background: #f0f3f6;
+      border-radius: 6px;
+      padding: 6px 9px;
+      color: #4b5967;
+      font-size: 12px;
     }
 
-    .card-actions {
-      display: grid;
-      gap: 9px;
+    .acoes {
+      width: 100%;
       margin-top: auto;
     }
 
-    .whatsapp-button {
+    .botao {
+      display: block;
       width: 100%;
-      background: var(--green);
+      text-align: center;
+      background: var(--azul);
       color: white;
-    }
-
-    .whatsapp-button:hover {
-      background: var(--green-dark);
-    }
-
-    .official-link {
-      display: block;
-      padding: 5px;
-      color: #4d702c;
-      font-size: 11px;
-      font-weight: 800;
-      text-align: center;
-    }
-
-    .official-link:hover {
-      text-decoration: underline;
-    }
-
-    .empty,
-    .error {
-      grid-column: 1 / -1;
-      padding: 38px 24px;
-      border: 1px dashed #cbd8c5;
-      border-radius: var(--radius);
-      background: white;
-      color: var(--muted);
-      text-align: center;
-    }
-
-    .error {
-      border-color: #e5c6a6;
-      background: #fffaf4;
-      color: #7d4a1e;
-    }
-
-    .info-band {
-      background: #edf3e8;
-    }
-
-    .info-content {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      align-items: center;
-      gap: 28px;
-    }
-
-    .info-content h2 {
-      margin: 0;
-      color: var(--green);
-      font-size: clamp(24px, 3vw, 34px);
-      line-height: 1.2;
-    }
-
-    .info-content p {
-      max-width: 660px;
-      margin: 10px 0 0;
-      color: var(--muted);
+      text-decoration: none;
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-weight: bold;
       font-size: 14px;
+      transition: background .2s ease;
     }
 
-    .info-content .button {
-      background: var(--green);
+    .botao:hover {
+      background: var(--azul-claro);
+    }
+
+    .sem-resultados {
+      grid-column: 1 / -1;
+      background: white;
+      border: 1px solid var(--borda);
+      border-radius: 12px;
+      padding: 35px 20px;
+      text-align: center;
+    }
+
+    .sem-resultados h3 {
+      color: var(--azul);
+      margin-bottom: 8px;
+    }
+
+    .sem-resultados p {
+      color: var(--cinza);
+    }
+
+    .rodape {
+      background: #0b2035;
       color: white;
+      padding: 32px 20px;
+      text-align: center;
     }
 
-    .footer {
-      padding: 35px 6%;
-      background: var(--green-dark);
-      color: white;
+    .rodape strong {
+      color: var(--dourado);
     }
 
-    .footer-content {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 25px;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .footer strong {
-      display: block;
-      color: var(--lime);
+    .rodape p {
       font-size: 13px;
-      letter-spacing: 1px;
-    }
-
-    .footer p {
-      margin: 5px 0 0;
-      color: rgba(255, 255, 255, .65);
-      font-size: 11px;
-    }
-
-    .footer-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 18px;
-      font-size: 12px;
-      font-weight: 700;
-    }
-
-    .footer-links a:hover {
-      color: var(--lime);
+      color: #d1dbe4;
+      margin-top: 7px;
     }
 
     @media (max-width: 950px) {
-      .projects-grid {
+      .catalogo {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
-      .nav {
-        gap: 15px;
+      .filtros {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .filtros input {
+        grid-column: 1 / -1;
       }
     }
 
-    @media (max-width: 700px) {
-      .header {
-        min-height: 72px;
-        padding: 12px 5%;
+    @media (max-width: 600px) {
+      .topo-conteudo {
+        justify-content: center;
       }
 
-      .menu-toggle {
-        display: block;
-      }
-
-      .nav {
-        position: absolute;
-        top: calc(100% + 1px);
-        left: 0;
-        right: 0;
-        display: none;
-        align-items: stretch;
-        flex-direction: column;
-        gap: 0;
-        padding: 10px 5% 18px;
-        border-bottom: 1px solid var(--border);
-        background: white;
-      }
-
-      .nav.open {
-        display: flex;
-      }
-
-      .nav a {
-        padding: 12px 8px;
-      }
-
-      .nav .nav-cta {
-        margin-top: 5px;
-        text-align: center;
-      }
-
-      .hero {
-        padding: 62px 6% 58px;
-      }
-
-      .hero h1 {
-        letter-spacing: -1.2px;
-      }
-
-      .hero-description {
-        font-size: 15px;
-      }
-
-      .section {
-        width: 90%;
-        padding: 48px 0;
-      }
-
-      .section-heading {
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 13px;
-      }
-
-      .filters {
-        grid-template-columns: 1fr;
-        padding: 12px;
-      }
-
-      .projects-grid {
-        grid-template-columns: 1fr;
+      .menu {
+        justify-content: center;
         gap: 17px;
       }
 
-      .photo,
-      .photo-fallback {
-        min-height: 235px;
+      .hero {
+        padding: 45px 20px;
       }
 
-      .info-content {
+      .pagina {
+        padding: 28px 14px 45px;
+      }
+
+      .catalogo {
         grid-template-columns: 1fr;
+        gap: 18px;
       }
 
-      .info-content .button {
-        justify-self: start;
+      .filtros {
+        grid-template-columns: 1fr;
+        padding: 13px;
       }
 
-      .footer-content {
-        align-items: flex-start;
-        flex-direction: column;
+      .filtros input {
+        grid-column: auto;
       }
-    }
 
-    @media (prefers-reduced-motion: reduce) {
-      *,
-      *::before,
-      *::after {
-        scroll-behavior: auto !important;
-        transition-duration: .01ms !important;
+      .imagem {
+        height: 215px;
+      }
+
+      .introducao h2 {
+        font-size: 24px;
       }
     }
   </style>
 </head>
 
 <body>
-  <header class="header">
-    <a class="logo" href="index.html" aria-label="Buenos SP - página inicial">
-      <span class="logo-icon" aria-hidden="true">B</span>
-      <span>
-        EMPREENDIMENTOS
-        <small>BUENOS SP</small>
-      </span>
-    </a>
-
-    <button
-      class="menu-toggle"
-      id="menuToggle"
-      type="button"
-      aria-label="Abrir menu"
-      aria-expanded="false"
-      aria-controls="mainNav"
-    >☰</button>
-
-    <nav class="nav" id="mainNav" aria-label="Navegação principal">
-      <a href="index.html">Início</a>
-      <a href="#catalogo">Empreendimentos</a>
-      <a href="#sobre">Sobre</a>
-      <a
-        class="nav-cta"
-        href="https://wa.me/5511945167897"
-        target="_blank"
-        rel="noopener noreferrer"
-      >Fale comigo ↗</a>
-    </nav>
+  <header class="topo">
+    <div class="topo-conteudo">
+      <a class="logo" href="index.html">BUENO'S <span>SP</span></a>
+      <nav class="menu" aria-label="Menu principal">
+        <a href="index.html">Início</a>
+        <a href="empreendimentos.html">Empreendimentos</a>
+        <a href="https://www.econconstrutora.com.br/imoveis" target="_blank" rel="noopener noreferrer">Site Econ</a>
+      </nav>
+    </div>
   </header>
 
-  <main>
-    <section class="hero">
-      <div class="hero-content">
-        <p class="eyebrow">Encontre seu próximo endereço</p>
-        <h1>Seu próximo capítulo começa com o <span>imóvel certo.</span></h1>
-        <p class="hero-description">
-          Explore os empreendimentos da Econ em São Paulo e região.
-          Encontre opções para diferentes momentos da vida e fale comigo
-          para receber atendimento personalizado.
-        </p>
-        <div class="hero-actions">
-          <a class="button button-primary" href="#catalogo">
-            Explorar empreendimentos ↓
-          </a>
-          <a
-            class="button button-outline"
-            href="https://wa.me/5511945167897"
-            target="_blank"
-            rel="noopener noreferrer"
-          >Atendimento pelo WhatsApp ↗</a>
-        </div>
-      </div>
+  <section class="hero">
+    <span class="etiqueta">Encontre seu próximo imóvel</span>
+    <h1>Empreendimentos</h1>
+    <p>Conheça os lançamentos, imóveis em construção e opções prontas para morar da Econ Construtora.</p>
+  </section>
+
+  <main class="pagina">
+    <section class="introducao">
+      <h2>Encontre seu apartamento</h2>
+      <p>Pesquise pelo nome do empreendimento, região, bairro ou situação da obra.</p>
     </section>
 
-    <section class="section" id="catalogo">
-      <div class="section-heading">
-        <div>
-          <p class="section-kicker">Catálogo de imóveis</p>
-          <h2>Encontre o seu lugar.</h2>
-          <p>
-            Pesquise pelo nome do empreendimento ou filtre por estágio
-            para encontrar as opções que combinam com você.
-          </p>
-        </div>
-        <div class="counter" id="counter" aria-live="polite">
-          Preparando catálogo...
-        </div>
-      </div>
+    <section class="filtros" aria-label="Filtros de empreendimentos">
+      <input
+        type="search"
+        id="busca"
+        placeholder="Buscar empreendimento ou bairro..."
+        aria-label="Buscar por nome ou bairro"
+      >
 
-      <div class="filters" role="search">
-        <label class="input-wrap">
-          <span aria-hidden="true">⌕</span>
-          <input
-            id="searchInput"
-            type="search"
-            placeholder="Buscar empreendimento ou região..."
-            aria-label="Buscar por empreendimento ou região"
-            autocomplete="off"
-          >
-        </label>
+      <select id="filtroRegiao" aria-label="Filtrar por região">
+        <option value="">Todas as regiões</option>
+      </select>
 
-        <label>
-          <select id="statusFilter" aria-label="Filtrar por estágio">
-            <option value="">Todos os estágios</option>
-            <option value="Futuro Lançamento">Futuro lançamento</option>
-            <option value="Breve Lançamento">Breve lançamento</option>
-            <option value="Lançamento">Lançamento</option>
-            <option value="Em Construção">Em construção</option>
-            <option value="Pronto para Morar">Pronto para morar</option>
-            <option value="Consultar catálogo">Consultar catálogo</option>
-          </select>
-        </label>
-      </div>
-
-      <div class="projects-grid" id="projectsGrid" aria-live="polite">
-        <div class="empty">
-          Carregando os empreendimentos...
-        </div>
-      </div>
+      <select id="filtroStatus" aria-label="Filtrar por situação">
+        <option value="">Todas as situações</option>
+      </select>
     </section>
 
-    <section class="info-band" id="sobre">
-      <div class="section info-content">
-        <div>
-          <h2>Vamos encontrar o imóvel ideal para você?</h2>
-          <p>
-            Posso ajudar você a conhecer as opções, esclarecer dúvidas
-            e entender quais empreendimentos fazem sentido para seus planos.
-            Entre em contato para receber atendimento.
-          </p>
-        </div>
-        <a
-          class="button"
-          href="https://wa.me/5511945167897"
-          target="_blank"
-          rel="noopener noreferrer"
-        >Conversar pelo WhatsApp ↗</a>
-      </div>
-    </section>
+    <div class="resumo">
+      <span id="contador">Carregando empreendimentos...</span>
+      <span>Catálogo de imóveis</span>
+    </div>
+
+    <section id="catalogo" class="catalogo" aria-live="polite"></section>
   </main>
 
-  <footer class="footer">
-    <div class="footer-content">
-      <div>
-        <strong>EMPREENDIMENTOS BUENOS SP</strong>
-        <p>Atendimento imobiliário com atenção aos seus planos.</p>
-        <p>© <span id="year"></span> Empreendimentos Buenos SP.</p>
-      </div>
-
-      <div class="footer-links">
-        <a href="index.html">Início</a>
-        <a href="#catalogo">Empreendimentos</a>
-        <a
-          href="https://www.econconstrutora.com.br/imoveis"
-          target="_blank"
-          rel="noopener noreferrer"
-        >Catálogo oficial da Econ ↗</a>
-      </div>
-    </div>
+  <footer class="rodape">
+    <strong>BUENO'S SP</strong>
+    <p>Consulte as condições, disponibilidade e detalhes de cada imóvel.</p>
+    <p>Informações sujeitas a alterações pela construtora.</p>
   </footer>
 
   <!-- CATALOGO_DATA_INICIO -->
   <script>
-    window.EMPREENDIMENTOS = [];
+    window.EMPREENDIMENTOS = [
+      {nome:"Pulse Butantã",regiao:"Zona Oeste",bairro:"Vila Lageado",dormitorios:"2 dorms.",status:"Futuro Lançamento"},
+      {nome:"Volt Santana",regiao:"Zona Norte",bairro:"Santana",dormitorios:"2 dorms.",status:"Breve Lançamento"},
+      {nome:"Best Barra Funda",regiao:"Zona Oeste",bairro:"Barra Funda",dormitorios:"2 dorms.",status:"Breve Lançamento"},
+      {nome:"Tech Zona Sul",regiao:"Zona Sul",bairro:"Pedreira",dormitorios:"2 dorms.",status:"Breve Lançamento"},
+      {nome:"Beat Jardim Botânico",regiao:"Zona Sul",bairro:"Sacomã",dormitorios:"2 dorms.",status:"Lançamento"},
+      {nome:"Ikon Limão",regiao:"Zona Norte",bairro:"Limão",dormitorios:"2 dorms.",status:"Futuro Lançamento"},
+      {nome:"Free - Liberdade",regiao:"Centro",bairro:"Liberdade",dormitorios:"2 dorms.",status:"Lançamento"},
+      {nome:"New Vila Ema",regiao:"Zona Leste",bairro:"Vila Ema",dormitorios:"2 dorms.",status:"Em Construção"},
+      {nome:"Vero Encanto",regiao:"Zona Leste",bairro:"Parada XV de Novembro",dormitorios:"1 e 2 dorms.",status:"Pronto para Morar"},
+      {nome:"Vero Harmonia",regiao:"Zona Leste",bairro:"Parada XV de Novembro",dormitorios:"2 dorms.",status:"Pronto para Morar"},
+      {nome:"Like - Casa Verde",regiao:"Zona Norte",bairro:"Casa Verde",dormitorios:"2 e 3 dorms.",status:"Pronto para Morar"},
+      {nome:"Epic Jaguaré",regiao:"Zona Oeste",bairro:"Jaguaré",dormitorios:"2 e 3 dorms.",status:"Em Construção"},
+      {nome:"Grid Interlagos",regiao:"Zona Sul",bairro:"Interlagos",dormitorios:"2 dorms.",status:"Em Construção"},
+      {nome:"Vision Campestre",regiao:"Santo André",bairro:"Campestre",dormitorios:"2 e 3 dorms.",status:"Em Construção"},
+      {nome:"Inov Zona Sul",regiao:"Zona Sul",bairro:"Vila Emir",dormitorios:"2 dorms.",status:"Em Construção"},
+      {nome:"Soul Pari",regiao:"Zona Norte",bairro:"Canindé",dormitorios:"2 dorms.",status:"Em Construção"},
+      {nome:"Gran Spot",regiao:"Zona Leste",bairro:"Vila Carrão",dormitorios:"2 dorms.",status:"Em Construção"},
+      {nome:"Gran Sky",regiao:"Zona Leste",bairro:"Vila Carrão",dormitorios:"2 e 3 dorms.",status:"Em Construção"},
+      {nome:"Fast Interlagos",regiao:"Zona Sul",bairro:"Interlagos",dormitorios:"2 dorms.",status:"Em Construção"},
+      {nome:"Peak Vila Olímpia",regiao:"Zona Sul",bairro:"Vila Olímpia",dormitorios:"2 dorms.",status:"Em Construção"},
+      {nome:"Go Lapa",regiao:"Zona Oeste",bairro:"Lapa",dormitorios:"2 e 3 dorms.",status:"Em Construção"},
+      {nome:"Link Sapopemba",regiao:"Zona Leste",bairro:"Vila Tolstoi",dormitorios:"2 dorms.",status:"Em Construção"},
+      {nome:"Manacá",regiao:"Zona Sul",bairro:"Vila Moraes",dormitorios:"2 dorms.",status:"Em Construção"},
+      {nome:"Rangel Brás",regiao:"Centro",bairro:"Brás",dormitorios:"1 e 2 dorms.",status:"Em Construção"},
+      {nome:"Park Guarulhos",regiao:"Guarulhos",bairro:"Vila Augusta",dormitorios:"2 dorms.",status:"Em Construção"},
+      {nome:"Verdí Tiquatira",regiao:"Zona Leste",bairro:"Penha",dormitorios:"2 dorms.",status:"Lançamento"},
+      {nome:"Bio Parque Nabuco",regiao:"Zona Sul",bairro:"Jardim Jabaquara",dormitorios:"2 dorms.",status:"Lançamento"},
+      {nome:"Class Prime",regiao:"Zona Leste",bairro:"Vila Prudente",dormitorios:"2 e 3 dorms.",status:"Lançamento"},
+      {nome:"Class Select",regiao:"Zona Leste",bairro:"Vila Prudente",dormitorios:"2 dorms.",status:"Lançamento"},
+      {nome:"Buono Bom Retiro",regiao:"Centro",bairro:"Bom Retiro",dormitorios:"2 dorms.",status:"Destaque"},
+      {nome:"Vibe Aricanduva",regiao:"Zona Leste",bairro:"Jardim Aricanduva",dormitorios:"2 dorms.",status:"Destaque"},
+      {nome:"Green Park Embira",regiao:"Zona Norte",bairro:"Freguesia do Ó",dormitorios:"2 dorms.",status:"Destaque"},
+      {nome:"Tag - Nações Unidas",regiao:"Zona Sul",bairro:"Vila Gea",dormitorios:"2 dorms.",status:"Pronto para Morar"},
+      {nome:"Line - São Miguel",regiao:"Zona Leste",bairro:"São Miguel Paulista",dormitorios:"2 dorms.",status:"Pronto para Morar"},
+      {nome:"Pedro Mendes",regiao:"Zona Leste",bairro:"Patriarca",dormitorios:"2 dorms.",status:"Futuro Lançamento"},
+      {nome:"Imperador 25",regiao:"Zona Sul",bairro:"Alto do Jardim",dormitorios:"2 dorms.",status:"Futuro Lançamento"},
+      {nome:"Giovanni Gronchi",regiao:"Zona Sul",bairro:"Morumbi",dormitorios:"2 dorms.",status:"Futuro Lançamento"}
+    ].map(imovel => ({
+      ...imovel,
+      descricao: `${imovel.status} • ${imovel.dormitorios}`,
+      url: "https://www.econconstrutora.com.br/imoveis"
+    }));
   </script>
   <!-- CATALOGO_DATA_FIM -->
 
   <script>
-    "use strict";
+    const catalogo = document.getElementById("catalogo");
+    const busca = document.getElementById("busca");
+    const filtroRegiao = document.getElementById("filtroRegiao");
+    const filtroStatus = document.getElementById("filtroStatus");
+    const contador = document.getElementById("contador");
 
-    const CATALOGO_URL =
-      "https://www.econconstrutora.com.br/imoveis";
+    const lista = Array.isArray(window.EMPREENDIMENTOS)
+      ? window.EMPREENDIMENTOS
+      : [];
 
-    const WHATSAPP = "5511945167897";
-
-    const grid = document.getElementById("projectsGrid");
-    const searchInput = document.getElementById("searchInput");
-    const statusFilter = document.getElementById("statusFilter");
-    const counter = document.getElementById("counter");
-
-    let projects = [];
-
-    document.getElementById("year").textContent =
-      new Date().getFullYear();
-
-    // Menu responsivo para celulares.
-    const menuToggle = document.getElementById("menuToggle");
-    const mainNav = document.getElementById("mainNav");
-
-    menuToggle.addEventListener("click", () => {
-      const isOpen = mainNav.classList.toggle("open");
-
-      menuToggle.setAttribute(
-        "aria-expanded",
-        String(isOpen)
-      );
-
-      menuToggle.setAttribute(
-        "aria-label",
-        isOpen ? "Fechar menu" : "Abrir menu"
-      );
-
-      menuToggle.textContent = isOpen ? "×" : "☰";
-    });
-
-    // Normaliza os estágios recebidos pelo Python.
-    function normalizeStatus(status) {
-      const value = String(status || "")
-        .trim()
-        .toLocaleLowerCase("pt-BR");
-
-      const known = [
-        ["breve lançamento", "Breve Lançamento"],
-        ["futuro lançamento", "Futuro Lançamento"],
-        ["em construção", "Em Construção"],
-        ["pronto para morar", "Pronto para Morar"],
-        ["lançamento", "Lançamento"]
-      ];
-
-      for (const [needle, label] of known) {
-        if (value.includes(needle)) {
-          return label;
-        }
-      }
-
-      return status || "Consultar catálogo";
+    function normalizar(texto) {
+      return String(texto || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLocaleLowerCase("pt-BR")
+        .trim();
     }
 
-    // Aceita somente endereços HTTP/HTTPS.
-    function safeUrl(url, fallback) {
-      try {
-        const parsed = new URL(
-          url || fallback || CATALOGO_URL,
-          window.location.href
-        );
-
-        if (
-          parsed.protocol === "http:" ||
-          parsed.protocol === "https:"
-        ) {
-          return parsed.href;
-        }
-
-        return fallback || CATALOGO_URL;
-      } catch (_) {
-        return fallback || CATALOGO_URL;
-      }
+    function escapar(texto) {
+      return String(texto ?? "").replace(/[&<>"']/g, caractere => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      })[caractere]);
     }
 
-    // Converte os campos do Python para um formato consistente.
-    function normalizeProject(item) {
-      const name = String(
-        item.nome || item.name || ""
-      ).trim();
+    function preencherFiltros() {
+      const regioes = [...new Set(
+        lista.map(item => item.regiao).filter(Boolean)
+      )].sort((a, b) => a.localeCompare(b, "pt-BR"));
 
-      if (!name) {
-        return null;
-      }
+      const status = [...new Set(
+        lista.map(item => item.status).filter(Boolean)
+      )].sort((a, b) => a.localeCompare(b, "pt-BR"));
 
-      const rawLocation = String(
-        item.localizacao || item.bairro || ""
-      ).trim();
+      regioes.forEach(regiao => {
+        const opcao = document.createElement("option");
+        opcao.value = regiao;
+        opcao.textContent = regiao;
+        filtroRegiao.appendChild(opcao);
+      });
 
-      let regiao = String(item.regiao || "").trim();
-      let bairro = rawLocation;
-
-      // Se vier "Zona Sul | Sacomã", separa as partes.
-      if (rawLocation.includes("|")) {
-        const parts = rawLocation
-          .split("|")
-          .map(part => part.trim());
-
-        regiao = regiao || parts[0] || "";
-        bairro = parts.slice(1).join(" | ");
-      }
-
-      return {
-        nome: name,
-        status: normalizeStatus(item.status),
-        imagem: safeUrl(item.imagem || item.image || "", ""),
-        link: safeUrl(
-          item.link || item.fonte || CATALOGO_URL,
-          CATALOGO_URL
-        ),
-        bairro: bairro,
-        regiao: regiao,
-        dormitorios: String(item.dormitorios || "").trim()
-      };
+      status.forEach(situacao => {
+        const opcao = document.createElement("option");
+        opcao.value = situacao;
+        opcao.textContent = situacao;
+        filtroStatus.appendChild(opcao);
+      });
     }
 
-    // Cria os cartões usando elementos DOM, sem inserir HTML dos dados.
-    function createCard(item) {
+    function criarCard(imovel) {
+      const nome = imovel.nome || imovel.titulo || "Empreendimento";
+      const regiao = imovel.regiao || "";
+      const bairro = imovel.bairro || "";
+      const dormitorios = imovel.dormitorios || "";
+      const situacao = imovel.status || "Consulte a disponibilidade";
+      const link = imovel.url || imovel.link ||
+        "https://www.econconstrutora.com.br/imoveis";
+      const imagem = imovel.imagem || imovel.img || "";
+
       const card = document.createElement("article");
       card.className = "card";
 
-      const photo = document.createElement("div");
-      photo.className = "photo";
+      const areaImagem = document.createElement("div");
+      areaImagem.className = "imagem";
 
-      const status = document.createElement("span");
-      status.className = "status";
-      status.textContent = item.status;
-      photo.appendChild(status);
-
-      const fallback = document.createElement("div");
-      fallback.className = "photo-fallback";
-
-      const building = document.createElement("div");
-      building.className = "building";
-      building.setAttribute("aria-hidden", "true");
-      building.textContent = "⌂";
-
-      const fallbackTitle = document.createElement("strong");
-      fallbackTitle.textContent = item.nome;
-
-      const fallbackNote = document.createElement("small");
-      fallbackNote.textContent =
-        "Consulte as imagens no catálogo oficial";
-
-      fallback.append(
-        building,
-        fallbackTitle,
-        fallbackNote
-      );
-
-      fallback.hidden = true;
-
-      if (item.imagem) {
+      if (imagem) {
         const img = document.createElement("img");
-        img.src = item.imagem;
-        img.alt =
-          "Imagem ilustrativa do empreendimento " + item.nome;
+        img.src = imagem;
+        img.alt = nome;
         img.loading = "lazy";
-        img.decoding = "async";
-
         img.onerror = () => {
-          img.hidden = true;
-          fallback.hidden = false;
+          areaImagem.innerHTML = `
+            <div class="imagem-sem-foto">
+              <span class="simbolo">⌂</span>
+              <strong>${escapar(nome)}</strong>
+              <span>Empreendimento Econ</span>
+            </div>`;
+          areaImagem.appendChild(selo);
         };
-
-        photo.appendChild(img);
+        areaImagem.appendChild(img);
       } else {
-        fallback.hidden = false;
+        areaImagem.innerHTML = `
+          <div class="imagem-sem-foto">
+            <span class="simbolo">⌂</span>
+            <strong>${escapar(nome)}</strong>
+            <span>Empreendimento Econ</span>
+          </div>`;
       }
 
-      photo.appendChild(fallback);
+      const selo = document.createElement("span");
+      selo.className = "status";
+      selo.textContent = situacao;
+      areaImagem.appendChild(selo);
 
-      const content = document.createElement("div");
-      content.className = "card-content";
+      const conteudo = document.createElement("div");
+      conteudo.className = "card-conteudo";
 
-      const title = document.createElement("h3");
-      title.textContent = item.nome;
+      const regiaoElemento = document.createElement("p");
+      regiaoElemento.className = "regiao";
+      regiaoElemento.textContent = regiao;
 
-      const location = document.createElement("p");
-      location.className = "location";
+      const titulo = document.createElement("h3");
+      titulo.textContent = nome;
 
-      location.textContent = [
-        item.regiao,
-        item.bairro
-      ].filter(Boolean).join(" • ") ||
-        "Consulte a localização no catálogo oficial";
+      const detalhes = document.createElement("div");
+      detalhes.className = "detalhes";
 
-      const details = document.createElement("div");
-      details.className = "details";
+      if (bairro) {
+        const itemBairro = document.createElement("span");
+        itemBairro.className = "detalhe";
+        itemBairro.textContent = "⌖ " + bairro;
+        detalhes.appendChild(itemBairro);
+      }
 
-      [
-        item.dormitorios,
-        item.status
-      ].filter(Boolean).forEach(value => {
-        const chip = document.createElement("span");
-        chip.className = "detail";
-        chip.textContent = value;
-        details.appendChild(chip);
-      });
+      if (dormitorios) {
+        const itemDormitorios = document.createElement("span");
+        itemDormitorios.className = "detalhe";
+        itemDormitorios.textContent = "▦ " + dormitorios;
+        detalhes.appendChild(itemDormitorios);
+      }
 
-      const actions = document.createElement("div");
-      actions.className = "card-actions";
+      const acoes = document.createElement("div");
+      acoes.className = "acoes";
 
-      const message = encodeURIComponent(
-        "Olá! Tenho interesse no empreendimento " +
-        item.nome +
-        ". Pode me passar mais informações?"
-      );
+      const botao = document.createElement("a");
+      botao.className = "botao";
+      botao.href = link;
+      botao.target = "_blank";
+      botao.rel = "noopener noreferrer";
+      botao.textContent = "Ver empreendimento";
 
-      const whatsapp = document.createElement("a");
-      whatsapp.className = "button whatsapp-button";
-      whatsapp.href =
-        "https://wa.me/" + WHATSAPP + "?text=" + message;
-      whatsapp.target = "_blank";
-      whatsapp.rel = "noopener noreferrer";
-      whatsapp.textContent = "Tenho interesse ↗";
-      whatsapp.setAttribute(
-        "aria-label",
-        "Perguntar pelo WhatsApp sobre " + item.nome
-      );
-
-      const official = document.createElement("a");
-      official.className = "official-link";
-      official.href = safeUrl(item.link, CATALOGO_URL);
-      official.target = "_blank";
-      official.rel = "noopener noreferrer";
-      official.textContent = "Ver informações oficiais ↗";
-
-      actions.append(whatsapp, official);
-      content.append(title, location, details, actions);
-      card.append(photo, content);
+      acoes.appendChild(botao);
+      conteudo.append(regiaoElemento, titulo, detalhes, acoes);
+      card.append(areaImagem, conteudo);
 
       return card;
     }
 
-    // Aplica busca textual e filtro de estágio.
-    function renderProjects() {
-      const term = searchInput.value
-        .trim()
-        .toLocaleLowerCase("pt-BR");
+    function renderizar() {
+      const termo = normalizar(busca.value);
+      const regiaoEscolhida = filtroRegiao.value;
+      const statusEscolhido = filtroStatus.value;
 
-      const selectedStatus = statusFilter.value;
+      const filtrados = lista.filter(imovel => {
+        const texto = normalizar([
+          imovel.nome,
+          imovel.titulo,
+          imovel.regiao,
+          imovel.bairro,
+          imovel.cidade,
+          imovel.status,
+          imovel.dormitorios
+        ].filter(Boolean).join(" "));
 
-      const filtered = projects.filter(item => {
-        const searchable = [
-          item.nome,
-          item.regiao,
-          item.bairro,
-          item.status
-        ].join(" ").toLocaleLowerCase("pt-BR");
-
-        return (
-          searchable.includes(term) &&
-          (!selectedStatus || item.status === selectedStatus)
-        );
+        return texto.includes(termo)
+          && (!regiaoEscolhida || imovel.regiao === regiaoEscolhida)
+          && (!statusEscolhido || imovel.status === statusEscolhido);
       });
 
-      grid.replaceChildren();
+      catalogo.replaceChildren();
 
-      if (!filtered.length) {
-        const empty = document.createElement("div");
-        empty.className = "empty";
+      contador.innerHTML =
+        `<strong>${filtrados.length}</strong> empreendimento(s) encontrado(s)`;
 
-        empty.textContent = projects.length
-          ? "Nenhum empreendimento encontrado. Tente outra busca ou estágio."
-          : "O catálogo ainda não foi preenchido. Consulte o catálogo oficial da Econ.";
-
-        grid.appendChild(empty);
-      } else {
-        const fragment = document.createDocumentFragment();
-
-        filtered.forEach(item => {
-          fragment.appendChild(createCard(item));
-        });
-
-        grid.appendChild(fragment);
+      if (filtrados.length === 0) {
+        const vazio = document.createElement("div");
+        vazio.className = "sem-resultados";
+        vazio.innerHTML = `
+          <h3>Nenhum empreendimento encontrado</h3>
+          <p>Tente alterar sua busca ou selecionar outros filtros.</p>`;
+        catalogo.appendChild(vazio);
+        return;
       }
 
-      counter.textContent =
-        filtered.length +
-        (
-          filtered.length === 1
-            ? " empreendimento encontrado"
-            : " empreendimentos encontrados"
-        );
+      const fragmento = document.createDocumentFragment();
+
+      filtrados.forEach(imovel => {
+        fragmento.appendChild(criarCard(imovel));
+      });
+
+      catalogo.appendChild(fragmento);
     }
 
-    // Carrega os dados que o script Python grava neste HTML.
-    function loadProjects() {
-      try {
-        const list = window.EMPREENDIMENTOS;
+    busca.addEventListener("input", renderizar);
+    filtroRegiao.addEventListener("change", renderizar);
+    filtroStatus.addEventListener("change", renderizar);
 
-        if (!Array.isArray(list) || list.length === 0) {
-          throw new Error(
-            "O catálogo ainda não foi preenchido pela automação."
-          );
-        }
-
-        projects = list
-          .map(normalizeProject)
-          .filter(Boolean);
-
-        if (!projects.length) {
-          throw new Error(
-            "Nenhum empreendimento válido foi encontrado no HTML."
-          );
-        }
-
-        renderProjects();
-      } catch (error) {
-        console.error(
-          "Falha ao carregar o catálogo incorporado no HTML:",
-          error
-        );
-
-        grid.replaceChildren();
-
-        const message = document.createElement("div");
-        message.className = "error";
-        message.textContent =
-          "O catálogo está aguardando a atualização automática. " +
-          "Você também pode consultar os empreendimentos no site oficial da Econ.";
-
-        grid.appendChild(message);
-        counter.textContent = "Catálogo aguardando atualização.";
-      }
-    }
-
-    searchInput.addEventListener("input", renderProjects);
-    statusFilter.addEventListener("change", renderProjects);
-
-    loadProjects();
+    preencherFiltros();
+    renderizar();
   </script>
+</body>
+</html>
+
 </body>
 </html>
 
