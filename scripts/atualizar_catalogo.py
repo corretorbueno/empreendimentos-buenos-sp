@@ -1,9 +1,9 @@
 
+
 import json
 import re
 import time
 import unicodedata
-import xml.etree.ElementTree as ET
 from collections import deque
 from pathlib import Path
 from urllib.parse import urljoin, urldefrag, urlparse
@@ -11,574 +11,607 @@ from urllib.parse import urljoin, urldefrag, urlparse
 import requests
 from bs4 import BeautifulSoup
 
+
 # ============================================================
 # CONFIGURACAO
 # ============================================================
 
-URL_BASE = "https://www.econconstrutora.com.br"
-ARQUIVO_HTML = Path("empreendimentos.html")
+BASE = "https://www.econconstrutora.com.br"
+HTML_FILE = Path("empreendimentos.html")
 
 MARCADOR_INICIO = "<!-- CATALOGO_DATA_INICIO -->"
 MARCADOR_FIM = "<!-- CATALOGO_DATA_FIM -->"
 
 PAGINAS_INICIAIS = [
-    f"{URL_BASE}/imoveis",
-    f"{URL_BASE}/imoveis/zona-leste",
-    f"{URL_BASE}/imoveis/zona-sul",
-    f"{URL_BASE}/imoveis/zona-norte",
-    f"{URL_BASE}/imoveis/zona-oeste",
-    f"{URL_BASE}/imoveis/centro",
-    f"{URL_BASE}/imoveis/grande-sp",
-]
-
-SITEMAPS = [
-    f"{URL_BASE}/sitemap.xml",
-    f"{URL_BASE}/sitemap_index.xml",
-    f"{URL_BASE}/sitemap-index.xml",
+    f"{BASE}/imoveis",
+    f"{BASE}/imoveis/grande-sao-paulo",
+    f"{BASE}/imoveis/zona-leste",
+    f"{BASE}/imoveis/zona-sul",
+    f"{BASE}/imoveis/zona-norte",
+    f"{BASE}/imoveis/zona-oeste",
+    f"{BASE}/imoveis/centro",
 ]
 
 HEADERS = {
     "User-Agent": (
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
         "AppleWebKit/537.36 (KHTML, like Gecko) "
-        "Chrome/131.0.0.0 Safari/537.36"
+        "Chrome/130.0.0.0 Safari/537.36"
     ),
     "Accept-Language": "pt-BR,pt;q=0.9,en;q=0.8",
 }
 
-SESSAO = requests.Session()
-SESSAO.headers.update(HEADERS)
-TIMEOUT = 35
-PAUSA = 0.3
+TIMEOUT = 25
+PAUSA_SEGUNDOS = 0.25
+MAX_PAGINAS_LISTAGEM = 250
 
-
-def limpar(texto):
-    return re.sub(r"\s+", " ", texto or "").strip()
+session = requests.Session()
+session.headers.update(HEADERS)
 
 
 def normalizar(texto):
     texto = unicodedata.normalize("NFKD", texto or "")
-    return "".join(
-        c for c in texto if not unicodedata.combining(c)
-    ).casefold().strip()
+    texto = "".join(
+        c for c in texto
+        if not unicodedata.combining(c)
+    )
+    return re.sub(r"\s+", " ", texto).strip()
 
 
-def url_interna(url):
-    url, _ = urldefrag(url)
-    p = urlparse(url)
-    host = p.netloc.lower()
+def url_limpa(url, origem=BASE):
+    if not url:
+        return ""
+
+    url = urldefrag(urljoin(origem, url.strip()))[0]
+    partes = urlparse(url)
+
+    dominios_validos = {
+        "econconstrutora.com.br",
+        "www.econconstrutora.com.br",
+    }
+
+    if partes.scheme not in ("http", "https"):
+        return ""
+
+    if partes.netloc.lower() not in dominios_validos:
+        return ""
+
+    return url.rstrip("/")
+
+
+def obter(url):
+    try:
+        resposta = session.get(url, timeout=TIMEOUT)
+        resposta.raise_for_status()
+
+        if "text/html" not in resposta.headers.get(
+            "Content-Type", ""
+        ).lower():
+            return None
+
+        return BeautifulSoup(resposta.text, "html.parser")
+
+    except Exception as erro:
+        print(f"[AVISO] Falha ao acessar {url}: {erro}")
+        return None
+
+
+def caminho_eh_listagem(url):
+    caminho = urlparse(url).path.lower().rstrip("/")
+
     return (
-        p.scheme in ("http", "https")
-        and host in (
-            "econconstrutora.com.br",
-            "www.econconstrutora.com.br",
-        )
+        caminho == "/imoveis"
+        or caminho.startswith("/imoveis/")
     )
 
 
-def requisitar(url):
-    resposta = SESSAO.get(url, timeout=TIMEOUT)
-    resposta.raise_for_status()
-    return resposta
+def caminho_eh_detalhe(url):
+    caminho = urlparse(url).path.lower().rstrip("/")
 
-
-def ler_html(url):
-    return BeautifulSoup(
-        requisitar(url).text,
-        "html.parser",
+    # Aceita os dois formatos de endereco.
+    return (
+        caminho.startswith("/detalhes/")
+        or caminho.startswith("/imovel/")
     )
 
 
-def ler_sitemap(url_inicial):
-    """Lê sitemaps comuns e índices de sitemaps."""
-    urls = set()
-    fila = deque([url_inicial])
-    visitados = set()
+def texto_no(elemento, seletores):
+    for seletor in seletores:
+        achado = elemento.select_one(seletor)
 
-    while fila:
-        url = fila.popleft()
+        if achado:
+            texto = achado.get_text(" ", strip=True)
 
-        if url in visitados:
-            continue
-
-        visitados.add(url)
-
-        try:
-            resposta = requisitar(url)
-            raiz = ET.fromstring(resposta.content)
-
-            for elemento in raiz.iter():
-                if elemento.tag.split("}")[-1].lower() != "loc":
-                    continue
-
-                if not elemento.text:
-                    continue
-
-                link = elemento.text.strip()
-
-                if not url_interna(link):
-                    continue
-
-                caminho = urlparse(link).path.lower()
-
-                if "sitemap" in caminho and caminho.endswith(".xml"):
-                    if link not in visitados:
-                        fila.append(link)
-                else:
-                    urls.add(link)
-
-        except (
-            requests.RequestException,
-            ET.ParseError,
-            ValueError,
-        ) as erro:
-            print(f"Aviso: sitemap indisponivel: {url} ({erro})")
-
-    return urls
-
-
-def eh_detalhe(url):
-    caminho = urlparse(url).path.strip("/").lower()
-
-    # Links de detalhe conhecidos pelo formato /detalhes/slug.
-    return caminho.startswith("detalhes/") and len(caminho.split("/")) >= 2
-
-
-def descobrir_links_internos(soup, pagina):
-    links = set()
-
-    for ancora in soup.find_all("a", href=True):
-        link = urljoin(pagina, ancora["href"])
-        link, _ = urldefrag(link)
-
-        if not url_interna(link):
-            continue
-
-        caminho = urlparse(link).path.lower()
-
-        if re.search(
-            r"\.(pdf|jpg|jpeg|png|webp|svg|zip|docx?)$",
-            caminho,
-        ):
-            continue
-
-        if any(
-            termo in caminho
-            for termo in (
-                "/blog",
-                "/noticias",
-                "/contato",
-                "/politica",
-                "/privacidade",
-            )
-        ):
-            continue
-
-        links.add(link)
-
-    return links
-
-
-def obter_imagem(soup):
-    og_image = soup.find("meta", property="og:image")
-
-    if og_image and og_image.get("content"):
-        return urljoin(URL_BASE, og_image["content"])
-
-    for img in soup.find_all("img"):
-        for atributo in (
-            "src",
-            "data-src",
-            "data-lazy-src",
-            "data-original",
-            "data-image",
-        ):
-            valor = img.get(atributo)
-
-            if valor and not valor.startswith("data:"):
-                return urljoin(URL_BASE, valor)
-
-        srcset = img.get("srcset") or img.get("data-srcset")
-
-        if srcset:
-            valor = srcset.split(",")[0].strip().split(" ")[0]
-
-            if valor and not valor.startswith("data:"):
-                return urljoin(URL_BASE, valor)
+            if texto:
+                return texto
 
     return ""
 
 
-def extrair_detalhe(url):
-    soup = ler_html(url)
+def imagem_do(elemento, pagina_url):
+    img = elemento.select_one("img")
 
-    titulo = soup.find("h1")
+    if not img:
+        return ""
 
-    if titulo:
-        nome = limpar(titulo.get_text(" ", strip=True))
-    else:
-        meta = soup.find("meta", property="og:title")
-        nome = limpar(meta.get("content", "")) if meta else ""
+    for atributo in (
+        "src",
+        "data-src",
+        "data-lazy-src",
+        "data-original",
+        "srcset",
+    ):
+        valor = img.get(atributo)
+
+        if not valor:
+            continue
+
+        if atributo == "srcset":
+            valor = valor.split(",")[0].strip().split(" ")[0]
+
+        if valor.startswith("data:"):
+            continue
+
+        return urljoin(pagina_url, valor)
+
+    return ""
+
+
+def extrair_regiao_bairro(texto):
+    partes = re.split(r"\s*[|•·]\s*", texto or "")
+
+    if len(partes) >= 2:
+        return partes[0].strip(), partes[1].strip()
+
+    return (texto or "").strip(), ""
+
+
+def achar_card(anchor):
+    atual = anchor
+    melhor = anchor
+
+    for _ in range(7):
+        if atual is None:
+            break
+
+        if getattr(atual, "name", None) in ("body", "html"):
+            break
+
+        texto = atual.get_text(" ", strip=True)
+
+        if len(texto) > len(melhor.get_text(" ", strip=True)):
+            melhor = atual
+
+        tem_imagem = atual.select_one("img") is not None
+
+        tem_info = re.search(
+            r"(dorm|lançamento|lancamento|construção|"
+            r"construcao|morar|bairro|zona)",
+            texto,
+            re.I,
+        )
+
+        if tem_imagem and tem_info:
+            return atual
+
+        atual = atual.parent
+
+    return melhor
+
+
+def extrair_cards_listagem(soup, pagina_url):
+    projetos = []
+    links_detalhe = set()
+
+    for anchor in soup.find_all("a", href=True):
+        href = url_limpa(anchor.get("href"), pagina_url)
+
+        if not href:
+            continue
+
+        if caminho_eh_detalhe(href):
+            links_detalhe.add(href)
+
+        if not caminho_eh_detalhe(href):
+            continue
+
+        card = achar_card(anchor)
+        texto_card = re.sub(
+            r"\s+",
+            " ",
+            card.get_text(" ", strip=True),
+        )
+
+        nome = texto_no(
+            card,
+            [
+                "h1",
+                "h2",
+                "h3",
+                "h4",
+                "[class*='title']",
+                "[class*='nome']",
+            ],
+        )
+
+        if not nome:
+            nome = anchor.get_text(" ", strip=True)
+
+        nome = re.sub(r"\s+", " ", nome).strip()
+
+        if not nome or len(nome) > 100:
+            continue
+
+        status = ""
+
+        status_opcoes = [
+            "Futuro Lançamento",
+            "Futuro Lancamento",
+            "Breve Lançamento",
+            "Breve Lancamento",
+            "Pronto para Morar",
+            "Em Construção",
+            "Em Construcao",
+            "Lançamento",
+            "Lancamento",
+        ]
+
+        texto_normalizado = normalizar(texto_card).lower()
+
+        for opcao in status_opcoes:
+            if normalizar(opcao).lower() in texto_normalizado:
+                status = opcao
+                break
+
+        local_texto = ""
+
+        for node in card.find_all(
+            ["p", "span", "div", "li"]
+        ):
+            texto = node.get_text(" ", strip=True)
+
+            if "|" in texto and len(texto) < 100:
+                local_texto = texto
+                break
+
+        regiao, bairro = extrair_regiao_bairro(local_texto)
+
+        dormitorios = ""
+        match = re.search(
+            r"(\d+(?:\s*e\s*\d+)?)\s*"
+            r"dorm(?:itórios|itorios|s\.?)",
+            texto_card,
+            re.I,
+        )
+
+        if match:
+            dormitorios = match.group(1).strip() + " dorm."
+
+        projetos.append({
+            "nome": nome,
+            "regiao": regiao,
+            "bairro": bairro,
+            "status": status,
+            "dormitorios": dormitorios,
+            "imagem": imagem_do(card, pagina_url),
+            "link": href,
+        })
+
+    return projetos, links_detalhe
+
+
+def extrair_dados_detalhe(soup, url):
+    nome = texto_no(
+        soup,
+        [
+            "main h1",
+            "h1",
+            "[class*='title'] h1",
+        ],
+    )
+
+    if not nome:
+        meta = soup.select_one(
+            "meta[property='og:title']"
+        )
+
+        if meta:
+            nome = meta.get("content", "")
 
     nome = re.sub(
-        r"\s*[|–-]\s*Econ.*$",
+        r"\s*[-|]\s*Econ.*$",
         "",
         nome,
         flags=re.I,
     ).strip()
 
-    if not nome:
-        slug = urlparse(url).path.rstrip("/").split("/")[-1]
-        nome = slug.replace("-", " ").title()
+    texto = soup.get_text(" ", strip=True)
+    texto_normalizado = normalizar(texto).lower()
 
-    texto = limpar(soup.get_text(" ", strip=True))
-    texto_norm = normalizar(texto)
+    status = ""
 
     status_opcoes = [
         "Futuro Lançamento",
+        "Futuro Lancamento",
         "Breve Lançamento",
-        "Lançamento",
-        "Em Construção",
+        "Breve Lancamento",
         "Pronto para Morar",
+        "Em Construção",
+        "Em Construcao",
+        "Lançamento",
+        "Lancamento",
     ]
 
-    status = next(
-        (
-            item
-            for item in status_opcoes
-            if normalizar(item) in texto_norm
-        ),
-        "",
-    )
+    for opcao in status_opcoes:
+        if normalizar(opcao).lower() in texto_normalizado:
+            status = opcao
+            break
 
-    local_match = re.search(
-        r"((?:Zona\s+(?:Leste|Sul|Norte|Oeste)|Centro|"
-        r"Grande São Paulo|Santo André|Guarulhos|Diadema|"
-        r"Osasco|São Bernardo do Campo|São Caetano do Sul|"
-        r"Mauá|Suzano|Mogi das Cruzes|Itaquaquecetuba)"
-        r"\s*\|\s*[^|]{2,90})",
+    dormitorios = ""
+    match = re.search(
+        r"(\d+(?:\s*e\s*\d+)?)\s*"
+        r"dorm(?:itórios|itorios|s\.?)",
         texto,
         re.I,
     )
 
-    dormitorios_match = re.search(
-        r"\b\d+(?:\s*e\s*\d+)?\s*dorms?\.?",
-        texto,
-        re.I,
-    )
+    if match:
+        dormitorios = match.group(1).strip() + " dorm."
 
-    meta_desc = soup.find("meta", attrs={"name": "description"})
-    descricao = (
-        limpar(meta_desc.get("content", ""))
-        if meta_desc
-        else texto[:500]
-    )
+    imagem = ""
+    og = soup.select_one("meta[property='og:image']")
+
+    if og and og.get("content"):
+        imagem = urljoin(url, og["content"])
+
+    if not imagem:
+        imagem = imagem_do(soup, url)
+
+    regiao = ""
+    bairro = ""
+
+    for node in soup.find_all(
+        ["p", "span", "div", "li"]
+    ):
+        texto_local = node.get_text(" ", strip=True)
+
+        if "|" in texto_local and len(texto_local) < 100:
+            regiao, bairro = extrair_regiao_bairro(
+                texto_local
+            )
+            break
 
     return {
         "nome": nome,
-        "imagem": obter_imagem(soup),
-        "link": url,
-        "fonte": url,
-        "descricao": descricao,
+        "regiao": regiao,
+        "bairro": bairro,
         "status": status,
-        "localizacao": (
-            limpar(local_match.group(1))
-            if local_match
-            else ""
-        ),
-        "dormitorios": (
-            limpar(dormitorios_match.group(0))
-            if dormitorios_match
-            else ""
-        ),
+        "dormitorios": dormitorios,
+        "imagem": imagem,
+        "link": url,
     }
 
 
-def extrair_cards(soup, pagina):
-    """Busca nomes e links diretamente nos cartoes do catalogo."""
-    projetos = {}
-
-    for ancora in soup.find_all("a", href=True):
-        link = urljoin(pagina, ancora["href"])
-        link, _ = urldefrag(link)
-
-        if not url_interna(link) or not eh_detalhe(link):
-            continue
-
-        bloco = ancora
-
-        for _ in range(7):
-            if bloco.parent is None:
-                break
-
-            bloco = bloco.parent
-            texto_bloco = limpar(bloco.get_text(" ", strip=True))
-
-            if (
-                bloco.find(["h2", "h3", "h4"])
-                and len(texto_bloco) <= 2200
-            ):
-                break
-
-        titulo = (
-            ancora.find(["h2", "h3", "h4"])
-            or bloco.find(["h2", "h3", "h4"])
-        )
-
-        nome = limpar(
-            titulo.get_text(" ", strip=True)
-            if titulo
-            else ancora.get_text(" ", strip=True)
-        )
-
-        if (
-            not nome
-            or len(nome) > 120
-            or len(nome.split()) > 14
-        ):
-            continue
-
-        texto = limpar(bloco.get_text(" ", strip=True))
-        texto_norm = normalizar(texto)
-
-        status_opcoes = [
-            "Futuro Lançamento",
-            "Breve Lançamento",
-            "Lançamento",
-            "Em Construção",
-            "Pronto para Morar",
-        ]
-
-        status = next(
-            (
-                item
-                for item in status_opcoes
-                if normalizar(item) in texto_norm
-            ),
-            "",
-        )
-
-        local_match = re.search(
-            r"((?:Zona\s+(?:Leste|Sul|Norte|Oeste)|Centro|"
-            r"Grande São Paulo|Santo André|Guarulhos|Diadema|"
-            r"Osasco)\s*\|\s*[^|]{2,90})",
-            texto,
-            re.I,
-        )
-
-        dormitorios_match = re.search(
-            r"\b\d+(?:\s*e\s*\d+)?\s*dorms?\.?",
-            texto,
-            re.I,
-        )
-
-        projetos[normalizar(nome)] = {
-            "nome": nome,
-            "imagem": obter_imagem(bloco),
-            "link": link,
-            "fonte": pagina,
-            "descricao": texto[:500],
-            "status": status,
-            "localizacao": (
-                limpar(local_match.group(1))
-                if local_match
-                else ""
-            ),
-            "dormitorios": (
-                limpar(dormitorios_match.group(0))
-                if dormitorios_match
-                else ""
-            ),
-        }
-
-    return projetos
-
-
-def completar_campos(principal, complemento):
-    for campo in (
-        "imagem",
-        "status",
-        "localizacao",
-        "dormitorios",
-        "descricao",
-    ):
-        if not principal.get(campo) and complemento.get(campo):
-            principal[campo] = complemento[campo]
-
-    if eh_detalhe(complemento.get("link", "")):
-        principal["link"] = complemento["link"]
-
-
-def descobrir_urls_detalhes():
-    """Combina sitemaps e links das páginas regionais."""
-    urls = set()
-
-    for sitemap in SITEMAPS:
-        urls.update(ler_sitemap(sitemap))
-
-    fila = deque(PAGINAS_INICIAIS)
-    visitadas = set()
-
-    # Limite para evitar percorrer indefinidamente todo o site.
-    while fila and len(visitadas) < 150:
-        pagina = fila.popleft()
-
-        if pagina in visitadas:
-            continue
-
-        visitadas.add(pagina)
-
-        try:
-            soup = ler_html(pagina)
-            links = descobrir_links_internos(soup, pagina)
-            urls.update(links)
-
-            # Enfileira páginas de catálogo/região, não cada link interno.
-            for link in links:
-                caminho = urlparse(link).path.lower().rstrip("/")
-
-                if (
-                    caminho == "/imoveis"
-                    or caminho.startswith("/imoveis/")
-                ) and link not in visitadas:
-                    fila.append(link)
-
-        except requests.RequestException as erro:
-            print(f"Aviso: falha ao consultar {pagina}: {erro}")
-
-        time.sleep(PAUSA)
-
-    return sorted({url for url in urls if eh_detalhe(url)})
-
-
-def atualizar_html(lista):
-    if not ARQUIVO_HTML.exists():
-        raise FileNotFoundError(
-            f"Arquivo nao encontrado: {ARQUIVO_HTML}"
-        )
-
-    html = ARQUIVO_HTML.read_text(encoding="utf-8")
-
-    if (
-        html.count(MARCADOR_INICIO) != 1
-        or html.count(MARCADOR_FIM) != 1
-    ):
-        raise RuntimeError(
-            "O empreendimentos.html precisa ter exatamente uma "
-            "ocorrencia de cada marcador:\n"
-            f"{MARCADOR_INICIO}\n{MARCADOR_FIM}"
-        )
-
-    inicio = html.index(MARCADOR_INICIO)
-    fim = html.index(MARCADOR_FIM) + len(MARCADOR_FIM)
-
-    dados = json.dumps(
-        lista,
-        ensure_ascii=False,
-        separators=(",", ":"),
-    ).replace("</", r"<\/")
-
-    bloco = (
-        MARCADOR_INICIO
-        + "\n<script>\n"
-        + "window.EMPREENDIMENTOS = "
-        + dados
-        + ";\n</script>\n"
-        + MARCADOR_FIM
+def descobrir_listagens():
+    fila = deque(
+        url_limpa(url)
+        for url in PAGINAS_INICIAIS
     )
 
-    novo_html = html[:inicio] + bloco + html[fim:]
-    ARQUIVO_HTML.write_text(novo_html, encoding="utf-8")
+    visitadas = set()
+    listagens = []
+    detalhes = set()
+
+    while fila and len(visitadas) < MAX_PAGINAS_LISTAGEM:
+        url = fila.popleft()
+
+        if not url or url in visitadas:
+            continue
+
+        if not caminho_eh_listagem(url):
+            continue
+
+        visitadas.add(url)
+        soup = obter(url)
+
+        if not soup:
+            continue
+
+        listagens.append((url, soup))
+
+        _, links = extrair_cards_listagem(soup, url)
+        detalhes.update(links)
+
+        for anchor in soup.find_all("a", href=True):
+            destino = url_limpa(anchor.get("href"), url)
+
+            if not destino:
+                continue
+
+            if not caminho_eh_listagem(destino):
+                continue
+
+            if destino in visitadas:
+                continue
+
+            if "?" not in destino:
+                fila.append(destino)
+
+        print(
+            f"[LISTAGEM] {url} | "
+            f"links individuais: {len(detalhes)}"
+        )
+
+        time.sleep(PAUSA_SEGUNDOS)
+
+    return listagens, detalhes
+
+
+def deduplicar(projetos):
+    por_nome = {}
+
+    for projeto in projetos:
+        nome = re.sub(
+            r"\s+",
+            " ",
+            projeto.get("nome", ""),
+        ).strip()
+
+        if not nome:
+            continue
+
+        chave = normalizar(nome).lower()
+
+        if chave not in por_nome:
+            por_nome[chave] = projeto
+            continue
+
+        atual = por_nome[chave]
+
+        campos = (
+            "regiao",
+            "bairro",
+            "status",
+            "dormitorios",
+            "imagem",
+            "link",
+        )
+
+        for campo in campos:
+            if not atual.get(campo) and projeto.get(campo):
+                atual[campo] = projeto[campo]
+
+    return sorted(
+        por_nome.values(),
+        key=lambda item: normalizar(item["nome"]).lower(),
+    )
+
+
+def atualizar_html(projetos):
+    if not HTML_FILE.exists():
+        raise RuntimeError(
+            f"Arquivo nao encontrado: {HTML_FILE}"
+        )
+
+    html = HTML_FILE.read_text(encoding="utf-8")
+
+    if (
+        MARCADOR_INICIO not in html
+        or MARCADOR_FIM not in html
+    ):
+        raise RuntimeError(
+            "Os marcadores do catalogo nao existem no HTML. "
+            "Confira CATALOGO_DATA_INICIO e CATALOGO_DATA_FIM."
+        )
+
+    if not projetos:
+        raise RuntimeError(
+            "Nenhum empreendimento encontrado. "
+            "O HTML nao sera alterado."
+        )
+
+    dados_json = json.dumps(
+        projetos,
+        ensure_ascii=False,
+        indent=2,
+    )
+
+    bloco = (
+        f"{MARCADOR_INICIO}\n"
+        "<script>\n"
+        f"window.EMPREENDIMENTOS = {dados_json};\n"
+        "</script>\n"
+        f"{MARCADOR_FIM}"
+    )
+
+    padrao = re.compile(
+        re.escape(MARCADOR_INICIO)
+        + r".*?"
+        + re.escape(MARCADOR_FIM),
+        re.DOTALL,
+    )
+
+    novo_html, alteracoes = padrao.subn(
+        lambda _: bloco,
+        html,
+        count=1,
+    )
+
+    if alteracoes != 1:
+        raise RuntimeError(
+            "Nao foi possivel atualizar o bloco de dados."
+        )
+
+    # Grava o arquivo somente depois de validar tudo.
+    HTML_FILE.write_text(
+        novo_html,
+        encoding="utf-8",
+    )
+
+    print(
+        f"[OK] {len(projetos)} empreendimentos "
+        f"gravados em {HTML_FILE}"
+    )
 
 
 def main():
-    print("=" * 60)
-    print("ATUALIZACAO DO CATALOGO DE EMPREENDIMENTOS ECON")
-    print("=" * 60)
+    print("=== Atualizacao do catalogo Econ ===")
 
-    urls = descobrir_urls_detalhes()
-    print(f"Links individuais encontrados: {len(urls)}")
+    listagens, urls_detalhes = descobrir_listagens()
 
-    projetos = {}
-    erros = []
+    projetos = []
 
-    for numero, url in enumerate(urls, start=1):
-        try:
-            projeto = extrair_detalhe(url)
-            chave = normalizar(projeto["nome"])
+    # Aproveita primeiro os cards das paginas de listagem.
+    for url, soup in listagens:
+        cards, _ = extrair_cards_listagem(soup, url)
+        projetos.extend(cards)
 
-            if not chave:
-                continue
+    print(
+        f"[INFO] Paginas de listagem visitadas: "
+        f"{len(listagens)}"
+    )
 
-            if chave in projetos:
-                completar_campos(projetos[chave], projeto)
-            else:
-                projetos[chave] = projeto
+    print(
+        f"[INFO] Links individuais encontrados: "
+        f"{len(urls_detalhes)}"
+    )
 
-        except requests.RequestException as erro:
-            erros.append(f"{url}: {erro}")
-            print(f"Aviso: erro ao ler {url}: {erro}")
+    # Complementa os dados acessando as paginas individuais.
+    urls = sorted(urls_detalhes)
 
-        if numero % 10 == 0 or numero == len(urls):
+    for indice, url in enumerate(urls, start=1):
+        soup = obter(url)
+
+        if soup:
+            projeto = extrair_dados_detalhe(soup, url)
+
+            if projeto.get("nome"):
+                projetos.append(projeto)
+
+        if indice % 20 == 0:
             print(
-                f"Processados: {numero}/{len(urls)} | "
-                f"Empreendimentos unicos: {len(projetos)}"
+                f"[DETALHES] Processados "
+                f"{indice}/{len(urls)}"
             )
 
-        time.sleep(PAUSA)
+        time.sleep(PAUSA_SEGUNDOS)
 
-    # Completa os dados com os cartoes das paginas regionais.
-    for pagina in PAGINAS_INICIAIS:
-        try:
-            soup = ler_html(pagina)
-            cards = extrair_cards(soup, pagina)
+    projetos = deduplicar(projetos)
 
-            for chave, projeto in cards.items():
-                if chave in projetos:
-                    completar_campos(projetos[chave], projeto)
-                else:
-                    projetos[chave] = projeto
-
-        except requests.RequestException as erro:
-            erros.append(f"{pagina}: {erro}")
-            print(f"Aviso: erro ao ler catalogo {pagina}: {erro}")
-
-    lista = sorted(
-        projetos.values(),
-        key=lambda item: normalizar(item["nome"]),
+    print(
+        f"[RESULTADO] Empreendimentos unicos: "
+        f"{len(projetos)}"
     )
 
-    # Protecao para nao substituir o HTML com uma coleta pequena.
-    if len(lista) < 20:
+    if not projetos:
         raise RuntimeError(
-            f"Foram encontrados apenas {len(lista)} empreendimentos. "
-            "O HTML nao foi alterado. Confira os logs e a estrutura "
-            "atual do catalogo da Econ."
+            "Nenhum empreendimento foi identificado. "
+            "O HTML existente foi preservado."
         )
 
-    atualizar_html(lista)
-
-    print("\nATUALIZACAO CONCLUIDA")
-    print(f"Empreendimentos unicos: {len(lista)}")
-    print(
-        "Com imagem: "
-        f"{sum(bool(p.get('imagem')) for p in lista)}"
-    )
-    print(
-        "Com link individual: "
-        f"{sum(eh_detalhe(p.get('link', '')) for p in lista)}"
-    )
-    print(f"HTML atualizado: {ARQUIVO_HTML}")
-
-    if erros:
-        print(f"Avisos de acesso: {len(erros)}")
-        print("Veja as mensagens de aviso acima.")
+    atualizar_html(projetos)
 
 
 if __name__ == "__main__":
     main()
 
-
-
-if __name__ == "__main__":
-    main()
