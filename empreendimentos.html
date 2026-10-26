@@ -1,11 +1,13 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#103c2c">
-  <meta name="description" content="Conheça os empreendimentos Econ em São Paulo e região. Consulte opções e fale com a Empreendimentos Buenos SP pelo WhatsApp.">
+  <meta name="description" content="Conheça os empreendimentos da Econ em São Paulo e região. Consulte opções e fale com a Empreendimentos Buenos SP pelo WhatsApp.">
   <title>Empreendimentos | Buenos SP</title>
+
   <style>
     :root {
       --green: #103c2c;
@@ -21,8 +23,14 @@
       --shadow: 0 16px 45px rgba(16, 60, 44, .09);
     }
 
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; scroll-padding-top: 95px; }
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 95px;
+    }
 
     body {
       margin: 0;
@@ -32,11 +40,21 @@
       line-height: 1.65;
     }
 
-    a { color: inherit; text-decoration: none; }
-    button, input, select { font: inherit; }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
 
-    a:focus-visible, button:focus-visible,
-    input:focus-visible, select:focus-visible {
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    a:focus-visible,
+    button:focus-visible,
+    input:focus-visible,
+    select:focus-visible {
       outline: 3px solid var(--lime-dark);
       outline-offset: 3px;
     }
@@ -51,7 +69,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 24px;
-      background: rgba(255,255,255,.97);
+      background: rgba(255, 255, 255, .97);
       border-bottom: 1px solid var(--border);
       backdrop-filter: blur(12px);
     }
@@ -76,76 +94,60 @@
       border-radius: 12px;
       background: var(--green);
       color: var(--lime);
-      font-size: 27px;
+      font-size: 25px;
       font-weight: 800;
     }
 
-    .logo strong {
+    .logo span:last-child {
       display: block;
-      font-size: 17px;
-      letter-spacing: .5px;
+    }
+
+    .logo small {
+      display: block;
+      color: var(--muted);
+      font-size: 10px;
+      letter-spacing: 2px;
     }
 
     .nav {
       display: flex;
       align-items: center;
       gap: 26px;
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 600;
     }
 
-    .nav a:not(.button):hover { color: #477b35; }
+    .nav a:hover {
+      color: #4d7d22;
+    }
+
+    .nav .nav-cta {
+      padding: 10px 17px;
+      border-radius: 999px;
+      background: var(--green);
+      color: white;
+    }
 
     .menu-toggle {
       display: none;
-      border: 0;
-      background: transparent;
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: white;
       color: var(--green);
-      font-size: 27px;
+      font-size: 24px;
       cursor: pointer;
-    }
-
-    .button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      min-height: 48px;
-      padding: 13px 20px;
-      border: 1px solid transparent;
-      border-radius: 10px;
-      background: var(--lime);
-      color: var(--green-dark);
-      font-size: 13px;
-      font-weight: 800;
-      transition: transform .2s, background .2s;
-      cursor: pointer;
-    }
-
-    .button:hover {
-      background: var(--lime-dark);
-      transform: translateY(-1px);
-    }
-
-    .button-small { min-height: 40px; padding: 10px 15px; }
-
-    .button-outline {
-      background: transparent;
-      color: white;
-      border-color: rgba(255,255,255,.45);
-    }
-
-    .button-outline:hover {
-      background: rgba(255,255,255,.1);
-      color: white;
     }
 
     .hero {
       position: relative;
       overflow: hidden;
-      background: linear-gradient(120deg, var(--green-dark), var(--green));
+      padding: 84px 6% 78px;
+      background:
+        radial-gradient(circle at 85% 20%, rgba(199, 243, 107, .17), transparent 28%),
+        linear-gradient(125deg, var(--green-dark), var(--green));
       color: white;
-      padding: 66px 6% 60px;
     }
 
     .hero::after {
@@ -153,114 +155,205 @@
       position: absolute;
       width: 420px;
       height: 420px;
-      right: -130px;
-      top: -190px;
-      border: 1px solid rgba(199,243,107,.18);
+      right: -160px;
+      bottom: -290px;
+      border: 1px solid rgba(199, 243, 107, .25);
       border-radius: 50%;
-      box-shadow: 0 0 0 55px rgba(199,243,107,.035),
-                  0 0 0 110px rgba(199,243,107,.025);
+      box-shadow:
+        0 0 0 45px rgba(199, 243, 107, .04),
+        0 0 0 90px rgba(199, 243, 107, .03);
       pointer-events: none;
     }
 
-    .hero-inner {
+    .hero-content {
       position: relative;
       z-index: 1;
-      width: min(1120px, 100%);
-      margin: auto;
+      max-width: 850px;
+      margin: 0 auto;
     }
 
     .eyebrow {
-      display: inline-block;
-      margin-bottom: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      margin: 0 0 17px;
       color: var(--lime);
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 800;
       letter-spacing: 2px;
       text-transform: uppercase;
     }
 
+    .eyebrow::before {
+      content: "";
+      display: inline-block;
+      width: 25px;
+      height: 2px;
+      background: var(--lime);
+    }
+
     .hero h1 {
-      max-width: 780px;
-      margin: 0 0 18px;
-      font-size: clamp(34px, 5vw, 58px);
+      max-width: 760px;
+      margin: 0;
+      font-size: clamp(36px, 5.4vw, 64px);
       line-height: 1.08;
-      letter-spacing: -1.7px;
+      letter-spacing: -2px;
     }
 
-    .hero h1 span { color: var(--lime); }
-
-    .hero p {
-      max-width: 650px;
-      margin: 0 0 26px;
-      color: #e0e9e2;
-      font-size: 16px;
+    .hero h1 span {
+      color: var(--lime);
     }
 
-    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+    .hero-description {
+      max-width: 620px;
+      margin: 22px 0 0;
+      color: rgba(255, 255, 255, .8);
+      font-size: 17px;
+    }
 
-    .hero-note {
+    .hero-actions {
       display: flex;
       flex-wrap: wrap;
-      gap: 18px;
-      margin-top: 24px;
-      color: #e0e9e2;
-      font-size: 12px;
+      gap: 13px;
+      margin-top: 30px;
     }
 
-    .hero-note span::before {
-      content: "✓";
-      margin-right: 7px;
-      color: var(--lime);
-      font-weight: 900;
+    .button {
+      display: inline-flex;
+      min-height: 46px;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 19px;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+      text-align: center;
+      cursor: pointer;
+      transition: transform .2s, background .2s;
     }
 
-    main {
-      width: min(1120px, 100%);
-      margin: auto;
-      padding: 52px 24px 70px;
+    .button:hover {
+      transform: translateY(-2px);
     }
 
-    .section-heading { margin-bottom: 25px; }
+    .button-primary {
+      background: var(--lime);
+      color: var(--green-dark);
+    }
 
-    .section-heading .eyebrow {
-      color: #477b35;
-      margin-bottom: 7px;
+    .button-primary:hover {
+      background: var(--lime-dark);
+    }
+
+    .button-outline {
+      border-color: rgba(255, 255, 255, .35);
+      color: white;
+    }
+
+    .button-outline:hover {
+      background: rgba(255, 255, 255, .08);
+    }
+
+    .section {
+      width: min(1200px, 88%);
+      margin: 0 auto;
+      padding: 65px 0;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+
+    .section-kicker {
+      margin: 0 0 7px;
+      color: #5d842f;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
     }
 
     .section-heading h2 {
-      margin: 0 0 8px;
+      margin: 0;
       color: var(--green);
-      font-size: clamp(26px, 3vw, 36px);
-      line-height: 1.2;
+      font-size: clamp(28px, 3.5vw, 40px);
+      line-height: 1.15;
+      letter-spacing: -1px;
     }
 
-    .section-heading p { margin: 0; color: var(--muted); }
+    .section-heading p {
+      max-width: 500px;
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .counter {
+      flex-shrink: 0;
+      padding: 9px 14px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: white;
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 800;
+    }
 
     .filters {
       display: grid;
-      grid-template-columns: minmax(0, 2fr) minmax(220px, 1fr);
-      gap: 12px;
-      margin: 25px 0 18px;
-    }
-
-    .filters input, .filters select {
-      width: 100%;
-      min-width: 0;
-      min-height: 50px;
-      padding: 13px 15px;
+      grid-template-columns: minmax(0, 1fr) 230px;
+      gap: 13px;
+      margin-bottom: 27px;
+      padding: 16px;
       border: 1px solid var(--border);
-      border-radius: 10px;
+      border-radius: var(--radius);
       background: white;
+      box-shadow: 0 7px 25px rgba(16, 60, 44, .035);
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    .input-wrap span {
+      position: absolute;
+      top: 50%;
+      left: 15px;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 18px;
+      pointer-events: none;
+    }
+
+    .filters input,
+    .filters select {
+      width: 100%;
+      min-height: 48px;
+      padding: 11px 14px;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      background: #fbfcfa;
       color: var(--text);
+      font-size: 13px;
     }
 
-    .filters input:focus, .filters select:focus {
-      border-color: #7da34a;
+    .filters input {
+      padding-left: 43px;
     }
 
-    .counter { margin: 0 0 16px; color: var(--muted); font-size: 13px; }
+    .filters input:focus,
+    .filters select:focus {
+      border-color: #86b94b;
+      outline: 2px solid rgba(168, 223, 72, .25);
+    }
 
-    .grid {
+    .projects-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 22px;
@@ -268,84 +361,118 @@
 
     .card {
       display: flex;
-      flex-direction: column;
       min-width: 0;
+      flex-direction: column;
       overflow: hidden;
       border: 1px solid var(--border);
       border-radius: var(--radius);
       background: white;
-      box-shadow: var(--shadow);
-      transition: transform .2s, box-shadow .2s;
+      box-shadow: 0 8px 28px rgba(16, 60, 44, .045);
+      transition: transform .22s, box-shadow .22s;
     }
 
     .card:hover {
       transform: translateY(-4px);
-      box-shadow: 0 20px 48px rgba(16,60,44,.15);
+      box-shadow: var(--shadow);
     }
 
     .photo {
       position: relative;
-      height: 225px;
+      display: grid;
+      min-height: 225px;
       overflow: hidden;
-      background: linear-gradient(135deg, #e7eee4, #d4e2d0);
+      place-items: center;
+      background: linear-gradient(145deg, #e8f0e1, #f7f9f5);
     }
 
-    .photo img {
-      display: block;
+    .photo > img {
+      position: absolute;
+      inset: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform .35s;
     }
-
-    .card:hover .photo img { transform: scale(1.035); }
-
-    .photo-fallback {
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 5px;
-      padding: 20px;
-      text-align: center;
-      color: var(--green);
-    }
-
-    .photo-fallback .building { font-size: 43px; line-height: 1; }
-    .photo-fallback small { color: var(--muted); }
 
     .status {
       position: absolute;
-      top: 12px;
-      left: 12px;
       z-index: 2;
-      max-width: calc(100% - 24px);
-      padding: 6px 10px;
-      border-radius: 7px;
+      top: 14px;
+      left: 14px;
+      max-width: calc(100% - 28px);
+      padding: 7px 11px;
+      border-radius: 999px;
       background: var(--lime);
       color: var(--green-dark);
       font-size: 10px;
-      font-weight: 900;
-      text-transform: uppercase;
-      box-shadow: 0 3px 10px #0001;
+      font-weight: 800;
+      line-height: 1.3;
+    }
+
+    .photo-fallback {
+      display: flex;
+      width: 100%;
+      min-height: 225px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 25px;
+      color: var(--green);
+      text-align: center;
+      background:
+        radial-gradient(circle at 50% 40%, rgba(199, 243, 107, .3), transparent 55%),
+        linear-gradient(145deg, #edf4e8, #f8faf6);
+    }
+
+    .photo-fallback[hidden] {
+      display: none;
+    }
+
+    .building {
+      display: grid;
+      width: 65px;
+      height: 65px;
+      place-items: center;
+      border-radius: 19px;
+      background: var(--green);
+      color: var(--lime);
+      font-size: 39px;
+      line-height: 1;
+    }
+
+    .photo-fallback strong {
+      max-width: 260px;
+      font-size: 17px;
+      line-height: 1.25;
+    }
+
+    .photo-fallback small {
+      color: var(--muted);
+      font-size: 11px;
     }
 
     .card-content {
       display: flex;
       flex: 1;
       flex-direction: column;
-      padding: 19px;
+      padding: 20px;
     }
 
     .card h3 {
-      margin: 0 0 8px;
+      margin: 0;
       color: var(--green);
-      font-size: 21px;
-      line-height: 1.25;
+      font-size: 20px;
+      line-height: 1.3;
+      letter-spacing: -.35px;
+      overflow-wrap: anywhere;
     }
 
-    .location { margin: 0 0 14px; color: var(--muted); font-size: 13px; }
+    .location {
+      min-height: 43px;
+      margin: 10px 0 15px;
+      color: var(--muted);
+      font-size: 12px;
+    }
 
     .details {
       display: flex;
@@ -355,180 +482,383 @@
     }
 
     .detail {
-      padding: 6px 9px;
+      padding: 5px 9px;
+      border: 1px solid var(--border);
       border-radius: 7px;
-      background: #f0f5ec;
-      color: #38533c;
-      font-size: 11px;
-    }
-
-    .card-actions { display: grid; gap: 9px; margin-top: auto; }
-    .whatsapp-button { width: 100%; }
-    .official-link {
-      padding: 5px;
-      text-align: center;
-      color: #477b35;
-      font-size: 12px;
+      background: #f8faf7;
+      color: #46564a;
+      font-size: 10px;
       font-weight: 700;
     }
 
-    .official-link:hover { text-decoration: underline; }
+    .card-actions {
+      display: grid;
+      gap: 9px;
+      margin-top: auto;
+    }
 
-    .empty, .loading, .error {
+    .whatsapp-button {
+      width: 100%;
+      background: var(--green);
+      color: white;
+    }
+
+    .whatsapp-button:hover {
+      background: var(--green-dark);
+    }
+
+    .official-link {
+      display: block;
+      padding: 5px;
+      color: #4d702c;
+      font-size: 11px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .official-link:hover {
+      text-decoration: underline;
+    }
+
+    .empty,
+    .error {
       grid-column: 1 / -1;
-      padding: 30px 20px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
+      padding: 38px 24px;
+      border: 1px dashed #cbd8c5;
+      border-radius: var(--radius);
       background: white;
       color: var(--muted);
       text-align: center;
     }
 
-    .catalog {
-      margin-top: 44px;
-      padding: 32px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      background: white;
-      text-align: center;
+    .error {
+      border-color: #e5c6a6;
+      background: #fffaf4;
+      color: #7d4a1e;
     }
 
-    .catalog h2 { margin: 0 0 8px; color: var(--green); }
-    .catalog p { max-width: 680px; margin: 0 auto 20px; color: var(--muted); }
-    .footer { padding: 30px 20px; background: var(--green-dark); color: white; text-align: center; }
-    .footer .footer-brand { margin-bottom: 8px; font-weight: 800; letter-spacing: 1px; }
-    .footer .footer-brand span { color: var(--lime); }
-    .footer p { margin: 5px; color: #d5e2d7; font-size: 12px; }
-    .footer a { color: var(--lime); }
+    .info-band {
+      background: #edf3e8;
+    }
 
-    .floating-whatsapp {
-      position: fixed;
-      right: 18px;
-      bottom: 18px;
-      z-index: 15;
-      padding: 13px 18px;
-      border-radius: 50px;
-      background: var(--lime);
-      color: var(--green-dark);
+    .info-content {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 28px;
+    }
+
+    .info-content h2 {
+      margin: 0;
+      color: var(--green);
+      font-size: clamp(24px, 3vw, 34px);
+      line-height: 1.2;
+    }
+
+    .info-content p {
+      max-width: 660px;
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .info-content .button {
+      background: var(--green);
+      color: white;
+    }
+
+    .footer {
+      padding: 35px 6%;
+      background: var(--green-dark);
+      color: white;
+    }
+
+    .footer-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 25px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .footer strong {
+      display: block;
+      color: var(--lime);
       font-size: 13px;
-      font-weight: 900;
-      box-shadow: 0 6px 22px #0003;
+      letter-spacing: 1px;
     }
 
-    @media (max-width: 900px) {
-      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .nav { gap: 16px; }
+    .footer p {
+      margin: 5px 0 0;
+      color: rgba(255, 255, 255, .65);
+      font-size: 11px;
     }
 
-    @media (max-width: 650px) {
-      .header { min-height: 72px; padding: 12px 5%; }
-      .menu-toggle { display: block; }
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      font-size: 12px;
+      font-weight: 700;
+    }
 
-      .nav {
-        display: none;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        padding: 18px 5% 22px;
-        align-items: stretch;
-        flex-direction: column;
-        gap: 16px;
-        background: white;
-        border-bottom: 1px solid var(--border);
+    .footer-links a:hover {
+      color: var(--lime);
+    }
+
+    @media (max-width: 950px) {
+      .projects-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
-      .nav.open { display: flex; }
-      .nav .button { width: fit-content; }
-      .hero { padding: 48px 6% 43px; }
-      .hero h1 { letter-spacing: -1px; }
-      main { padding: 38px 16px 55px; }
-      .filters { grid-template-columns: 1fr; }
-      .grid { grid-template-columns: 1fr; }
-      .photo { height: 245px; }
-      .catalog { padding: 26px 18px; }
-      .floating-whatsapp { right: 12px; bottom: 12px; }
+      .nav {
+        gap: 15px;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .header {
+        min-height: 72px;
+        padding: 12px 5%;
+      }
+
+      .menu-toggle {
+        display: block;
+      }
+
+      .nav {
+        position: absolute;
+        top: calc(100% + 1px);
+        left: 0;
+        right: 0;
+        display: none;
+        align-items: stretch;
+        flex-direction: column;
+        gap: 0;
+        padding: 10px 5% 18px;
+        border-bottom: 1px solid var(--border);
+        background: white;
+      }
+
+      .nav.open {
+        display: flex;
+      }
+
+      .nav a {
+        padding: 12px 8px;
+      }
+
+      .nav .nav-cta {
+        margin-top: 5px;
+        text-align: center;
+      }
+
+      .hero {
+        padding: 62px 6% 58px;
+      }
+
+      .hero h1 {
+        letter-spacing: -1.2px;
+      }
+
+      .hero-description {
+        font-size: 15px;
+      }
+
+      .section {
+        width: 90%;
+        padding: 48px 0;
+      }
+
+      .section-heading {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 13px;
+      }
+
+      .filters {
+        grid-template-columns: 1fr;
+        padding: 12px;
+      }
+
+      .projects-grid {
+        grid-template-columns: 1fr;
+        gap: 17px;
+      }
+
+      .photo,
+      .photo-fallback {
+        min-height: 235px;
+      }
+
+      .info-content {
+        grid-template-columns: 1fr;
+      }
+
+      .info-content .button {
+        justify-self: start;
+      }
+
+      .footer-content {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+      }
     }
   </style>
 </head>
 
 <body>
   <header class="header">
-    <a class="logo" href="index.html" aria-label="Empreendimentos Buenos SP - página inicial">
-      <span class="logo-icon">B</span>
-      <span>EMPREENDIMENTOS<strong>BUENOS SP</strong></span>
+    <a class="logo" href="index.html" aria-label="Buenos SP - página inicial">
+      <span class="logo-icon" aria-hidden="true">B</span>
+      <span>
+        EMPREENDIMENTOS
+        <small>BUENOS SP</small>
+      </span>
     </a>
 
-    <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false">☰</button>
+    <button
+      class="menu-toggle"
+      id="menuToggle"
+      type="button"
+      aria-label="Abrir menu"
+      aria-expanded="false"
+      aria-controls="mainNav"
+    >☰</button>
 
     <nav class="nav" id="mainNav" aria-label="Navegação principal">
       <a href="index.html">Início</a>
-      <a href="empreendimentos.html" aria-current="page">Empreendimentos</a>
-      <a href="privacidade.html">Privacidade</a>
-      <a class="button button-small" href="https://wa.me/5511945167897" target="_blank" rel="noopener noreferrer">Fale conosco ↗</a>
+      <a href="#catalogo">Empreendimentos</a>
+      <a href="#sobre">Sobre</a>
+      <a
+        class="nav-cta"
+        href="https://wa.me/5511945167897"
+        target="_blank"
+        rel="noopener noreferrer"
+      >Fale comigo ↗</a>
     </nav>
   </header>
 
-  <section class="hero">
-    <div class="hero-inner">
-      <span class="eyebrow">Catálogo de empreendimentos Econ</span>
-      <h1>Encontre seu próximo apartamento <span>com mais clareza.</span></h1>
-      <p>Explore os empreendimentos disponíveis no catálogo, filtre por nome ou estágio e fale diretamente com um consultor para consultar condições e disponibilidade.</p>
+  <main>
+    <section class="hero">
+      <div class="hero-content">
+        <p class="eyebrow">Encontre seu próximo endereço</p>
+        <h1>Seu próximo capítulo começa com o <span>imóvel certo.</span></h1>
+        <p class="hero-description">
+          Explore os empreendimentos da Econ em São Paulo e região.
+          Encontre opções para diferentes momentos da vida e fale comigo
+          para receber atendimento personalizado.
+        </p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#catalogo">
+            Explorar empreendimentos ↓
+          </a>
+          <a
+            class="button button-outline"
+            href="https://wa.me/5511945167897"
+            target="_blank"
+            rel="noopener noreferrer"
+          >Atendimento pelo WhatsApp ↗</a>
+        </div>
+      </div>
+    </section>
 
-      <div class="hero-actions">
-        <a class="button" href="#lista">Ver empreendimentos ↓</a>
-        <a class="button button-outline" href="https://wa.me/5511945167897?text=Ol%C3%A1%21%20Quero%20conhecer%20os%20empreendimentos%20Econ." target="_blank" rel="noopener noreferrer">Falar com um consultor ↗</a>
+    <section class="section" id="catalogo">
+      <div class="section-heading">
+        <div>
+          <p class="section-kicker">Catálogo de imóveis</p>
+          <h2>Encontre o seu lugar.</h2>
+          <p>
+            Pesquise pelo nome do empreendimento ou filtre por estágio
+            para encontrar as opções que combinam com você.
+          </p>
+        </div>
+        <div class="counter" id="counter" aria-live="polite">
+          Preparando catálogo...
+        </div>
       </div>
 
-      <div class="hero-note">
-        <span>Atendimento personalizado</span>
-        <span>Catálogo atualizado automaticamente</span>
+      <div class="filters" role="search">
+        <label class="input-wrap">
+          <span aria-hidden="true">⌕</span>
+          <input
+            id="searchInput"
+            type="search"
+            placeholder="Buscar empreendimento ou região..."
+            aria-label="Buscar por empreendimento ou região"
+            autocomplete="off"
+          >
+        </label>
+
+        <label>
+          <select id="statusFilter" aria-label="Filtrar por estágio">
+            <option value="">Todos os estágios</option>
+            <option value="Futuro Lançamento">Futuro lançamento</option>
+            <option value="Breve Lançamento">Breve lançamento</option>
+            <option value="Lançamento">Lançamento</option>
+            <option value="Em Construção">Em construção</option>
+            <option value="Pronto para Morar">Pronto para morar</option>
+            <option value="Consultar catálogo">Consultar catálogo</option>
+          </select>
+        </label>
       </div>
-    </div>
-  </section>
 
-  <main id="lista">
-    <section class="section-heading">
-      <span class="eyebrow">Encontre uma opção para você</span>
-      <h2>Nossos empreendimentos</h2>
-      <p>Pesquise pelo nome do projeto ou filtre pelo estágio informado no catálogo.</p>
+      <div class="projects-grid" id="projectsGrid" aria-live="polite">
+        <div class="empty">
+          Carregando os empreendimentos...
+        </div>
+      </div>
     </section>
 
-    <section class="filters" aria-label="Filtros de empreendimentos">
-      <input type="search" id="searchInput" placeholder="Buscar empreendimento..." aria-label="Buscar empreendimento">
-
-      <select id="statusFilter" aria-label="Filtrar por estágio da obra">
-        <option value="">Todos os estágios</option>
-        <option value="Lançamento">Lançamento</option>
-        <option value="Breve Lançamento">Breve lançamento</option>
-        <option value="Futuro Lançamento">Futuro lançamento</option>
-        <option value="Em Construção">Em construção</option>
-        <option value="Pronto para Morar">Pronto para morar</option>
-      </select>
-    </section>
-
-    <p class="counter" id="counter" aria-live="polite">Carregando empreendimentos...</p>
-
-    <section class="grid" id="projectsGrid" aria-label="Lista de empreendimentos">
-      <div class="loading">Carregando o catálogo atualizado...</div>
-    </section>
-
-    <section class="catalog">
-      <h2>Precisa de mais detalhes?</h2>
-      <p>Consulte o catálogo oficial da Econ para confirmar informações, imagens, disponibilidade e condições de cada empreendimento.</p>
-      <a class="button" href="https://www.econconstrutora.com.br/imoveis" target="_blank" rel="noopener noreferrer">Ver catálogo oficial da Econ ↗</a>
+    <section class="info-band" id="sobre">
+      <div class="section info-content">
+        <div>
+          <h2>Vamos encontrar o imóvel ideal para você?</h2>
+          <p>
+            Posso ajudar você a conhecer as opções, esclarecer dúvidas
+            e entender quais empreendimentos fazem sentido para seus planos.
+            Entre em contato para receber atendimento.
+          </p>
+        </div>
+        <a
+          class="button"
+          href="https://wa.me/5511945167897"
+          target="_blank"
+          rel="noopener noreferrer"
+        >Conversar pelo WhatsApp ↗</a>
+      </div>
     </section>
   </main>
 
   <footer class="footer">
-    <div class="footer-brand">EMPREENDIMENTOS <span>BUENOS SP</span></div>
-    <p>Atendimento imobiliário pelo WhatsApp.</p>
-    <p>Consulte disponibilidade, valores e condições atualizadas diretamente com um consultor.</p>
-    <p><a href="privacidade.html">Política de privacidade</a></p>
-    <p>© <span id="year"></span> Empreendimentos Buenos SP</p>
-  </footer>
+    <div class="footer-content">
+      <div>
+        <strong>EMPREENDIMENTOS BUENOS SP</strong>
+        <p>Atendimento imobiliário com atenção aos seus planos.</p>
+        <p>© <span id="year"></span> Empreendimentos Buenos SP.</p>
+      </div>
 
-  <a class="floating-whatsapp" href="https://wa.me/5511945167897?text=Ol%C3%A1%21%20Vim%20pelo%20site%20Buenos%20SP." target="_blank" rel="noopener noreferrer" aria-label="Fale conosco pelo WhatsApp">WhatsApp ↗</a>
+      <div class="footer-links">
+        <a href="index.html">Início</a>
+        <a href="#catalogo">Empreendimentos</a>
+        <a
+          href="https://www.econconstrutora.com.br/imoveis"
+          target="_blank"
+          rel="noopener noreferrer"
+        >Catálogo oficial da Econ ↗</a>
+      </div>
+    </div>
+  </footer>
 
   <!-- CATALOGO_DATA_INICIO -->
   <script>
@@ -539,7 +869,9 @@
   <script>
     "use strict";
 
-    const CATALOGO_URL = "https://www.econconstrutora.com.br/imoveis";
+    const CATALOGO_URL =
+      "https://www.econconstrutora.com.br/imoveis";
+
     const WHATSAPP = "5511945167897";
 
     const grid = document.getElementById("projectsGrid");
@@ -549,20 +881,34 @@
 
     let projects = [];
 
-    document.getElementById("year").textContent = new Date().getFullYear();
+    document.getElementById("year").textContent =
+      new Date().getFullYear();
 
+    // Menu responsivo para celulares.
     const menuToggle = document.getElementById("menuToggle");
     const mainNav = document.getElementById("mainNav");
 
     menuToggle.addEventListener("click", () => {
       const isOpen = mainNav.classList.toggle("open");
-      menuToggle.setAttribute("aria-expanded", String(isOpen));
-      menuToggle.setAttribute("aria-label", isOpen ? "Fechar menu" : "Abrir menu");
+
+      menuToggle.setAttribute(
+        "aria-expanded",
+        String(isOpen)
+      );
+
+      menuToggle.setAttribute(
+        "aria-label",
+        isOpen ? "Fechar menu" : "Abrir menu"
+      );
+
       menuToggle.textContent = isOpen ? "×" : "☰";
     });
 
+    // Normaliza os estágios recebidos pelo Python.
     function normalizeStatus(status) {
-      const value = String(status || "").trim().toLocaleLowerCase("pt-BR");
+      const value = String(status || "")
+        .trim()
+        .toLocaleLowerCase("pt-BR");
 
       const known = [
         ["breve lançamento", "Breve Lançamento"],
@@ -573,40 +919,77 @@
       ];
 
       for (const [needle, label] of known) {
-        if (value.includes(needle)) return label;
+        if (value.includes(needle)) {
+          return label;
+        }
       }
 
       return status || "Consultar catálogo";
     }
 
+    // Aceita somente endereços HTTP/HTTPS.
     function safeUrl(url, fallback) {
       try {
-        const parsed = new URL(url || fallback, window.location.href);
+        const parsed = new URL(
+          url || fallback || CATALOGO_URL,
+          window.location.href
+        );
 
-        return ["http:", "https:"].includes(parsed.protocol)
-          ? parsed.href
-          : fallback;
+        if (
+          parsed.protocol === "http:" ||
+          parsed.protocol === "https:"
+        ) {
+          return parsed.href;
+        }
+
+        return fallback || CATALOGO_URL;
       } catch (_) {
-        return fallback;
+        return fallback || CATALOGO_URL;
       }
     }
 
+    // Converte os campos do Python para um formato consistente.
     function normalizeProject(item) {
-      const name = String(item.nome || item.name || "").trim();
+      const name = String(
+        item.nome || item.name || ""
+      ).trim();
 
-      if (!name) return null;
+      if (!name) {
+        return null;
+      }
+
+      const rawLocation = String(
+        item.localizacao || item.bairro || ""
+      ).trim();
+
+      let regiao = String(item.regiao || "").trim();
+      let bairro = rawLocation;
+
+      // Se vier "Zona Sul | Sacomã", separa as partes.
+      if (rawLocation.includes("|")) {
+        const parts = rawLocation
+          .split("|")
+          .map(part => part.trim());
+
+        regiao = regiao || parts[0] || "";
+        bairro = parts.slice(1).join(" | ");
+      }
 
       return {
         nome: name,
         status: normalizeStatus(item.status),
         imagem: safeUrl(item.imagem || item.image || "", ""),
-        link: safeUrl(item.link || item.fonte || CATALOGO_URL, CATALOGO_URL),
-        bairro: String(item.bairro || item.localizacao || "").trim(),
-        regiao: String(item.regiao || "").trim(),
+        link: safeUrl(
+          item.link || item.fonte || CATALOGO_URL,
+          CATALOGO_URL
+        ),
+        bairro: bairro,
+        regiao: regiao,
         dormitorios: String(item.dormitorios || "").trim()
       };
     }
 
+    // Cria os cartões usando elementos DOM, sem inserir HTML dos dados.
     function createCard(item) {
       const card = document.createElement("article");
       card.className = "card";
@@ -631,23 +1014,31 @@
       fallbackTitle.textContent = item.nome;
 
       const fallbackNote = document.createElement("small");
-      fallbackNote.textContent = "Consulte as imagens no catálogo oficial";
+      fallbackNote.textContent =
+        "Consulte as imagens no catálogo oficial";
 
-      fallback.append(building, fallbackTitle, fallbackNote);
+      fallback.append(
+        building,
+        fallbackTitle,
+        fallbackNote
+      );
+
       fallback.hidden = true;
 
       if (item.imagem) {
         const img = document.createElement("img");
         img.src = item.imagem;
-        img.alt = "Imagem ilustrativa do empreendimento " + item.nome;
+        img.alt =
+          "Imagem ilustrativa do empreendimento " + item.nome;
         img.loading = "lazy";
+        img.decoding = "async";
 
         img.onerror = () => {
           img.hidden = true;
           fallback.hidden = false;
         };
 
-        photo.append(img);
+        photo.appendChild(img);
       } else {
         fallback.hidden = false;
       }
@@ -662,15 +1053,20 @@
 
       const location = document.createElement("p");
       location.className = "location";
+
       location.textContent = [
         item.regiao,
         item.bairro
-      ].filter(Boolean).join(" • ") || "Consulte a localização no catálogo oficial";
+      ].filter(Boolean).join(" • ") ||
+        "Consulte a localização no catálogo oficial";
 
       const details = document.createElement("div");
       details.className = "details";
 
-      [item.dormitorios, item.status].filter(Boolean).forEach(value => {
+      [
+        item.dormitorios,
+        item.status
+      ].filter(Boolean).forEach(value => {
         const chip = document.createElement("span");
         chip.className = "detail";
         chip.textContent = value;
@@ -688,10 +1084,15 @@
 
       const whatsapp = document.createElement("a");
       whatsapp.className = "button whatsapp-button";
-      whatsapp.href = "https://wa.me/" + WHATSAPP + "?text=" + message;
+      whatsapp.href =
+        "https://wa.me/" + WHATSAPP + "?text=" + message;
       whatsapp.target = "_blank";
       whatsapp.rel = "noopener noreferrer";
       whatsapp.textContent = "Tenho interesse ↗";
+      whatsapp.setAttribute(
+        "aria-label",
+        "Perguntar pelo WhatsApp sobre " + item.nome
+      );
 
       const official = document.createElement("a");
       official.className = "official-link";
@@ -707,8 +1108,12 @@
       return card;
     }
 
+    // Aplica busca textual e filtro de estágio.
     function renderProjects() {
-      const term = searchInput.value.trim().toLocaleLowerCase("pt-BR");
+      const term = searchInput.value
+        .trim()
+        .toLocaleLowerCase("pt-BR");
+
       const selectedStatus = statusFilter.value;
 
       const filtered = projects.filter(item => {
@@ -719,8 +1124,10 @@
           item.status
         ].join(" ").toLocaleLowerCase("pt-BR");
 
-        return searchable.includes(term) &&
-          (!selectedStatus || item.status === selectedStatus);
+        return (
+          searchable.includes(term) &&
+          (!selectedStatus || item.status === selectedStatus)
+        );
       });
 
       grid.replaceChildren();
@@ -731,31 +1138,47 @@
 
         empty.textContent = projects.length
           ? "Nenhum empreendimento encontrado. Tente outra busca ou estágio."
-          : "O catálogo ainda não carregou. Use o link para consultar o catálogo oficial da Econ.";
+          : "O catálogo ainda não foi preenchido. Consulte o catálogo oficial da Econ.";
 
         grid.appendChild(empty);
       } else {
-        filtered.forEach(item => grid.appendChild(createCard(item)));
+        const fragment = document.createDocumentFragment();
+
+        filtered.forEach(item => {
+          fragment.appendChild(createCard(item));
+        });
+
+        grid.appendChild(fragment);
       }
 
-      counter.textContent = filtered.length +
-        (filtered.length === 1
-          ? " empreendimento encontrado"
-          : " empreendimentos encontrados");
+      counter.textContent =
+        filtered.length +
+        (
+          filtered.length === 1
+            ? " empreendimento encontrado"
+            : " empreendimentos encontrados"
+        );
     }
 
+    // Carrega os dados que o script Python grava neste HTML.
     function loadProjects() {
       try {
         const list = window.EMPREENDIMENTOS;
 
-        if (!Array.isArray(list) || !list.length) {
-          throw new Error("O catálogo ainda não foi preenchido pela automação.");
+        if (!Array.isArray(list) || list.length === 0) {
+          throw new Error(
+            "O catálogo ainda não foi preenchido pela automação."
+          );
         }
 
-        projects = list.map(normalizeProject).filter(Boolean);
+        projects = list
+          .map(normalizeProject)
+          .filter(Boolean);
 
         if (!projects.length) {
-          throw new Error("Nenhum empreendimento válido foi encontrado no HTML.");
+          throw new Error(
+            "Nenhum empreendimento válido foi encontrado no HTML."
+          );
         }
 
         renderProjects();
@@ -785,7 +1208,4 @@
   </script>
 </body>
 </html>
-  </script>
 
-</body>
-</html>
