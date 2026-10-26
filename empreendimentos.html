@@ -1,762 +1,914 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Conheça empreendimentos residenciais da Econ Construtora em São Paulo e solicite atendimento pelo WhatsApp.">
   <meta name="theme-color" content="#103c2c">
+  <meta name="description" content="Conheça os empreendimentos Econ em São Paulo e fale com a Empreendimentos Buenos SP.">
   <title>Empreendimentos | Buenos SP</title>
-  <link rel="stylesheet" href="styles.css">
 
   <style>
     :root {
       --verde: #103c2c;
-      --verde-claro: #eaf3ec;
-      --dourado: #c9a85c;
-      --texto: #24352b;
-      --fundo: #f6f8f5;
+      --verde-escuro: #09291f;
+      --verde-claro: #eaf2e6;
+      --lima: #c7f36b;
+      --fundo: #f7f9f6;
+      --texto: #17251d;
+      --cinza: #657168;
+      --borda: #e1e8df;
+      --sombra: 0 12px 35px rgba(16, 60, 44, .09);
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
 
     body {
       margin: 0;
-      background: var(--fundo);
-      color: var(--texto);
       font-family: Arial, Helvetica, sans-serif;
+      color: var(--texto);
+      background: var(--fundo);
+      line-height: 1.6;
     }
 
-    .header {
+    a {
+      color: inherit;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    .topo {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: #fff;
+      border-bottom: 1px solid var(--borda);
+      padding: 17px 5%;
+    }
+
+    .topo-conteudo {
+      max-width: 1200px;
+      margin: auto;
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 20px;
-      padding: 16px 5%;
-      background: white;
-      box-shadow: 0 2px 12px #0000000c;
+      flex-wrap: wrap;
     }
 
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
+    .marca {
       color: var(--verde);
-      text-decoration: none;
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    .logo strong { display: block; }
-
-    .logo-icon {
-      display: grid;
-      place-items: center;
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      color: white;
-      background: var(--verde);
       font-size: 22px;
+      font-weight: 900;
+      letter-spacing: .5px;
+      text-decoration: none;
     }
 
-    .nav {
+    .marca span {
+      color: #6b982d;
+    }
+
+    .navegacao {
       display: flex;
       align-items: center;
-      gap: 20px;
+      gap: 24px;
+      flex-wrap: wrap;
     }
 
-    .nav a {
-      color: var(--verde);
+    .navegacao a {
       text-decoration: none;
       font-size: 14px;
-      font-weight: 600;
-    }
-
-    .button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 12px 17px;
-      border: 0;
-      border-radius: 7px;
-      background: var(--verde);
-      color: white !important;
       font-weight: 700;
-      text-decoration: none;
-      cursor: pointer;
     }
 
-    .button:hover { background: #1b5940; }
+    .navegacao a:hover {
+      color: #6b982d;
+    }
 
-    .menu-toggle {
-      display: none;
-      padding: 8px 12px;
-      border: 1px solid #ddd;
-      border-radius: 6px;
-      background: white;
-      font-size: 22px;
-      cursor: pointer;
+    .navegacao .nav-cta {
+      background: var(--verde);
+      color: white;
+      padding: 10px 16px;
+      border-radius: 8px;
+    }
+
+    .navegacao .nav-cta:hover {
+      background: var(--verde-escuro);
+      color: white;
     }
 
     .hero {
-      padding: 60px 6%;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(125deg, var(--verde-escuro), var(--verde));
       color: white;
-      background: linear-gradient(120deg, #103c2c, #245e43);
+      padding: 66px 20px 60px;
     }
 
-    .hero-inner {
-      max-width: 1150px;
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 350px;
+      height: 350px;
+      border: 1px solid #c7f36b30;
+      border-radius: 50%;
+      right: -100px;
+      top: -180px;
+      box-shadow: 0 0 0 50px #c7f36b08,
+                  0 0 0 100px #c7f36b06;
+      pointer-events: none;
+    }
+
+    .hero-conteudo {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
       margin: auto;
     }
 
-    .eyebrow {
-      color: #e8d39a;
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 2px;
+    .etiqueta {
+      color: var(--lima);
+      font-weight: 800;
       text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 12px;
     }
 
     .hero h1 {
-      max-width: 750px;
-      margin: 14px 0;
-      font-size: clamp(32px, 5vw, 52px);
+      max-width: 760px;
+      font-size: clamp(32px, 5vw, 55px);
       line-height: 1.12;
+      letter-spacing: -1px;
+      margin: 14px 0 18px;
+    }
+
+    .hero h1 span {
+      color: var(--lima);
     }
 
     .hero p {
-      max-width: 680px;
-      line-height: 1.7;
-      color: #e4eee6;
+      max-width: 650px;
+      margin: 0 0 25px;
+      color: #e0e9e2;
+      font-size: 16px;
     }
 
-    .catalog {
+    .botao {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      padding: 13px 20px;
+      border-radius: 9px;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 13px;
+      transition: .2s;
+      border: 0;
+      cursor: pointer;
+    }
+
+    .botao-lima {
+      color: var(--verde-escuro);
+      background: var(--lima);
+    }
+
+    .botao-lima:hover {
+      background: #b4e75b;
+      transform: translateY(-2px);
+    }
+
+    .botao-whatsapp {
+      background: var(--verde);
+      color: white;
+      width: 100%;
+    }
+
+    .botao-whatsapp:hover {
+      background: var(--verde-escuro);
+    }
+
+    .hero-notas {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      margin-top: 24px;
+      font-size: 12px;
+      color: #e0e9e2;
+    }
+
+    .hero-notas span::before {
+      content: "✓";
+      color: var(--lima);
+      font-weight: 900;
+      margin-right: 7px;
+    }
+
+    main {
       max-width: 1200px;
+      padding: 45px 20px 65px;
       margin: auto;
-      padding: 40px 22px 70px;
     }
 
-    .catalog-heading {
+    .introducao {
       margin-bottom: 24px;
     }
 
-    .catalog-heading h2 {
-      margin-bottom: 8px;
+    .introducao .etiqueta {
+      color: #608a34;
+    }
+
+    .introducao h2 {
       color: var(--verde);
-      font-size: 29px;
+      font-size: clamp(27px, 3vw, 36px);
+      line-height: 1.2;
+      margin: 8px 0;
     }
 
-    .catalog-heading p {
-      color: #647168;
-      line-height: 1.6;
+    .introducao p {
+      color: var(--cinza);
+      margin-top: 0;
     }
 
-    .filters {
+    .filtros {
       display: grid;
-      grid-template-columns: 2fr 1fr 1fr;
+      grid-template-columns: 2fr 1fr;
       gap: 12px;
-      margin-bottom: 28px;
+      margin: 25px 0 22px;
     }
 
-    .filters input,
-    .filters select {
+    .filtros input,
+    .filtros select {
       width: 100%;
-      min-height: 46px;
-      padding: 12px;
-      border: 1px solid #d5ded6;
-      border-radius: 7px;
+      min-width: 0;
+      padding: 14px;
+      border: 1px solid var(--borda);
+      border-radius: 9px;
       background: white;
+      color: var(--texto);
       font-size: 14px;
     }
 
-    .results {
-      margin-bottom: 18px;
-      color: #58675d;
-      font-size: 14px;
+    .filtros input:focus,
+    .filtros select:focus {
+      outline: 2px solid #a8df48;
+      border-color: #7fae45;
     }
 
-    .grid {
+    .contador {
+      color: var(--cinza);
+      font-size: 13px;
+      margin-bottom: 15px;
+    }
+
+    .grade {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 22px;
     }
 
-    .project {
-      overflow: hidden;
-      border: 1px solid #e1e7e1;
-      border-radius: 12px;
+    .card {
       background: white;
-      box-shadow: 0 5px 18px #183b2410;
-    }
-
-    .project-photo {
-      position: relative;
-      display: grid;
-      place-items: center;
-      height: 225px;
+      border: 1px solid var(--borda);
+      border-radius: 15px;
       overflow: hidden;
-      background: linear-gradient(135deg, #e6eee7, #cbdacf);
+      box-shadow: var(--sombra);
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      transition: transform .2s, box-shadow .2s;
     }
 
-    .project-photo img {
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 35px rgba(16, 60, 44, .15);
+    }
+
+    .foto-container {
+      height: 230px;
+      background: #e7eee4;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .foto-container img {
+      display: block;
       width: 100%;
       height: 100%;
       object-fit: cover;
-      display: block;
+      transition: transform .35s;
     }
 
-    .photo-placeholder {
+    .card:hover .foto-container img {
+      transform: scale(1.035);
+    }
+
+    .foto-fallback {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
       padding: 20px;
-      color: var(--verde);
       text-align: center;
+      color: var(--verde);
+      background: linear-gradient(135deg, #edf4e9, #d8e7d2);
     }
 
-    .photo-placeholder .building {
-      display: block;
-      margin-bottom: 12px;
-      font-size: 48px;
+    .foto-fallback .predio {
+      font-size: 46px;
+      margin-bottom: 8px;
     }
 
-    .photo-placeholder p {
-      margin: 0;
-      font-size: 13px;
-      line-height: 1.5;
+    .foto-fallback small {
+      color: var(--cinza);
     }
 
     .status {
       position: absolute;
       top: 12px;
       left: 12px;
-      max-width: calc(100% - 24px);
-      padding: 7px 10px;
-      border-radius: 5px;
-      background: white;
-      color: var(--verde);
-      font-size: 11px;
-      font-weight: 700;
-      box-shadow: 0 2px 8px #00000015;
-    }
-
-    .project-info { padding: 19px; }
-
-    .region {
-      margin: 0 0 8px;
-      color: #6d786f;
-      font-size: 12px;
+      z-index: 2;
+      background: var(--lima);
+      color: var(--verde-escuro);
+      border-radius: 6px;
+      padding: 6px 9px;
+      font-size: 10px;
+      font-weight: 900;
       text-transform: uppercase;
-      letter-spacing: .6px;
+      box-shadow: 0 2px 8px #00000012;
     }
 
-    .project h3 {
-      margin: 0 0 10px;
-      color: var(--verde);
+    .card-conteudo {
+      padding: 19px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .card h3 {
+      margin: 0 0 8px;
       font-size: 21px;
+      color: var(--verde);
+      line-height: 1.3;
     }
 
-    .details {
-      margin: 0 0 18px;
-      color: #59665d;
-      font-size: 14px;
-      line-height: 1.6;
+    .local {
+      color: var(--cinza);
+      font-size: 13px;
+      margin: 0 0 14px;
     }
 
-    .project-actions {
+    .detalhes {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .detalhe {
+      background: #edf4e9;
+      color: #38533c;
+      padding: 6px 9px;
+      border-radius: 6px;
+      font-size: 11px;
+    }
+
+    .card-acoes {
+      margin-top: auto;
       display: grid;
-      grid-template-columns: 1fr;
       gap: 9px;
     }
 
-    .project-actions a {
+    .link-oficial {
+      display: block;
       text-align: center;
-      font-size: 13px;
-    }
-
-    .official-link {
-      padding: 10px;
-      border: 1px solid #d5dfd6;
-      border-radius: 7px;
-      color: var(--verde);
-      text-decoration: none;
+      color: #477b35;
+      font-size: 12px;
       font-weight: 700;
+      text-decoration: none;
+      padding: 5px;
     }
 
-    .notice {
-      margin-top: 30px;
-      padding: 18px;
-      border-left: 4px solid var(--dourado);
-      border-radius: 6px;
-      background: #fffdf5;
-      color: #5d5847;
-      font-size: 13px;
-      line-height: 1.7;
+    .link-oficial:hover {
+      text-decoration: underline;
     }
 
-    .no-results {
-      display: none;
-      padding: 35px 15px;
+    .vazio {
       text-align: center;
-      color: #59665d;
+      padding: 35px 15px;
+      color: var(--cinza);
+      grid-column: 1 / -1;
+      background: white;
+      border: 1px solid var(--borda);
+      border-radius: 12px;
     }
 
-    .footer {
-      padding: 30px 6%;
-      background: #0b2d20;
+    .catalogo {
+      text-align: center;
+      margin-top: 42px;
+      padding: 32px 20px;
+      background: white;
+      border: 1px solid var(--borda);
+      border-radius: 15px;
+    }
+
+    .catalogo h2 {
+      color: var(--verde);
+      margin-top: 0;
+    }
+
+    .catalogo p {
+      color: var(--cinza);
+      max-width: 650px;
+      margin: 0 auto 20px;
+    }
+
+    .rodape {
+      background: var(--verde-escuro);
       color: white;
+      padding: 32px 20px;
+      text-align: center;
     }
 
-    .footer-inner {
-      max-width: 1150px;
-      margin: auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 20px;
-    }
-
-    .footer a {
+    .rodape .marca {
       color: white;
+      margin-bottom: 8px;
+    }
+
+    .rodape p {
+      margin: 6px;
+      font-size: 12px;
+      color: #d5e2d7;
+    }
+
+    .rodape a {
+      color: var(--lima);
       text-decoration: none;
     }
 
-    .footer p {
-      color: #d3e0d6;
+    .whatsapp-flutuante {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 110;
+      background: var(--lima);
+      color: var(--verde-escuro);
+      border-radius: 50px;
+      padding: 13px 18px;
+      text-decoration: none;
       font-size: 13px;
+      font-weight: 900;
+      box-shadow: 0 4px 16px #0003;
     }
 
-    @media (max-width: 850px) {
-      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .filters { grid-template-columns: 1fr 1fr; }
-      .filters input { grid-column: 1 / -1; }
-      .menu-toggle { display: block; }
-      .header { flex-wrap: wrap; }
-      .nav {
-        display: none;
-        flex-direction: column;
-        align-items: stretch;
-        width: 100%;
-        padding: 15px 0;
+    .whatsapp-flutuante:hover {
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 900px) {
+      .grade {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
-      .nav.open { display: flex; }
-      .nav a { padding: 8px 0; }
+
+      .navegacao {
+        gap: 15px;
+      }
     }
 
-    @media (max-width: 560px) {
-      .grid { grid-template-columns: 1fr; }
-      .filters { grid-template-columns: 1fr; }
-      .filters input { grid-column: auto; }
-      .hero { padding: 42px 22px; }
-      .project-photo { height: 230px; }
+    @media (max-width: 600px) {
+      .topo {
+        padding: 15px;
+      }
+
+      .topo-conteudo {
+        justify-content: center;
+        text-align: center;
+      }
+
+      .navegacao {
+        justify-content: center;
+        gap: 12px;
+      }
+
+      .navegacao a {
+        font-size: 12px;
+      }
+
+      .hero {
+        padding: 45px 18px;
+      }
+
+      .hero-notas {
+        flex-direction: column;
+        gap: 7px;
+      }
+
+      main {
+        padding: 30px 14px 45px;
+      }
+
+      .filtros {
+        grid-template-columns: 1fr;
+      }
+
+      .grade {
+        grid-template-columns: 1fr;
+      }
+
+      .foto-container {
+        height: 245px;
+      }
+
+      .introducao h2 {
+        font-size: 26px;
+      }
+
+      .catalogo {
+        padding: 25px 17px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        transition-duration: .01ms !important;
+      }
     }
   </style>
 </head>
 
 <body>
-  <header class="header">
-    <a class="logo" href="index.html">
-      <span class="logo-icon">B</span>
-      <span>EMPREENDIMENTOS <strong>BUENOS SP</strong></span>
-    </a>
 
-    <button class="menu-toggle" id="menu-toggle"
-      aria-label="Abrir menu" aria-expanded="false">☰</button>
+  <header class="topo">
+    <div class="topo-conteudo">
+      <a class="marca" href="index.html">
+        BUENOS <span>SP</span>
+      </a>
 
-    <nav class="nav" id="nav">
-      <a href="index.html">Início</a>
-      <a href="empreendimentos.html">Empreendimentos</a>
-      <a href="index.html#minha-casa">Minha Casa, Minha Vida</a>
-      <a class="button" href="https://wa.me/5511945167897"
-         target="_blank" rel="noopener noreferrer">Fale pelo WhatsApp</a>
-    </nav>
+      <nav class="navegacao" aria-label="Navegação principal">
+        <a href="index.html">Início</a>
+        <a href="#empreendimentos">Empreendimentos</a>
+        <a href="#catalogo">Catálogo oficial</a>
+        <a class="nav-cta"
+           href="https://wa.me/5511945167897"
+           target="_blank"
+           rel="noopener noreferrer">Fale conosco ↗</a>
+      </nav>
+    </div>
   </header>
 
-  <main>
-    <section class="hero">
-      <div class="hero-inner">
-        <span class="eyebrow">Seu próximo endereço</span>
-        <h1>Encontre seu apartamento em São Paulo</h1>
-        <p>
-          Explore empreendimentos residenciais da Econ Construtora.
-          Pesquise por nome, região ou etapa da obra e fale com nosso
-          atendimento para tirar suas dúvidas.
-        </p>
-        <a class="button" href="#catalogo">Ver empreendimentos</a>
-      </div>
-    </section>
+  <section class="hero">
+    <div class="hero-conteudo">
+      <div class="etiqueta">Empreendimentos Buenos SP</div>
 
-    <section class="catalog" id="catalogo">
-      <div class="catalog-heading">
-        <h2>Empreendimentos</h2>
-        <p>Use os filtros para encontrar opções de acordo com sua busca.</p>
-      </div>
+      <h1>Encontre seu próximo <span>apartamento.</span></h1>
 
-      <div class="filters">
-        <input id="search" type="search"
-          placeholder="Buscar empreendimento ou região..."
-          aria-label="Buscar empreendimento ou região">
-
-        <select id="region-filter" aria-label="Filtrar por região">
-          <option value="">Todas as regiões</option>
-          <option>Centro</option>
-          <option>Zona Leste</option>
-          <option>Zona Norte</option>
-          <option>Zona Oeste</option>
-          <option>Zona Sul</option>
-          <option>Grande São Paulo</option>
-        </select>
-
-        <select id="status-filter" aria-label="Filtrar por estágio">
-          <option value="">Todas as etapas</option>
-          <option>Lançamento</option>
-          <option>Breve lançamento</option>
-          <option>Futuro lançamento</option>
-          <option>Em construção</option>
-          <option>Pronto para morar</option>
-        </select>
-      </div>
-
-      <p class="results" id="results-count" aria-live="polite"></p>
-
-      <div class="grid" id="project-grid">
-
-        <!-- IMAGEM OFICIAL DIRETA: Beat Jardim Botânico -->
-        <article class="project" data-region="Zona Sul" data-status="Breve lançamento"
-          data-search="beat jardim botanico sacoma zona sul 2 dormitorios">
-          <div class="project-photo">
-            <img
-              src="https://econ-portal-static.s3.sa-east-1.amazonaws.com/empreendimentos/beat-jardim-botanico/perspectivas/perspectiva-da-fachada.webp"
-              alt="Perspectiva da fachada do Beat Jardim Botânico"
-              loading="lazy"
-              onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
-            <div class="photo-placeholder" style="display:none">
-              <span class="building">⌂</span>
-              <p>Consulte as fotos no catálogo oficial da Econ.</p>
-            </div>
-            <span class="status">Consulte disponibilidade</span>
-          </div>
-          <div class="project-info">
-            <p class="region">Zona Sul · Sacomã</p>
-            <h3>Beat Jardim Botânico</h3>
-            <p class="details">2 dormitórios. Consulte a etapa atual, plantas e condições com a construtora.</p>
-            <div class="project-actions">
-              <a class="button" href="https://wa.me/5511945167897?text=Olá!%20Tenho%20interesse%20no%20Beat%20Jardim%20Botânico."
-                 target="_blank" rel="noopener noreferrer">Tenho interesse</a>
-              <a class="official-link" href="https://www.econconstrutora.com.br/imoveis/grande-sp"
-                 target="_blank" rel="noopener noreferrer">Consultar catálogo oficial ↗</a>
-            </div>
-          </div>
-        </article>
-
-        <!-- IMAGEM OFICIAL DIRETA: Free Liberdade -->
-        <article class="project" data-region="Centro" data-status="Lançamento"
-          data-search="free liberdade centro sao paulo 2 dormitorios">
-          <div class="project-photo">
-            <img
-              src="https://econ-portal-static.s3.sa-east-1.amazonaws.com/empreendimentos/free-liberdade/1771770373586.webp"
-              alt="Imagem do empreendimento Free Liberdade"
-              loading="lazy"
-              onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
-            <div class="photo-placeholder" style="display:none">
-              <span class="building">⌂</span>
-              <p>Consulte as fotos no catálogo oficial da Econ.</p>
-            </div>
-            <span class="status">Consulte disponibilidade</span>
-          </div>
-          <div class="project-info">
-            <p class="region">Centro · Liberdade</p>
-            <h3>Free – Liberdade</h3>
-            <p class="details">2 dormitórios. Consulte a etapa atual, plantas e condições com a construtora.</p>
-            <div class="project-actions">
-              <a class="button" href="https://wa.me/5511945167897?text=Olá!%20Tenho%20interesse%20no%20Free%20Liberdade."
-                 target="_blank" rel="noopener noreferrer">Tenho interesse</a>
-              <a class="official-link" href="https://www.econconstrutora.com.br/imoveis/grande-sp"
-                 target="_blank" rel="noopener noreferrer">Consultar catálogo oficial ↗</a>
-            </div>
-          </div>
-        </article>
-
-        <!-- IMAGEM OFICIAL DIRETA: New Vila Ema -->
-        <article class="project" data-region="Zona Leste" data-status="Em construção"
-          data-search="new vila ema zona leste 2 dormitorios">
-          <div class="project-photo">
-            <img
-              src="https://econ-portal-static.s3.sa-east-1.amazonaws.com/empreendimentos/new-vila-ema/1773488349395.webp"
-              alt="Imagem do empreendimento New Vila Ema"
-              loading="lazy"
-              onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
-            <div class="photo-placeholder" style="display:none">
-              <span class="building">⌂</span>
-              <p>Consulte as fotos no catálogo oficial da Econ.</p>
-            </div>
-            <span class="status">Consulte disponibilidade</span>
-          </div>
-          <div class="project-info">
-            <p class="region">Zona Leste · Vila Ema</p>
-            <h3>New Vila Ema</h3>
-            <p class="details">2 dormitórios. Consulte a etapa atual, plantas e condições com a construtora.</p>
-            <div class="project-actions">
-              <a class="button" href="https://wa.me/5511945167897?text=Olá!%20Tenho%20interesse%20no%20New%20Vila%20Ema."
-                 target="_blank" rel="noopener noreferrer">Tenho interesse</a>
-              <a class="official-link" href="https://www.econconstrutora.com.br/imoveis/grande-sp"
-                 target="_blank" rel="noopener noreferrer">Consultar catálogo oficial ↗</a>
-            </div>
-          </div>
-        </article>
-
-        <!-- Os cartões abaixo encaminham ao catálogo oficial.
-             As imagens diretas desses projetos precisam ser confirmadas. -->
-
-        <article class="project" data-region="Zona Leste" data-status="Lançamento"
-          data-search="verdi tiquatira penha zona leste 2 dormitorios">
-          <div class="project-photo"><div class="photo-placeholder"><span class="building">⌂</span><p>Veja as imagens oficiais no catálogo da Econ.</p></div><span class="status">Consulte disponibilidade</span></div>
-          <div class="project-info"><p class="region">Zona Leste · Penha</p><h3>Verdí Tiquatira</h3><p class="details">2 dormitórios. Confirme disponibilidade e características no catálogo oficial.</p><div class="project-actions"><a class="button" href="https://wa.me/5511945167897?text=Olá!%20Tenho%20interesse%20no%20Verdí%20Tiquatira." target="_blank" rel="noopener noreferrer">Tenho interesse</a><a class="official-link" href="https://www.econconstrutora.com.br/" target="_blank" rel="noopener noreferrer">Ver fotos oficiais ↗</a></div></div>
-        </article>
-
-        <article class="project" data-region="Zona Sul" data-status="Lançamento"
-          data-search="bio parque nabuco jardim jabaquara zona sul">
-          <div class="project-photo"><div class="photo-placeholder"><span class="building">⌂</span><p>Veja as imagens oficiais no catálogo da Econ.</p></div><span class="status">Consulte disponibilidade</span></div>
-          <div class="project-info"><p class="region">Zona Sul · Jardim Jabaquara</p><h3>Bio Parque Nabuco</h3><p class="details">Consulte plantas, etapa atual e condições disponíveis.</p><div class="project-actions"><a class="button" href="https://wa.me/5511945167897?text=Olá!%20Tenho%20interesse%20no%20Bio%20Parque%20Nabuco." target="_blank" rel="noopener noreferrer">Tenho interesse</a><a class="official-link" href="https://www.econconstrutora.com.br/" target="_blank" rel="noopener noreferrer">Ver fotos oficiais ↗</a></div></div>
-        </article>
-
-        <article class="project" data-region="Zona Leste" data-status="Lançamento"
-          data-search="class prime vila prudente zona leste 2 3 dormitorios">
-          <div class="project-photo"><div class="photo-placeholder"><span class="building">⌂</span><p>Veja as imagens oficiais no catálogo da Econ.</p></div><span class="status">Consulte disponibilidade</span></div>
-          <div class="project-info"><p class="region">Zona Leste · Vila Prudente</p><h3>Class Prime</h3><p class="details">2 e 3 dormitórios, conforme informações do catálogo consultado. Confirme as opções atuais.</p><div class="project-actions"><a class="button" href="https://wa.me/5511945167897?text=Olá!%20Tenho%20interesse%20no%20Class%20Prime." target="_blank" rel="noopener noreferrer">Tenho interesse</a><a class="official-link" href="https://www.econconstrutora.com.br/" target="_blank" rel="noopener noreferrer">Ver fotos oficiais ↗</a></div></div>
-        </article>
-
-        <article class="project" data-region="Zona Leste" data-status="Lançamento"
-          data-search="class select vila prudente zona leste">
-          <div class="project-photo"><div class="photo-placeholder"><span class="building">⌂</span><p>Veja as imagens oficiais no catálogo da Econ.</p></div><span class="status">Consulte disponibilidade</span></div>
-          <div class="project-info"><p class="region">Zona Leste · Vila Prudente</p><h3>Class Select</h3><p class="details">Consulte plantas, etapa atual e condições disponíveis.</p><div class="project-actions"><a class="button" href="https://wa.me/5511945167897?text=Olá!%20Tenho%20interesse%20no%20Class%20Select." target="_blank" rel="noopener noreferrer">Tenho interesse</a><a class="official-link" href="https://www.econconstrutora.com.br/" target="_blank" rel="noopener noreferrer">Ver fotos oficiais ↗</a></div></div>
-        </article>
-
-        <article class="project" data-region="Zona Norte" data-status="Futuro lançamento"
-          data-search="ikon limao zona norte">
-          <div class="project-photo"><div class="photo-placeholder"><span class="building">⌂</span><p>Veja as imagens oficiais no catálogo da Econ.</p></div><span class="status">Consulte disponibilidade</span></div>
-          <div class="project-info"><p class="region">Zona Norte · Limão</p><h3>Ikon Limão</h3><p class="details">Consulte as informações atualizadas do empreendimento.</p><div class="project-actions"><a class="button" href="https://wa.me/5511945167897?text=Olá!%20Tenho%20interesse%20no%20Ikon%20Limão." target="_blank" rel="noopener noreferrer">Tenho interesse</a><a class="official-link" href="https://www.econconstrutora.com.br/imoveis/grande-sp" target="_blank" rel="noopener noreferrer">Ver fotos oficiais ↗</a></div></div>
-        </article>
-
-        <article class="project" data-region="Zona Oeste" data-status="Futuro lançamento"
-          data-search="pulse butanta vila lageado zona oeste">
-          <div class="project-photo"><div class="photo-placeholder"><span class="building">⌂</span><p>Veja as imagens oficiais no catálogo da Econ.</p></div><span class="status">Consulte disponibilidade</span></div>
-          <div class="project-info"><p class="region">Zona Oeste · Vila Lageado</p><h3>Pulse Butantã</h3><p class="details">Consulte as informações atualizadas do empreendimento.</p><div class="project-actions"><a class="button" href="https://wa.me/5511945167897?text=Olá!%20Tenho%20interesse%20no%20Pulse%20Butantã." target="_blank" rel="noopener noreferrer">Tenho interesse</a><a class="official-link" href="https://www.econconstrutora.com.br/imoveis/grande-sp" target="_blank" rel="noopener noreferrer">Ver fotos oficiais ↗</a></div></div>
-        </article>
-
-        <article class="project" data-region="Zona Oeste" data-status="Breve lançamento"
-          data-search="best barra funda zona oeste">
-          <div class="project-photo"><div class="photo-placeholder"><span class="building">⌂</span><p>Veja as imagens oficiais no catálogo da Econ.</p></div><span class="status">Consulte disponibilidade</span></div>
-          <div class="project-info"><p class="region">Zona Oeste · Barra Funda</p><h3>Best Barra Funda</h3><p class="details">Consulte a etapa atual e as condições disponíveis.</p><div class="project-actions"><a class="button" href="https://wa.me/5511945167897?text=Olá!%20Tenho%20interesse%20no%20Best%20Barra%20Funda." target="_blank" rel="noopener noreferrer">Tenho interesse</a><a class="official-link" href="https://www.econconstrutora.com.br/imoveis/grande-sp" target="_blank" rel="noopener noreferrer">Ver fotos oficiais ↗</a></div></div>
-        </article>
-
-        <article class="project" data-region="Zona Norte" data-status="Breve lançamento"
-          data-search="volt santana zona norte">
-          <div class="project-photo"><div class="photo-placeholder"><span class="building">⌂</span><p>Veja as imagens oficiais no catálogo da Econ.</p></div><span class="status">Consulte disponibilidade</span></div>
-          <div class="project-info"><p class="region">Zona Norte · Santana</p><h3>Volt Santana</h3><p class="details">Consulte a etapa atual e as condições disponíveis.</p><div class="project-actions"><a class="button" href="https://wa.me/5511945167897?text=Olá!%20Tenho%20interesse%20no%20Volt%20Santana." target="_blank" rel="noopener noreferrer">Tenho interesse</a><a class="official-link" href="https://www.econconstrutora.com.br/imoveis/grande-sp" target="_blank" rel="noopener noreferrer">Ver fotos oficiais ↗</a></div></div>
-        </article>
-
-        <article class="project" data-region="Zona Norte" data-status="Em construção"
-          data-search="soul pari caninde zona norte">
-          <div class="project-photo"><div class="photo-placeholder"><span class="building">⌂</span><p>Veja as imagens oficiais no catálogo da Econ.</p></div><span class="status">Consulte disponibilidade</span></div>
-          <div class="project-info"><p class="region">Zona Norte · Canindé</p><h3>Soul Pari</h3><p class="details">Consulte a etapa atual e as condições disponíveis.</p><div class="project-actions"><a class="button" href="https://wa.me/5511945167897?text=Olá!%20Tenho%20interesse%20no%20Soul%20Pari." target="_blank" rel="noopener noreferrer">Tenho interesse</a><a class="official-link" href="https://www.econconstrutora.com.br/imoveis/grande-sp" target="_blank" rel="noopener noreferrer">Ver fotos oficiais ↗</a></div></div>
-        </article>
-
-        <article class="project" data-region="Zona Sul" data-status="Em construção"
-          data-search="grid interlagos zona sul">
-          <div class="project-photo"><div class="photo-placeholder"><span class="building">⌂</span><p>Veja as imagens oficiais no catálogo da Econ.</p></div><span class="status">Consulte disponibilidade</span></div>
-          <div class="project-info"><p class="region">Zona Sul · Interlagos</p><h3>Grid Interlagos</h3><p class="details">Consulte a etapa atual e as condições disponíveis.</p><div class="project-actions"><a class="button" href="https://wa.me/5511945167897?text=Olá!%20Tenho%20interesse%20no%20Grid%20Interlagos." target="_blank" rel="noopener noreferrer">Tenho interesse</a><a class="official-link" href="https://www.econconstrutora.com.br/imoveis/grande-sp" target="_blank" rel="noopener noreferrer">Ver fotos oficiais ↗</a></div></div>
-        </article>
-
-        <article class="project" data-region="Zona Leste" data-status="Pronto para morar"
-          data-search="vero encanto parada xv de novembro zona leste">
-          <div class="project-photo"><div class="photo-placeholder"><span class="building">⌂</span><p>Veja as imagens oficiais no catálogo da Econ.</p></div><span class="status">Consulte disponibilidade</span></div>
-          <div class="project-info"><p class="region">Zona Leste · Parada XV de Novembro</p><h3>Vero Encanto</h3><p class="details">O catálogo consultado indica opções de 1 e 2 dormitórios. Confirme disponibilidade atual.</p><div class="project-actions"><a class="button" href="https://wa.me/5511945167897?text=Olá!%20Tenho%20interesse%20no%20Vero%20Encanto." target="_blank" rel="noopener noreferrer">Tenho interesse</a><a class="official-link" href="https://www.econconstrutora.com.br/imoveis/grande-sp" target="_blank" rel="noopener noreferrer">Ver fotos oficiais ↗</a></div></div>
-        </article>
-
-        <article class="project" data-region="Zona Leste" data-status="Pronto para morar"
-          data-search="vero harmonia parada xv de novembro zona leste">
-          <div class="project-photo"><div class="photo-placeholder"><span class="building">⌂</span><p>Veja as imagens oficiais no catálogo da Econ.</p></div><span class="status">Consulte disponibilidade</span></div>
-          <div class="project-info"><p class="region">Zona Leste · Parada XV de Novembro</p><h3>Vero Harmonia</h3><p class="details">Consulte disponibilidade atual e condições com a construtora.</p><div class="project-actions"><a class="button" href="https://wa.me/5511945167897?text=Olá!%20Tenho%20interesse%20no%20Vero%20Harmonia." target="_blank" rel="noopener noreferrer">Tenho interesse</a><a class="official-link" href="https://www.econconstrutora.com.br/imoveis/grande-sp" target="_blank" rel="noopener noreferrer">Ver fotos oficiais ↗</a></div></div>
-        </article>
-
-        <article class="project" data-region="Zona Norte" data-status="Pronto para morar"
-          data-search="like casa verde zona norte">
-          <div class="project-photo"><div class="photo-placeholder"><span class="building">⌂</span><p>Veja as imagens oficiais no catálogo da Econ.</p></div><span class="status">Consulte disponibilidade</span></div>
-          <div class="project-info"><p class="region">Zona Norte · Casa Verde</p><h3>Like – Casa Verde</h3><p class="details">O catálogo consultado indica opções de 2 e 3 dormitórios. Confirme disponibilidade atual.</p><div class="project-actions"><a class="button" href="https://wa.me/5511945167897?text=Olá!%20Tenho%20interesse%20no%20Like%20Casa%20Verde." target="_blank" rel="noopener noreferrer">Tenho interesse</a><a class="official-link" href="https://www.econconstrutora.com.br/imoveis/grande-sp" target="_blank" rel="noopener noreferrer">Ver fotos oficiais ↗</a></div></div>
-        </article>
-
-        <article class="project" data-region="Zona Oeste" data-status="Em construção"
-          data-search="epic jaguare zona oeste">
-          <div class="project-photo"><div class="photo-placeholder"><span class="building">⌂</span><p>Veja as imagens oficiais no catálogo da Econ.</p></div><span class="status">Consulte disponibilidade</span></div>
-          <div class="project-info"><p class="region">Zona Oeste · Jaguaré</p><h3>Epic Jaguaré</h3><p class="details">Consulte disponibilidade, plantas e condições atuais.</p><div class="project-actions"><a class="button" href="https://wa.me/5511945167897?text=Olá!%20Tenho%20interesse%20no%20Epic%20Jaguaré." target="_blank" rel="noopener noreferrer">Tenho interesse</a><a class="official-link" href="https://www.econconstrutora.com.br/imoveis/grande-sp" target="_blank" rel="noopener noreferrer">Ver fotos oficiais ↗</a></div></div>
-        </article>
-
-        <article class="project" data-region="Zona Sul" data-status="Em construção"
-          data-search="inov zona sul vila emir">
-          <div class="project-photo"><div class="photo-placeholder"><span class="building">⌂</span><p>Veja as imagens oficiais no catálogo da Econ.</p></div><span class="status">Consulte disponibilidade</span></div>
-          <div class="project-info"><p class="region">Zona Sul · Vila Emir</p><h3>Inov Zona Sul</h3><p class="details">Consulte disponibilidade, plantas e condições atuais.</p><div class="project-actions"><a class="button" href="https://wa.me/5511945167897?text=Olá!%20Tenho%20interesse%20no%20Inov%20Zona%20Sul." target="_blank" rel="noopener noreferrer">Tenho interesse</a><a class="official-link" href="https://www.econconstrutora.com.br/imoveis/grande-sp" target="_blank" rel="noopener noreferrer">Ver fotos oficiais ↗</a></div></div>
-        </article>
-
-        <article class="project" data-region="Zona Leste" data-status="Em construção"
-          data-search="gran spot vila carrao zona leste">
-          <div class="project-photo"><div class="photo-placeholder"><span class="building">⌂</span><p>Veja as imagens oficiais no catálogo da Econ.</p></div><span class="status">Consulte disponibilidade</span></div>
-          <div class="project-info"><p class="region">Zona Leste · Vila Carrão</p><h3>Gran Spot</h3><p class="details">Consulte disponibilidade, plantas e condições atuais.</p><div class="project-actions"><a class="button" href="https://wa.me/5511945167897?text=Olá!%20Tenho%20interesse%20no%20Gran%20Spot." target="_blank" rel="noopener noreferrer">Tenho interesse</a><a class="official-link" href="https://www.econconstrutora.com.br/imoveis/grande-sp" target="_blank" rel="noopener noreferrer">Ver fotos oficiais ↗</a></div></div>
-        </article>
-
-        <article class="project" data-region="Zona Leste" data-status="Em construção"
-          data-search="gran sky vila carrao zona leste">
-          <div class="project-photo"><div class="photo-placeholder"><span class="building">⌂</span><p>Veja as imagens oficiais no catálogo da Econ.</p></div><span class="status">Consulte disponibilidade</span></div>
-          <div class="project-info"><p class="region">Zona Leste · Vila Carrão</p><h3>Gran Sky</h3><p class="details">Consulte disponibilidade, plantas e condições atuais.</p><div class="project-actions"><a class="button" href="https://wa.me/5511945167897?text=Olá!%20Tenho%20interesse%20no%20Gran%20Sky." target="_blank" rel="noopener noreferrer">Tenho interesse</a><a class="official-link" href="https://www.econconstrutora.com.br/imoveis/grande-sp" target="_blank" rel="noopener noreferrer">Ver fotos oficiais ↗</a></div></div>
-        </article>
-
-        <article class="project" data-region="Zona Sul" data-status="Em construção"
-          data-search="fast interlagos zona sul">
-          <div class="project-photo"><div class="photo-placeholder"><span class="building">⌂</span><p>Veja as imagens oficiais no catálogo da Econ.</p></div><span class="status">Consulte disponibilidade</span></div>
-          <div class="project-info"><p class="region">Zona Sul · Interlagos</p><h3>Fast Interlagos</h3><p class="details">Consulte disponibilidade, plantas e condições atuais.</p><div class="project-actions"><a class="button" href="https://wa.me/5511945167897?text=Olá!%20Tenho%20interesse%20no%20Fast%20Interlagos." target="_blank" rel="noopener noreferrer">Tenho interesse</a><a class="official-link" href="https://www.econconstrutora.com.br/imoveis/grande-sp" target="_blank" rel="noopener noreferrer">Ver fotos oficiais ↗</a></div></div>
-        </article>
-
-        <article class="project" data-region="Zona Sul" data-status="Em construção"
-          data-search="peak vila olimpia zona sul">
-          <div class="project-photo"><div class="photo-placeholder"><span class="building">⌂</span><p>Veja as imagens oficiais no catálogo da Econ.</p></div><span class="status">Consulte disponibilidade</span></div>
-          <div class="project-info"><p class="region">Zona Sul · Vila Olímpia</p><h3>Peak Vila Olímpia</h3><p class="details">Consulte disponibilidade, plantas e condições atuais.</p><div class="project-actions"><a class="button" href="https://wa.me/5511945167897?text=Olá!%20Tenho%20interesse%20no%20Peak%20Vila%20Olímpia." target="_blank" rel="noopener noreferrer">Tenho interesse</a><a class="official-link" href="https://www.econconstrutora.com.br/imoveis/grande-sp" target="_blank" rel="noopener noreferrer">Ver fotos oficiais ↗</a></div></div>
-        </article>
-
-        <article class="project" data-region="Zona Oeste" data-status="Em construção"
-          data-search="go lapa zona oeste">
-          <div class="project-photo"><div class="photo-placeholder"><span class="building">⌂</span><p>Veja as imagens oficiais no catálogo da Econ.</p></div><span class="status">Consulte disponibilidade</span></div>
-          <div class="project-info"><p class="region">Zona Oeste · Lapa</p><h3>Go Lapa</h3><p class="details">Consulte disponibilidade, plantas e condições atuais.</p><div class="project-actions"><a class="button" href="https://wa.me/5511945167897?text=Olá!%20Tenho%20interesse%20no%20Go%20Lapa." target="_blank" rel="noopener noreferrer">Tenho interesse</a><a class="official-link" href="https://www.econconstrutora.com.br/imoveis/grande-sp" target="_blank" rel="noopener noreferrer">Ver fotos oficiais ↗</a></div></div>
-        </article>
-
-        <article class="project" data-region="Zona Leste" data-status="Em construção"
-          data-search="link sapopemba vila tolstoi zona leste">
-          <div class="project-photo"><div class="photo-placeholder"><span class="building">⌂</span><p>Veja as imagens oficiais no catálogo da Econ.</p></div><span class="status">Consulte disponibilidade</span></div>
-          <div class="project-info"><p class="region">Zona Leste · Vila Tolstói</p><h3>Link Sapopemba</h3><p class="details">Consulte disponibilidade, plantas e condições atuais.</p><div class="project-actions"><a class="button" href="https://wa.me/5511945167897?text=Olá!%20Tenho%20interesse%20no%20Link%20Sapopemba." target="_blank" rel="noopener noreferrer">Tenho interesse</a><a class="official-link" href="https://www.econconstrutora.com.br/imoveis/grande-sp" target="_blank" rel="noopener noreferrer">Ver fotos oficiais ↗</a></div></div>
-        </article>
-
-        <article class="project" data-region="Zona Sul" data-status="Em construção"
-          data-search="manaca vila moraes zona sul">
-          <div class="project-photo"><div class="photo-placeholder"><span class="building">⌂</span><p>Veja as imagens oficiais no catálogo da Econ.</p></div><span class="status">Consulte disponibilidade</span></div>
-          <div class="project-info"><p class="region">Zona Sul · Vila Moraes</p><h3>Manacá</h3><p class="details">Consulte disponibilidade, plantas e condições atuais.</p><div class="project-actions"><a class="button" href="https://wa.me/5511945167897?text=Olá!%20Tenho%20interesse%20no%20Manacá." target="_blank" rel="noopener noreferrer">Tenho interesse</a><a class="official-link" href="https://www.econconstrutora.com.br/imoveis/grande-sp" target="_blank" rel="noopener noreferrer">Ver fotos oficiais ↗</a></div></div>
-        </article>
-
-        <article class="project" data-region="Centro" data-status="Em construção"
-          data-search="rangel bras centro">
-          <div class="project-photo"><div class="photo-placeholder"><span class="building">⌂</span><p>Veja as imagens oficiais no catálogo da Econ.</p></div><span class="status">Consulte disponibilidade</span></div>
-          <div class="project-info"><p class="region">Centro · Brás</p><h3>Rangel Brás</h3><p class="details">O catálogo consultado indica opções de 1 e 2 dormitórios. Confirme disponibilidade atual.</p><div class="project-actions"><a class="button" href="https://wa.me/5511945167897?text=Olá!%20Tenho%20interesse%20no%20Rangel%20Brás." target="_blank" rel="noopener noreferrer">Tenho interesse</a><a class="official-link" href="https://www.econconstrutora.com.br/imoveis/grande-sp" target="_blank" rel="noopener noreferrer">Ver fotos oficiais ↗</a></div></div>
-        </article>
-
-        <article class="project" data-region="Grande São Paulo" data-status="Em construção"
-          data-search="vision campestre santo andre grande sao paulo">
-          <div class="project-photo"><div class="photo-placeholder"><span class="building">⌂</span><p>Veja as imagens oficiais no catálogo da Econ.</p></div><span class="status">Consulte disponibilidade</span></div>
-          <div class="project-info"><p class="region">Santo André · Campestre</p><h3>Vision Campestre</h3><p class="details">O catálogo consultado indica opções de 2 e 3 dormitórios. Confirme disponibilidade atual.</p><div class="project-actions"><a class="button" href="https://wa.me/5511945167897?text=Olá!%20Tenho%20interesse%20no%20Vision%20Campestre." target="_blank" rel="noopener noreferrer">Tenho interesse</a><a class="official-link" href="https://www.econconstrutora.com.br/imoveis/grande-sp" target="_blank" rel="noopener noreferrer">Ver fotos oficiais ↗</a></div></div>
-        </article>
-
-      </div>
-
-      <div class="no-results" id="no-results">
-        Nenhum empreendimento encontrado. Tente mudar os filtros.
-      </div>
-
-      <div class="notice">
-        <strong>Importante:</strong> esta página é um catálogo de divulgação
-        independente e não representa o site oficial da Econ Construtora.
-        Os empreendimentos, etapas, plantas e condições podem mudar. Confirme
-        a disponibilidade diretamente com a construtora antes de divulgar
-        qualquer oferta. As fotos são ilustrativas e devem ser utilizadas
-        somente com autorização para uso comercial.
-      </div>
-
-      <p style="margin-top:22px;font-size:13px">
-        Consulte também o
-        <a href="https://www.econconstrutora.com.br/imoveis/grande-sp"
-           target="_blank" rel="noopener noreferrer">
-          catálogo oficial da Econ Construtora
-        </a>.
+      <p>
+        Conheça empreendimentos em São Paulo e região.
+        Pesquise por nome, bairro ou região e encontre uma opção
+        que combine com o seu momento.
       </p>
-    </section>
-  </main>
 
-  <footer class="footer">
-    <div class="footer-inner">
-      <div>
-        <a class="logo" href="index.html" style="color:white">
-          <span class="logo-icon" style="background:#c9a85c">B</span>
-          <span>EMPREENDIMENTOS <strong>BUENOS SP</strong></span>
-        </a>
-        <p>Atendimento comercial para apartamentos na Grande São Paulo.</p>
-      </div>
-      <div>
-        <p>WhatsApp: <a href="https://wa.me/5511945167897"
-          target="_blank" rel="noopener noreferrer">(11) 94516-7897</a></p>
-        <p><a href="privacidade.html">Política de Privacidade</a></p>
-        <p><a href="index.html">Voltar ao início</a></p>
+      <a class="botao botao-lima"
+         href="#empreendimentos">Ver empreendimentos ↓</a>
+
+      <div class="hero-notas">
+        <span>Consulte as opções disponíveis</span>
+        <span>Atendimento pelo WhatsApp</span>
+        <span>Informações do catálogo oficial</span>
       </div>
     </div>
+  </section>
+
+  <main id="empreendimentos">
+
+    <section class="introducao">
+      <div class="etiqueta">Encontre sua próxima conquista</div>
+      <h2>Nossos empreendimentos</h2>
+      <p>Pesquise por nome, bairro ou região e filtre pelo estágio da obra.</p>
+    </section>
+
+    <section class="filtros" aria-label="Filtros de empreendimentos">
+      <input
+        type="search"
+        id="busca"
+        placeholder="Buscar por empreendimento, bairro ou região..."
+        aria-label="Buscar empreendimento">
+
+      <select id="filtroStatus" aria-label="Filtrar por estágio da obra">
+        <option value="">Todos os estágios</option>
+        <option value="Lançamento">Lançamento</option>
+        <option value="Breve Lançamento">Breve lançamento</option>
+        <option value="Futuro Lançamento">Futuro lançamento</option>
+        <option value="Em Construção">Em construção</option>
+        <option value="Pronto para Morar">Pronto para morar</option>
+      </select>
+    </section>
+
+    <p class="contador" id="contador" aria-live="polite"></p>
+
+    <section class="grade" id="gradeEmpreendimentos"></section>
+
+    <section class="catalogo" id="catalogo">
+      <h2>Quer conhecer todos os empreendimentos?</h2>
+      <p>
+        Consulte o catálogo oficial da Econ para verificar outros projetos,
+        informações, imagens, disponibilidade e detalhes de cada imóvel.
+      </p>
+      <a class="botao botao-lima"
+         href="https://www.econconstrutora.com.br/imoveis"
+         target="_blank"
+         rel="noopener noreferrer">
+        Ver catálogo oficial da Econ ↗
+      </a>
+    </section>
+
+  </main>
+
+  <footer class="rodape">
+    <div class="marca">BUENOS <span>SP</span></div>
+    <p>Atendimento imobiliário pelo WhatsApp.</p>
+    <p>
+      Consulte disponibilidade, valores e condições atualizadas.
+      Imagens ilustrativas dos empreendimentos.
+    </p>
+    <p><a href="privacidade.html">Política de privacidade</a></p>
+    <p>© <span id="ano"></span> Empreendimentos Buenos SP</p>
   </footer>
 
+  <a class="whatsapp-flutuante"
+     href="https://wa.me/5511945167897?text=Ol%C3%A1%21%20Vim%20pelo%20site%20Buenos%20SP."
+     target="_blank"
+     rel="noopener noreferrer"
+     aria-label="Fale conosco pelo WhatsApp">
+    WhatsApp ↗
+  </a>
+
   <script>
-    const menuToggle = document.getElementById("menu-toggle");
-    const nav = document.getElementById("nav");
+    "use strict";
 
-    if (menuToggle && nav) {
-      menuToggle.addEventListener("click", function () {
-        const open = nav.classList.toggle("open");
-        menuToggle.setAttribute("aria-expanded", String(open));
-        menuToggle.setAttribute("aria-label", open ? "Fechar menu" : "Abrir menu");
-        menuToggle.textContent = open ? "✕" : "☰";
+    const catalogoOficial = "https://www.econconstrutora.com.br/imoveis";
+    const whatsapp = "5511945167897";
+
+    /*
+      LISTA DE EMPREENDIMENTOS
+
+      Os dados ficam dentro deste HTML.
+      Esta página não precisa carregar um arquivo JSON externo.
+
+      Os nomes, bairros, estágios e imagens abaixo são os que constavam
+      na lista do código original. Confirme no catálogo oficial se houve
+      alterações de disponibilidade ou estágio da obra.
+    */
+
+    const empreendimentos = [
+      {
+        nome: "Volt Santana",
+        regiao: "Zona Norte",
+        bairro: "Santana",
+        status: "Breve Lançamento",
+        dormitorios: "2 dorms.",
+        imagem: "https://econ-portal-static.s3.sa-east-1.amazonaws.com/empreendimentos/volt-santana/perspectivas/perspectiva-da-fachada.webp"
+      },
+      {
+        nome: "Best Barra Funda",
+        regiao: "Zona Oeste",
+        bairro: "Barra Funda",
+        status: "Breve Lançamento",
+        dormitorios: "2 dorms.",
+        imagem: "https://econ-portal-static.s3.sa-east-1.amazonaws.com/empreendimentos/best-barra-funda/perspectivas/perspectiva-da-fachada.webp"
+      },
+      {
+        nome: "Tech Zona Sul",
+        regiao: "Zona Sul",
+        bairro: "Pedreira",
+        status: "Breve Lançamento",
+        dormitorios: "2 dorms.",
+        imagem: "https://econ-portal-static.s3.sa-east-1.amazonaws.com/empreendimentos/tech-zona-sul/perspectivas/perspectiva-da-fachada.webp"
+      },
+      {
+        nome: "Beat Jardim Botânico",
+        regiao: "Zona Sul",
+        bairro: "Sacomã",
+        status: "Lançamento",
+        dormitorios: "2 dorms.",
+        imagem: "https://econ-portal-static.s3.sa-east-1.amazonaws.com/empreendimentos/beat-jardim-botanico/perspectivas/perspectiva-da-fachada.webp"
+      },
+      {
+        nome: "Free Liberdade",
+        regiao: "Centro",
+        bairro: "Liberdade",
+        status: "Lançamento",
+        dormitorios: "2 dorms.",
+        imagem: "https://econ-portal-static.s3.sa-east-1.amazonaws.com/empreendimentos/free-liberdade/1771770373586.webp"
+      },
+      {
+        nome: "New Vila Ema",
+        regiao: "Zona Leste",
+        bairro: "Vila Ema",
+        status: "Em Construção",
+        dormitorios: "2 dorms.",
+        imagem: "https://econ-portal-static.s3.sa-east-1.amazonaws.com/empreendimentos/new-vila-ema/1773488349395.webp"
+      },
+      {
+        nome: "Vero Harmonia",
+        regiao: "Zona Leste",
+        bairro: "Parada XV de Novembro",
+        status: "Pronto para Morar",
+        dormitorios: "2 dorms.",
+        imagem: "https://econ-portal-static.s3.sa-east-1.amazonaws.com/thumbnails/vero-harmonia-thumb.webp"
+      },
+      {
+        nome: "Vero Encanto",
+        regiao: "Zona Leste",
+        bairro: "Parada XV de Novembro",
+        status: "Pronto para Morar",
+        dormitorios: "1 e 2 dorms.",
+        imagem: "https://econ-portal-static.s3.sa-east-1.amazonaws.com/empreendimentos/vero-encanto/1771771925027.webp"
+      },
+      {
+        nome: "Like Casa Verde",
+        regiao: "Zona Norte",
+        bairro: "Casa Verde",
+        status: "Pronto para Morar",
+        dormitorios: "2 e 3 dorms.",
+        imagem: "https://econ-portal-static.s3.sa-east-1.amazonaws.com/empreendimentos/like-casa-verde/1771770755949.webp"
+      },
+      {
+        nome: "Epic Jaguaré",
+        regiao: "Zona Oeste",
+        bairro: "Jaguaré",
+        status: "Em Construção",
+        dormitorios: "2 e 3 dorms.",
+        imagem: "https://econ-portal-static.s3.sa-east-1.amazonaws.com/thumbnails/epic-jaguare-thumb.webp"
+      }
+    ];
+
+    const grade = document.getElementById("gradeEmpreendimentos");
+    const busca = document.getElementById("busca");
+    const filtroStatus = document.getElementById("filtroStatus");
+    const contador = document.getElementById("contador");
+
+    // Cria o card de cada empreendimento.
+    function criarCard(item) {
+      const card = document.createElement("article");
+      card.className = "card";
+
+      const fotoContainer = document.createElement("div");
+      fotoContainer.className = "foto-container";
+
+      const status = document.createElement("span");
+      status.className = "status";
+      status.textContent = item.status;
+      fotoContainer.appendChild(status);
+
+      const fallback = document.createElement("div");
+      fallback.className = "foto-fallback";
+
+      const simbolo = document.createElement("div");
+      simbolo.className = "predio";
+      simbolo.setAttribute("aria-hidden", "true");
+      simbolo.textContent = "⌂";
+
+      const nomeFallback = document.createElement("strong");
+      nomeFallback.textContent = item.nome;
+
+      const ajudaFallback = document.createElement("small");
+      ajudaFallback.textContent = "Consulte a foto no catálogo oficial";
+
+      fallback.append(simbolo, nomeFallback, ajudaFallback);
+      fallback.hidden = true;
+
+      const img = document.createElement("img");
+      img.src = item.imagem;
+      img.alt = "Imagem ilustrativa do empreendimento " + item.nome;
+      img.loading = "lazy";
+
+      img.onerror = function () {
+        img.hidden = true;
+        fallback.hidden = false;
+      };
+
+      fotoContainer.append(img, fallback);
+
+      const conteudo = document.createElement("div");
+      conteudo.className = "card-conteudo";
+
+      const titulo = document.createElement("h3");
+      titulo.textContent = item.nome;
+
+      const local = document.createElement("p");
+      local.className = "local";
+      local.textContent = item.regiao + " • " + item.bairro;
+
+      const detalhes = document.createElement("div");
+      detalhes.className = "detalhes";
+
+      [item.dormitorios, item.status].forEach(function (texto) {
+        const tag = document.createElement("span");
+        tag.className = "detalhe";
+        tag.textContent = texto;
+        detalhes.appendChild(tag);
       });
 
-      nav.querySelectorAll("a").forEach(function (link) {
-        link.addEventListener("click", function () {
-          nav.classList.remove("open");
-          menuToggle.setAttribute("aria-expanded", "false");
-          menuToggle.setAttribute("aria-label", "Abrir menu");
-          menuToggle.textContent = "☰";
-        });
-      });
+      const acoes = document.createElement("div");
+      acoes.className = "card-acoes";
+
+      const mensagem = encodeURIComponent(
+        "Olá! Tenho interesse no empreendimento " +
+        item.nome +
+        ", localizado em " +
+        item.bairro +
+        ". Pode me passar mais informações?"
+      );
+
+      const botaoWhatsApp = document.createElement("a");
+      botaoWhatsApp.className = "botao botao-whatsapp";
+      botaoWhatsApp.href =
+        "https://wa.me/" + whatsapp + "?text=" + mensagem;
+      botaoWhatsApp.target = "_blank";
+      botaoWhatsApp.rel = "noopener noreferrer";
+      botaoWhatsApp.textContent = "Tenho interesse ↗";
+
+      const linkOficial = document.createElement("a");
+      linkOficial.className = "link-oficial";
+      linkOficial.href = catalogoOficial;
+      linkOficial.target = "_blank";
+      linkOficial.rel = "noopener noreferrer";
+      linkOficial.textContent = "Ver informações oficiais ↗";
+
+      acoes.append(botaoWhatsApp, linkOficial);
+      conteudo.append(titulo, local, detalhes, acoes);
+      card.append(fotoContainer, conteudo);
+
+      return card;
     }
 
-    const search = document.getElementById("search");
-    const regionFilter = document.getElementById("region-filter");
-    const statusFilter = document.getElementById("status-filter");
-    const cards = Array.from(document.querySelectorAll(".project"));
-    const resultsCount = document.getElementById("results-count");
-    const noResults = document.getElementById("no-results");
+    // Pesquisa por nome, bairro ou região e aplica o filtro de estágio.
+    function renderizar() {
+      const termo = busca.value.trim().toLocaleLowerCase("pt-BR");
+      const statusSelecionado = filtroStatus.value;
 
-    function filterProjects() {
-      const term = search.value.trim().toLocaleLowerCase("pt-BR");
-      const region = regionFilter.value;
-      const status = statusFilter.value;
-      let visible = 0;
-
-      cards.forEach(function (card) {
-        const text = (
-          card.innerText + " " + (card.dataset.search || "")
+      const filtrados = empreendimentos.filter(function (item) {
+        const texto = (
+          item.nome + " " +
+          item.regiao + " " +
+          item.bairro + " " +
+          item.status
         ).toLocaleLowerCase("pt-BR");
 
-        const matchesTerm = !term || text.includes(term);
-        const matchesRegion = !region || card.dataset.region === region;
-        const matchesStatus = !status ||
-          card.dataset.status.toLocaleLowerCase("pt-BR") ===
-          status.toLocaleLowerCase("pt-BR");
+        const correspondeBusca = texto.includes(termo);
 
-        const show = matchesTerm && matchesRegion && matchesStatus;
-        card.style.display = show ? "" : "none";
-        if (show) visible++;
+        const correspondeStatus =
+          !statusSelecionado || item.status === statusSelecionado;
+
+        return correspondeBusca && correspondeStatus;
       });
 
-      resultsCount.textContent =
-        visible + (visible === 1 ? " empreendimento encontrado" :
-        " empreendimentos encontrados");
+      grade.replaceChildren();
 
-      noResults.style.display = visible ? "none" : "block";
+      if (filtrados.length === 0) {
+        const vazio = document.createElement("div");
+        vazio.className = "vazio";
+        vazio.textContent =
+          "Nenhum empreendimento encontrado. Tente outra busca ou estágio.";
+        grade.appendChild(vazio);
+      } else {
+        filtrados.forEach(function (item) {
+          grade.appendChild(criarCard(item));
+        });
+      }
+
+      contador.textContent =
+        filtrados.length +
+        (filtrados.length === 1
+          ? " empreendimento encontrado"
+          : " empreendimentos encontrados");
     }
 
-    search.addEventListener("input", filterProjects);
-    regionFilter.addEventListener("change", filterProjects);
-    statusFilter.addEventListener("change", filterProjects);
+    busca.addEventListener("input", renderizar);
+    filtroStatus.addEventListener("change", renderizar);
 
-    filterProjects();
+    document.getElementById("ano").textContent =
+      new Date().getFullYear();
+
+    // Mostra os cards imediatamente, sem buscar arquivo externo.
+    renderizar();
   </script>
+
 </body>
 </html>
