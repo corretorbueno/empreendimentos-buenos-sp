@@ -9,53 +9,48 @@ from urllib.parse import urljoin, urlparse
 import requests
 from bs4 import BeautifulSoup
 
-URL_CATALOGO = "https://www.econconstrutora.com.br/imoveis"
-ARQUIVO_HTML = Path("empreendimentos.html")
-MARCADOR_INICIO = "<!-- CATALOGO_DATA_INICIO -->"
-MARCADOR_FIM = "<!-- CATALOGO_DATA_FIM -->"
+CATALOGO_URL = "https://www.econconstrutora.com.br/imoveis"
+HTML_ARQUIVO = Path("empreendimentos.html")
 
 HEADERS = {
     "User-Agent": (
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-        "AppleWebKit/537.36 (KHTML, like Gecko) "
-        "Chrome/131.0 Safari/537.36"
+        "AppleWebKit/537.36 Chrome/131.0 Safari/537.36"
     ),
     "Accept-Language": "pt-BR,pt;q=0.9,en;q=0.8",
 }
+
+SESSAO = requests.Session()
+SESSAO.headers.update(HEADERS)
 
 
 def normalizar(texto):
     texto = unicodedata.normalize("NFKD", texto or "")
     texto = "".join(
-        caractere for caractere in texto
-        if not unicodedata.combining(caractere)
+        c for c in texto if not unicodedata.combining(c)
     )
-    texto = texto.casefold()
+    texto = texto.lower()
     texto = re.sub(r"[^a-z0-9]+", " ", texto)
     return re.sub(r"\s+", " ", texto).strip()
 
 
-def baixar_html(url):
-    resposta = requests.get(
-        url,
-        headers=HEADERS,
-        timeout=40,
-    )
+def baixar_pagina(url):
+    resposta = SESSAO.get(url, timeout=40)
     resposta.raise_for_status()
     return resposta.text
 
 
-def resolver_url_imagem(valor, base):
+def resolver_url(valor, base):
     if not valor:
         return ""
 
     valor = valor.strip()
 
-    if valor.startswith(("data:", "blob:", "#")):
-        return ""
-
     if valor.startswith("//"):
         valor = "https:" + valor
+
+    if valor.startswith(("data:", "blob:", "#")):
+        return ""
 
     url = urljoin(base, valor)
     partes = urlparse(url)
@@ -69,10 +64,9 @@ def resolver_url_imagem(valor, base):
     return url
 
 
-def imagens_da_tag(img, base):
-    resultados = []
+def extrair_urls_img(img, base):
+    urls = []
 
-    # Prioriza atributos usados para carregamento tardio.
     for atributo in (
         "data-src",
         "data-lazy-src",
@@ -88,31 +82,50 @@ def imagens_da_tag(img, base):
             continue
 
         if "srcset" in atributo:
-            valor = valor.split(",")[0].strip().split(" ")[0]
+            opcoes = valor.split(",")
+            if not opcoes:
+                continue
+            valor = opcoes[0].strip().split()[0]
 
-        url = resolver_url_imagem(valor, base)
+        url = resolver_url(valor, base)
 
-        if url and url not in resultados:
-            resultados.append(url)
+        if url and url not in urls:
+            urls.append(url)
 
-    return resultados
+    return urls
 
 
-def coletar_imagens_e_links():
-    print(f"Acessando catálogo: {URL_CATALOGO}")
+def imagem_meta(soup, base):
+    for seletor in (
+        'meta[property="og:image"]',
+        'meta[property="og:image:secure_url"]',
+        'meta[name="twitter:image"]',
+    ):
+        meta = soup.select_one(seletor)
 
-    soup = BeautifulSoup(
-        baixar_html(URL_CATALOGO),
-        "html.parser",
-    )
+        if meta:
+            url = resolver_url(meta.get("content", ""), base)
+            if url:
+                return url
+
+    return ""
+
+
+def coletar_imagens():
+    print("Baixando HTML público da Econ...")
+    html = baixar_pagina(CATALOGO_URL)
+    soup = BeautifulSoup(html, "html.parser")
 
     projetos = {}
 
-    for titulo in soup.find_all(["h2", "h3", "h4", "h5"]):
+    # Primeiro: tenta coletar os cards que possuem título e imagem.
+    for titulo in soup.find_all(
+        ["h1", "h2", "h3", "h4", "h5"]
+    ):
         nome = " ".join(titulo.get_text(" ", strip=True).split())
         chave = normalizar(nome)
 
-        if not chave or len(nome) > 120 or len(chave) < 3:
+        if not chave or len(chave) < 3 or len(nome) > 120:
             continue
 
         if chave in {
@@ -124,15 +137,15 @@ def coletar_imagens_e_links():
         }:
             continue
 
-        # Procura o card que contém o título e a imagem.
         bloco = titulo
-        for _ in range(7):
+
+        for _ in range(8):
             if bloco.parent is None:
                 break
 
             bloco = bloco.parent
 
-            if bloco.find("img") or bloco.find("a", href=True):
+            if bloco.find("img") and bloco.find("a", href=True):
                 break
 
         link_tag = titulo.find_parent("a", href=True)
@@ -140,28 +153,24 @@ def coletar_imagens_e_links():
         if link_tag is None:
             link_tag = bloco.find("a", href=True)
 
-        link = ""
-        if link_tag:
-            link = urljoin(
-                URL_CATALOGO,
-                link_tag.get("href", ""),
-            )
+        link = (
+            urljoin(CATALOGO_URL, link_tag.get("href", ""))
+            if link_tag
+            else ""
+        )
 
         imagem = ""
 
         for img in bloco.find_all("img"):
-            texto_alt = normalizar(img.get("alt", ""))
+            alt = normalizar(img.get("alt", ""))
 
-            if any(
-                palavra in texto_alt
-                for palavra in ("logo", "icone", "icon", "avatar")
-            ):
+            if any(x in alt for x in ("logo", "icone", "avatar")):
                 continue
 
-            candidatas = imagens_da_tag(img, URL_CATALOGO)
+            urls = extrair_urls_img(img, CATALOGO_URL)
 
-            if candidatas:
-                imagem = candidatas[0]
+            if urls:
+                imagem = urls[0]
                 break
 
         anterior = projetos.get(chave, {})
@@ -172,204 +181,210 @@ def coletar_imagens_e_links():
             "link": link or anterior.get("link", ""),
         }
 
-    # Algumas imagens só aparecem na página individual do empreendimento.
+    # Segundo: procura imagens nas páginas individuais dos projetos.
     for projeto in projetos.values():
         if projeto["imagem"] or not projeto["link"]:
             continue
 
+        dominio = urlparse(projeto["link"]).netloc.lower()
+
+        if not (
+            dominio == "econconstrutora.com.br"
+            or dominio.endswith(".econconstrutora.com.br")
+        ):
+            continue
+
         try:
             pagina = BeautifulSoup(
-                baixar_html(projeto["link"]),
+                baixar_pagina(projeto["link"]),
                 "html.parser",
             )
 
-            for seletor in (
-                'meta[property="og:image"]',
-                'meta[name="twitter:image"]',
-            ):
-                meta = pagina.select_one(seletor)
+            imagem = imagem_meta(pagina, projeto["link"])
 
-                if meta:
-                    imagem = resolver_url_imagem(
-                        meta.get("content", ""),
-                        projeto["link"],
-                    )
-
-                    if imagem:
-                        projeto["imagem"] = imagem
-                        break
-
-            if not projeto["imagem"]:
+            if not imagem:
                 for img in pagina.find_all("img"):
-                    candidatas = imagens_da_tag(
-                        img,
-                        projeto["link"],
-                    )
+                    alt = normalizar(img.get("alt", ""))
 
-                    if candidatas:
-                        projeto["imagem"] = candidatas[0]
+                    if any(
+                        x in alt
+                        for x in ("logo", "icone", "avatar")
+                    ):
+                        continue
+
+                    urls = extrair_urls_img(img, projeto["link"])
+
+                    if urls:
+                        imagem = urls[0]
                         break
+
+            projeto["imagem"] = imagem
 
         except requests.RequestException as erro:
             print(
-                f"Aviso: não foi possível consultar "
-                f"{projeto['nome']}: {erro}"
+                f"Aviso: erro ao abrir {projeto['nome']}: {erro}"
             )
+
+    # Também captura dados estruturados JSON-LD, se existirem.
+    for script in soup.select('script[type="application/ld+json"]'):
+        try:
+            dados = json.loads(script.string or script.get_text())
+        except (json.JSONDecodeError, TypeError):
+            continue
+
+        pilha = dados if isinstance(dados, list) else [dados]
+
+        while pilha:
+            item = pilha.pop()
+
+            if isinstance(item, list):
+                pilha.extend(item)
+                continue
+
+            if not isinstance(item, dict):
+                continue
+
+            if isinstance(item.get("@graph"), list):
+                pilha.extend(item["@graph"])
+
+            nome = item.get("name", "")
+            imagem = item.get("image", "")
+
+            if isinstance(imagem, list):
+                imagem = imagem[0] if imagem else ""
+
+            if isinstance(imagem, dict):
+                imagem = imagem.get("url", "")
+
+            if not nome or not imagem:
+                continue
+
+            chave = normalizar(str(nome))
+            url = resolver_url(str(imagem), CATALOGO_URL)
+
+            if chave in projetos and url:
+                if not projetos[chave]["imagem"]:
+                    projetos[chave]["imagem"] = url
 
     return projetos
 
 
-def extrair_nome(objeto):
-    correspondencia = re.search(
+def nome_do_objeto(objeto):
+    # Reconhece nome: "Projeto" e "nome": "Projeto".
+    match = re.search(
         r"""(?:["']nome["']|\bnome)\s*:\s*["']([^"']+)["']""",
         objeto,
-        flags=re.IGNORECASE,
+        re.IGNORECASE,
     )
 
-    return correspondencia.group(1).strip() if correspondencia else ""
+    return match.group(1).strip() if match else ""
 
 
 def atualizar_html(projetos):
-    if not ARQUIVO_HTML.exists():
+    if not HTML_ARQUIVO.exists():
         raise RuntimeError(
-            "empreendimentos.html não foi encontrado na raiz do repositório."
+            "Não achei empreendimentos.html na raiz do repositório."
         )
 
-    html_original = ARQUIVO_HTML.read_text(encoding="utf-8")
+    original = HTML_ARQUIVO.read_text(encoding="utf-8")
 
-    inicio = html_original.find(MARCADOR_INICIO)
-    fim = html_original.find(MARCADOR_FIM)
+    # Não exige marcadores especiais: localiza objetos com nome e imagem.
+    objetos = list(re.finditer(r"\{[^{}]*\}", original, re.DOTALL))
 
-    if inicio < 0 or fim < 0 or fim <= inicio:
-        raise RuntimeError(
-            "Os marcadores CATALOGO_DATA_INICIO e "
-            "CATALOGO_DATA_FIM não foram encontrados no HTML. "
-            "Nenhuma alteração foi feita."
-        )
+    alteracoes = 0
+    sem_correspondencia = []
 
-    posicao_dados = inicio + len(MARCADOR_INICIO)
-    bloco = html_original[posicao_dados:fim]
-
-    # Este formato espera um objeto por empreendimento dentro do bloco.
-    objetos = list(re.finditer(r"\{[^{}]*\}", bloco, re.DOTALL))
-
-    if not objetos:
-        raise RuntimeError(
-            "Não encontrei objetos de empreendimentos dentro dos marcadores."
-        )
-
-    atualizados = 0
-    sem_imagem = 0
-
-    # Percorrer de trás para frente preserva as posições dos objetos restantes.
-    for correspondencia in reversed(objetos):
-        objeto = correspondencia.group(0)
-        nome = extrair_nome(objeto)
+    for match in reversed(objetos):
+        objeto = match.group(0)
+        nome = nome_do_objeto(objeto)
 
         if not nome:
             continue
 
-        campo_imagem = re.search(
+        campo = re.search(
             r"""(["']imagem["']\s*:\s*)(["'])(.*?)\2""",
             objeto,
-            flags=re.DOTALL | re.IGNORECASE,
+            re.DOTALL | re.IGNORECASE,
         )
 
-        if not campo_imagem:
+        if not campo:
             continue
 
-        # Não substitui imagens que já estão preenchidas.
-        if campo_imagem.group(3).strip():
+        # Não sobrescreve imagens já existentes.
+        if campo.group(3).strip():
             continue
 
         chave = normalizar(nome)
         projeto = projetos.get(chave)
 
-        # Aceita correspondência parcial somente se for única.
         if not projeto or not projeto.get("imagem"):
-            candidatos = [
-                item
-                for chave_site, item in projetos.items()
-                if len(chave) >= 5
-                and len(chave_site) >= 5
-                and (
-                    chave in chave_site
-                    or chave_site in chave
-                )
-                and item.get("imagem")
+            possiveis = [
+                p for k, p in projetos.items()
+                if len(k) >= 5
+                and len(chave) >= 5
+                and (k in chave or chave in k)
+                and p.get("imagem")
             ]
 
-            if len(candidatos) == 1:
-                projeto = candidatos[0]
+            if len(possiveis) == 1:
+                projeto = possiveis[0]
 
         if not projeto or not projeto.get("imagem"):
-            sem_imagem += 1
+            sem_correspondencia.append(nome)
             continue
 
-        url = projeto["imagem"]
-
-        # Mantém a sintaxe JavaScript/JSON com string entre aspas duplas.
-        substituicao = (
-            campo_imagem.group(1)
-            + json.dumps(url, ensure_ascii=False)
+        # Usa JSON para escapar caracteres da URL com segurança.
+        novo_campo = (
+            campo.group(1)
+            + json.dumps(projeto["imagem"], ensure_ascii=False)
         )
 
         novo_objeto = (
-            objeto[:campo_imagem.start()]
-            + substituicao
-            + objeto[campo_imagem.end():]
+            objeto[:campo.start()]
+            + novo_campo
+            + objeto[campo.end():]
         )
 
-        bloco = (
-            bloco[:correspondencia.start()]
+        original = (
+            original[:match.start()]
             + novo_objeto
-            + bloco[correspondencia.end():]
+            + original[match.end():]
         )
 
-        atualizados += 1
+        alteracoes += 1
 
-    if atualizados == 0:
+    if alteracoes == 0:
         raise RuntimeError(
-            "Nenhuma imagem foi atualizada. "
-            "O HTML original foi preservado. "
-            "Confira os nomes, os campos imagem e os dados retornados pela Econ."
+            "Nenhuma imagem foi inserida. Confira se os objetos do HTML "
+            "possuem campos nome e imagem e se a Econ retornou imagens. "
+            "O arquivo não foi modificado."
         )
 
-    html_novo = (
-        html_original[:posicao_dados]
-        + bloco
-        + html_original[fim:]
-    )
+    HTML_ARQUIVO.write_text(original, encoding="utf-8")
 
-    # Confere que o documento não ficou vazio antes de gravar.
-    if len(html_novo) < len(html_original) * 0.8:
-        raise RuntimeError(
-            "O HTML gerado ficou inesperadamente menor. "
-            "Arquivo original preservado."
-        )
+    print(f"Imagens inseridas: {alteracoes}")
+    print(f"Sem correspondência: {len(sem_correspondencia)}")
 
-    ARQUIVO_HTML.write_text(html_novo, encoding="utf-8")
+    for nome in sem_correspondencia[:30]:
+        print(f"SEM IMAGEM: {nome}")
 
-    print(f"Imagens preenchidas: {atualizados}")
-    print(f"Empreendimentos sem imagem correspondente: {sem_imagem}")
-    print(f"HTML atualizado: {ARQUIVO_HTML}")
+    print("empreendimentos.html salvo com sucesso.")
 
 
 def main():
-    projetos = coletar_imagens_e_links()
+    projetos = coletar_imagens()
 
-    total_com_imagem = sum(
-        bool(projeto.get("imagem"))
-        for projeto in projetos.values()
+    quantidade = sum(
+        bool(p.get("imagem"))
+        for p in projetos.values()
     )
 
-    print(f"Empreendimentos identificados na Econ: {len(projetos)}")
-    print(f"Com imagem encontrada: {total_com_imagem}")
+    print(f"Projetos detectados na Econ: {len(projetos)}")
+    print(f"Projetos com imagem: {quantidade}")
 
-    if not projetos or total_com_imagem == 0:
+    if quantidade == 0:
         raise RuntimeError(
-            "Não foram encontradas imagens aproveitáveis. "
-            "O HTML não será alterado."
+            "A coleta não encontrou imagens. Nenhuma alteração foi feita."
         )
 
     atualizar_html(projetos)
