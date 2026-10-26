@@ -1,10 +1,10 @@
 
-name: Atualizar catalogo de empreendimentos
+name: Atualizar catálogo Econ
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 10 * * *"
+    - cron: "0 11 * * 1"
 
 permissions:
   contents: write
@@ -14,46 +14,43 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  atualizar:
+  atualizar-catalogo:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
 
     steps:
-      - name: Baixar repositorio
+      - name: Baixar repositório
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          ref: ${{ github.ref_name }}
 
       - name: Configurar Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-          cache: pip
+          cache: "pip"
 
-      - name: Instalar dependencias
+      - name: Instalar dependências
         run: |
           python -m pip install --upgrade pip
-          python -m pip install requests beautifulsoup4
+          pip install requests beautifulsoup4
 
-      - name: Atualizar catalogo no HTML
-        run: python scripts/atualizar_catalogo.py
-
-      - name: Conferir alteracoes
+      - name: Conferir arquivos
         run: |
-          git status --short
-          git diff --stat
-          git diff --check
+          test -f atualizar_catalogo.py
+          test -f empreendimentos.html
 
-      - name: Salvar HTML atualizado no GitHub
+      - name: Extrair imagens oficiais
+        run: python -u atualizar_catalogo.py
+
+      - name: Salvar HTML atualizado
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
           git add empreendimentos.html
 
           if git diff --cached --quiet; then
-            echo "Nenhuma alteracao no catalogo."
+            echo "Nenhuma alteração no catálogo."
           else
-            git commit -m "Atualiza catalogo de empreendimentos"
-            git push
+            git commit -m "Atualiza imagens do catálogo Econ"
+            git push origin HEAD:${GITHUB_REF_NAME}
           fi
