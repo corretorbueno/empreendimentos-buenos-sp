@@ -1,617 +1,611 @@
 
 
+# -*- coding: utf-8 -*-
+"""
+ATUALIZADOR AUTOMÁTICO DO CATÁLOGO
+Arquivo: atualizar_catalogo.py
+
+O script atualiza empreendimentos.html diretamente.
+Não exige marcadores especiais no HTML.
+Não cria empreendimentos.json.
+Cria um backup antes de alterar o HTML.
+
+Instalação das dependências:
+pip install requests beautifulsoup4
+
+Execução:
+python atualizar_catalogo.py
+"""
+
 import json
 import re
-import time
+import sys
 import unicodedata
-from collections import deque
+from datetime import datetime
 from pathlib import Path
-from urllib.parse import urljoin, urldefrag, urlparse
+from urllib.parse import urljoin, urlparse
 
 import requests
 from bs4 import BeautifulSoup
 
 
 # ============================================================
-# CONFIGURACAO
+# CONFIGURAÇÕES
 # ============================================================
 
-BASE = "https://www.econconstrutora.com.br"
-HTML_FILE = Path("empreendimentos.html")
+URL_CATALOGO = "https://www.econconstrutora.com.br/imoveis"
 
-MARCADOR_INICIO = "<!-- CATALOGO_DATA_INICIO -->"
-MARCADOR_FIM = "<!-- CATALOGO_DATA_FIM -->"
+PASTA_SCRIPT = Path(__file__).resolve().parent
+ARQUIVO_HTML = PASTA_SCRIPT / "empreendimentos.html"
 
-PAGINAS_INICIAIS = [
-    f"{BASE}/imoveis",
-    f"{BASE}/imoveis/grande-sao-paulo",
-    f"{BASE}/imoveis/zona-leste",
-    f"{BASE}/imoveis/zona-sul",
-    f"{BASE}/imoveis/zona-norte",
-    f"{BASE}/imoveis/zona-oeste",
-    f"{BASE}/imoveis/centro",
-]
+TIMEOUT = 30
+MINIMO_EMPREENDIMENTOS = 3
 
 HEADERS = {
     "User-Agent": (
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
         "AppleWebKit/537.36 (KHTML, like Gecko) "
-        "Chrome/130.0.0.0 Safari/537.36"
+        "Chrome/131.0.0.0 Safari/537.36"
     ),
     "Accept-Language": "pt-BR,pt;q=0.9,en;q=0.8",
 }
 
-TIMEOUT = 25
-PAUSA_SEGUNDOS = 0.25
-MAX_PAGINAS_LISTAGEM = 250
 
-session = requests.Session()
-session.headers.update(HEADERS)
+# ============================================================
+# FUNÇÕES AUXILIARES
+# ============================================================
+
+def limpar_texto(valor):
+    return re.sub(r"\s+", " ", str(valor or "")).strip()
 
 
-def normalizar(texto):
-    texto = unicodedata.normalize("NFKD", texto or "")
-    texto = "".join(
-        c for c in texto
-        if not unicodedata.combining(c)
+def normalizar_nome(valor):
+    valor = unicodedata.normalize("NFKD", str(valor or ""))
+    valor = "".join(
+        caractere
+        for caractere in valor
+        if not unicodedata.combining(caractere)
     )
-    return re.sub(r"\s+", " ", texto).strip()
+    return re.sub(r"[^a-z0-9]+", " ", valor.lower()).strip()
 
 
-def url_limpa(url, origem=BASE):
+def resolver_url(url, base):
     if not url:
         return ""
 
-    url = urldefrag(urljoin(origem, url.strip()))[0]
-    partes = urlparse(url)
+    url = limpar_texto(url)
 
-    dominios_validos = {
-        "econconstrutora.com.br",
-        "www.econconstrutora.com.br",
-    }
-
-    if partes.scheme not in ("http", "https"):
+    if url.startswith("data:"):
         return ""
 
-    if partes.netloc.lower() not in dominios_validos:
+    if url.startswith("//"):
+        url = "https:" + url
+
+    url = urljoin(base, url)
+
+    if not url.startswith(("http://", "https://")):
         return ""
 
-    return url.rstrip("/")
-
-
-def obter(url):
-    try:
-        resposta = session.get(url, timeout=TIMEOUT)
-        resposta.raise_for_status()
-
-        if "text/html" not in resposta.headers.get(
-            "Content-Type", ""
-        ).lower():
-            return None
-
-        return BeautifulSoup(resposta.text, "html.parser")
-
-    except Exception as erro:
-        print(f"[AVISO] Falha ao acessar {url}: {erro}")
-        return None
-
-
-def caminho_eh_listagem(url):
-    caminho = urlparse(url).path.lower().rstrip("/")
-
-    return (
-        caminho == "/imoveis"
-        or caminho.startswith("/imoveis/")
-    )
-
-
-def caminho_eh_detalhe(url):
-    caminho = urlparse(url).path.lower().rstrip("/")
-
-    # Aceita os dois formatos de endereco.
-    return (
-        caminho.startswith("/detalhes/")
-        or caminho.startswith("/imovel/")
-    )
-
-
-def texto_no(elemento, seletores):
-    for seletor in seletores:
-        achado = elemento.select_one(seletor)
-
-        if achado:
-            texto = achado.get_text(" ", strip=True)
-
-            if texto:
-                return texto
-
-    return ""
-
-
-def imagem_do(elemento, pagina_url):
-    img = elemento.select_one("img")
-
-    if not img:
+    if any(
+        palavra in url.lower()
+        for palavra in ("placeholder", "blank.gif", "spacer.gif")
+    ):
         return ""
 
-    for atributo in (
+    return url
+
+
+def obter_imagem(elemento, base_url):
+    if elemento is None:
+        return ""
+
+    atributos = [
         "src",
         "data-src",
         "data-lazy-src",
         "data-original",
-        "srcset",
-    ):
-        valor = img.get(atributo)
+        "data-image",
+        "data-lazy",
+    ]
 
-        if not valor:
-            continue
+    for atributo in atributos:
+        valor = elemento.get(atributo)
 
-        if atributo == "srcset":
-            valor = valor.split(",")[0].strip().split(" ")[0]
+        if valor:
+            imagem = resolver_url(valor, base_url)
 
-        if valor.startswith("data:"):
-            continue
+            if imagem:
+                return imagem
 
-        return urljoin(pagina_url, valor)
+    srcset = (
+        elemento.get("srcset")
+        or elemento.get("data-srcset")
+        or ""
+    )
+
+    if srcset:
+        opcoes = [
+            parte.strip().split()[0]
+            for parte in srcset.split(",")
+            if parte.strip()
+        ]
+
+        # Normalmente a última opção é a de maior resolução.
+        for opcao in reversed(opcoes):
+            imagem = resolver_url(opcao, base_url)
+
+            if imagem:
+                return imagem
 
     return ""
 
 
-def extrair_regiao_bairro(texto):
-    partes = re.split(r"\s*[|•·]\s*", texto or "")
+def obter_nome_card(card, link):
+    seletores = [
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "[class*='title']",
+        "[class*='titulo']",
+        "[class*='nome']",
+        "[class*='name']",
+    ]
 
-    if len(partes) >= 2:
-        return partes[0].strip(), partes[1].strip()
+    for seletor in seletores:
+        elemento = card.select_one(seletor)
 
-    return (texto or "").strip(), ""
+        if elemento:
+            nome = limpar_texto(elemento.get_text(" ", strip=True))
 
+            if nome:
+                return nome
 
-def achar_card(anchor):
-    atual = anchor
-    melhor = anchor
+    imagem = card.select_one("img")
 
-    for _ in range(7):
-        if atual is None:
-            break
+    if imagem and imagem.get("alt"):
+        nome = limpar_texto(imagem.get("alt"))
 
-        if getattr(atual, "name", None) in ("body", "html"):
-            break
+        if nome:
+            return nome
 
-        texto = atual.get_text(" ", strip=True)
-
-        if len(texto) > len(melhor.get_text(" ", strip=True)):
-            melhor = atual
-
-        tem_imagem = atual.select_one("img") is not None
-
-        tem_info = re.search(
-            r"(dorm|lançamento|lancamento|construção|"
-            r"construcao|morar|bairro|zona)",
-            texto,
-            re.I,
-        )
-
-        if tem_imagem and tem_info:
-            return atual
-
-        atual = atual.parent
-
-    return melhor
+    return limpar_texto(link.get_text(" ", strip=True))
 
 
-def extrair_cards_listagem(soup, pagina_url):
-    projetos = []
-    links_detalhe = set()
+def identificar_status(texto):
+    texto = normalizar_nome(texto)
 
-    for anchor in soup.find_all("a", href=True):
-        href = url_limpa(anchor.get("href"), pagina_url)
+    if "pronto para morar" in texto:
+        return "Pronto para morar"
+
+    if "em construcao" in texto or "em obras" in texto:
+        return "Em obras"
+
+    if "lancamento" in texto:
+        return "Lançamento"
+
+    return ""
+
+
+# ============================================================
+# BUSCA DOS EMPREENDIMENTOS NO SITE
+# ============================================================
+
+def extrair_catalogo():
+    print("Acessando o catálogo da Econ Construtora...")
+
+    resposta = requests.get(
+        URL_CATALOGO,
+        headers=HEADERS,
+        timeout=TIMEOUT,
+    )
+
+    resposta.raise_for_status()
+
+    soup = BeautifulSoup(resposta.text, "html.parser")
+
+    host_original = urlparse(URL_CATALOGO).netloc.lower()
+    caminho_catalogo = urlparse(URL_CATALOGO).path.rstrip("/")
+
+    resultados = {}
+
+    # Procura links internos de páginas de empreendimentos.
+    for link_elemento in soup.select("a[href]"):
+        href = limpar_texto(link_elemento.get("href"))
 
         if not href:
             continue
 
-        if caminho_eh_detalhe(href):
-            links_detalhe.add(href)
-
-        if not caminho_eh_detalhe(href):
+        if href.startswith(("#", "javascript:", "mailto:")):
             continue
 
-        card = achar_card(anchor)
-        texto_card = re.sub(
-            r"\s+",
-            " ",
-            card.get_text(" ", strip=True),
-        )
+        link = urljoin(URL_CATALOGO, href)
+        partes_url = urlparse(link)
 
-        nome = texto_no(
-            card,
-            [
-                "h1",
-                "h2",
-                "h3",
-                "h4",
-                "[class*='title']",
-                "[class*='nome']",
-            ],
-        )
-
-        if not nome:
-            nome = anchor.get_text(" ", strip=True)
-
-        nome = re.sub(r"\s+", " ", nome).strip()
-
-        if not nome or len(nome) > 100:
+        if partes_url.netloc.lower() != host_original:
             continue
 
-        status = ""
+        caminho = partes_url.path.rstrip("/")
 
-        status_opcoes = [
-            "Futuro Lançamento",
-            "Futuro Lancamento",
-            "Breve Lançamento",
-            "Breve Lancamento",
-            "Pronto para Morar",
-            "Em Construção",
-            "Em Construcao",
-            "Lançamento",
-            "Lancamento",
+        # Ignora o próprio catálogo.
+        if caminho == caminho_catalogo:
+            continue
+
+        # Considera páginas abaixo de /imoveis/.
+        if not caminho.startswith(caminho_catalogo + "/"):
+            continue
+
+        # Ignora URLs que parecem ser categorias ou paginação.
+        if any(
+            trecho in caminho.lower()
+            for trecho in (
+                "/categoria/",
+                "/category/",
+                "/tag/",
+                "/author/",
+                "/page/",
+            )
+        ):
+            continue
+
+        # Tenta subir no HTML para encontrar o card inteiro.
+        card = link_elemento
+
+        for _ in range(5):
+            pai = card.parent
+
+            if pai is None:
+                break
+
+            if getattr(pai, "name", "") in ("body", "html"):
+                break
+
+            card = pai
+
+            if card.find(["h2", "h3", "h4"]) or card.find("img"):
+                break
+
+        nome = obter_nome_card(card, link_elemento)
+
+        nome = re.sub(
+            r"\b(saiba mais|ver detalhes|veja mais|conheça)\b.*$",
+            "",
+            nome,
+            flags=re.IGNORECASE,
+        ).strip(" -|")
+
+        if len(nome) < 3 or len(nome) > 160:
+            continue
+
+        if normalizar_nome(nome) in {
+            "saiba mais",
+            "ver detalhes",
+            "empreendimentos",
+            "imoveis",
+        }:
+            continue
+
+        imagem_elemento = card.select_one("img")
+        imagem = obter_imagem(imagem_elemento, URL_CATALOGO)
+
+        texto_card = limpar_texto(card.get_text(" ", strip=True))
+        status = identificar_status(texto_card)
+
+        item = {
+            "nome": nome,
+            "imagem": imagem,
+            "link": link,
+        }
+
+        if status:
+            item["status"] = status
+
+        chave = normalizar_nome(nome)
+
+        # Evita duplicatas e prefere o registro que tem imagem.
+        anterior = resultados.get(chave)
+
+        if (
+            anterior is None
+            or (not anterior.get("imagem") and imagem)
+        ):
+            resultados[chave] = item
+
+    # Segunda tentativa com seletores comuns de cards.
+    if len(resultados) < MINIMO_EMPREENDIMENTOS:
+        seletores_cards = [
+            "article",
+            "[class*='imovel']",
+            "[class*='empreendimento']",
+            "[class*='property']",
+            "[class*='project']",
+            ".card",
         ]
 
-        texto_normalizado = normalizar(texto_card).lower()
+        for seletor in seletores_cards:
+            for card in soup.select(seletor):
+                link_elemento = card.select_one("a[href]")
 
-        for opcao in status_opcoes:
-            if normalizar(opcao).lower() in texto_normalizado:
-                status = opcao
-                break
+                if not link_elemento:
+                    continue
 
-        local_texto = ""
+                link = urljoin(
+                    URL_CATALOGO,
+                    limpar_texto(link_elemento.get("href")),
+                )
 
-        for node in card.find_all(
-            ["p", "span", "div", "li"]
-        ):
-            texto = node.get_text(" ", strip=True)
+                if urlparse(link).netloc.lower() != host_original:
+                    continue
 
-            if "|" in texto and len(texto) < 100:
-                local_texto = texto
-                break
+                nome = obter_nome_card(card, link_elemento)
 
-        regiao, bairro = extrair_regiao_bairro(local_texto)
+                if len(nome) < 3 or len(nome) > 160:
+                    continue
 
-        dormitorios = ""
-        match = re.search(
-            r"(\d+(?:\s*e\s*\d+)?)\s*"
-            r"dorm(?:itórios|itorios|s\.?)",
-            texto_card,
-            re.I,
+                imagem = obter_imagem(
+                    card.select_one("img"),
+                    URL_CATALOGO,
+                )
+
+                item = {
+                    "nome": nome,
+                    "imagem": imagem,
+                    "link": link,
+                }
+
+                status = identificar_status(
+                    card.get_text(" ", strip=True)
+                )
+
+                if status:
+                    item["status"] = status
+
+                chave = normalizar_nome(nome)
+
+                if (
+                    chave not in resultados
+                    or (
+                        not resultados[chave].get("imagem")
+                        and imagem
+                    )
+                ):
+                    resultados[chave] = item
+
+    lista = list(resultados.values())
+
+    if len(lista) < MINIMO_EMPREENDIMENTOS:
+        raise RuntimeError(
+            f"Foram encontrados somente {len(lista)} empreendimentos. "
+            "A atualização foi cancelada para proteger o HTML existente. "
+            "O site pode carregar seus dados por JavaScript ou ter mudado "
+            "a estrutura da página."
         )
 
-        if match:
-            dormitorios = match.group(1).strip() + " dorm."
-
-        projetos.append({
-            "nome": nome,
-            "regiao": regiao,
-            "bairro": bairro,
-            "status": status,
-            "dormitorios": dormitorios,
-            "imagem": imagem_do(card, pagina_url),
-            "link": href,
-        })
-
-    return projetos, links_detalhe
+    return lista
 
 
-def extrair_dados_detalhe(soup, url):
-    nome = texto_no(
-        soup,
-        [
-            "main h1",
-            "h1",
-            "[class*='title'] h1",
-        ],
-    )
+# ============================================================
+# LEITURA DO CATÁLOGO EXISTENTE NO HTML
+# ============================================================
 
-    if not nome:
-        meta = soup.select_one(
-            "meta[property='og:title']"
-        )
+def localizar_array(html):
+    """
+    Localiza window.EMPREENDIMENTOS = [...] sem precisar de
+    comentários ou marcadores especiais no HTML.
+    """
 
-        if meta:
-            nome = meta.get("content", "")
-
-    nome = re.sub(
-        r"\s*[-|]\s*Econ.*$",
-        "",
-        nome,
-        flags=re.I,
-    ).strip()
-
-    texto = soup.get_text(" ", strip=True)
-    texto_normalizado = normalizar(texto).lower()
-
-    status = ""
-
-    status_opcoes = [
-        "Futuro Lançamento",
-        "Futuro Lancamento",
-        "Breve Lançamento",
-        "Breve Lancamento",
-        "Pronto para Morar",
-        "Em Construção",
-        "Em Construcao",
-        "Lançamento",
-        "Lancamento",
+    padroes = [
+        r"(window\s*\.\s*EMPREENDIMENTOS\s*=\s*)(\[[\s\S]*?\])(\s*;?)",
+        r"(window\s*\[\s*['\"]EMPREENDIMENTOS['\"]\s*\]\s*=\s*)(\[[\s\S]*?\])(\s*;?)",
     ]
 
-    for opcao in status_opcoes:
-        if normalizar(opcao).lower() in texto_normalizado:
-            status = opcao
-            break
+    for padrao in padroes:
+        resultado = re.search(padrao, html)
 
-    dormitorios = ""
-    match = re.search(
-        r"(\d+(?:\s*e\s*\d+)?)\s*"
-        r"dorm(?:itórios|itorios|s\.?)",
-        texto,
-        re.I,
-    )
+        if resultado:
+            return resultado
 
-    if match:
-        dormitorios = match.group(1).strip() + " dorm."
-
-    imagem = ""
-    og = soup.select_one("meta[property='og:image']")
-
-    if og and og.get("content"):
-        imagem = urljoin(url, og["content"])
-
-    if not imagem:
-        imagem = imagem_do(soup, url)
-
-    regiao = ""
-    bairro = ""
-
-    for node in soup.find_all(
-        ["p", "span", "div", "li"]
-    ):
-        texto_local = node.get_text(" ", strip=True)
-
-        if "|" in texto_local and len(texto_local) < 100:
-            regiao, bairro = extrair_regiao_bairro(
-                texto_local
-            )
-            break
-
-    return {
-        "nome": nome,
-        "regiao": regiao,
-        "bairro": bairro,
-        "status": status,
-        "dormitorios": dormitorios,
-        "imagem": imagem,
-        "link": url,
-    }
+    return None
 
 
-def descobrir_listagens():
-    fila = deque(
-        url_limpa(url)
-        for url in PAGINAS_INICIAIS
-    )
+def ler_catalogo_existente(html):
+    resultado = localizar_array(html)
 
-    visitadas = set()
-    listagens = []
-    detalhes = set()
-
-    while fila and len(visitadas) < MAX_PAGINAS_LISTAGEM:
-        url = fila.popleft()
-
-        if not url or url in visitadas:
-            continue
-
-        if not caminho_eh_listagem(url):
-            continue
-
-        visitadas.add(url)
-        soup = obter(url)
-
-        if not soup:
-            continue
-
-        listagens.append((url, soup))
-
-        _, links = extrair_cards_listagem(soup, url)
-        detalhes.update(links)
-
-        for anchor in soup.find_all("a", href=True):
-            destino = url_limpa(anchor.get("href"), url)
-
-            if not destino:
-                continue
-
-            if not caminho_eh_listagem(destino):
-                continue
-
-            if destino in visitadas:
-                continue
-
-            if "?" not in destino:
-                fila.append(destino)
-
-        print(
-            f"[LISTAGEM] {url} | "
-            f"links individuais: {len(detalhes)}"
-        )
-
-        time.sleep(PAUSA_SEGUNDOS)
-
-    return listagens, detalhes
-
-
-def deduplicar(projetos):
-    por_nome = {}
-
-    for projeto in projetos:
-        nome = re.sub(
-            r"\s+",
-            " ",
-            projeto.get("nome", ""),
-        ).strip()
-
-        if not nome:
-            continue
-
-        chave = normalizar(nome).lower()
-
-        if chave not in por_nome:
-            por_nome[chave] = projeto
-            continue
-
-        atual = por_nome[chave]
-
-        campos = (
-            "regiao",
-            "bairro",
-            "status",
-            "dormitorios",
-            "imagem",
-            "link",
-        )
-
-        for campo in campos:
-            if not atual.get(campo) and projeto.get(campo):
-                atual[campo] = projeto[campo]
-
-    return sorted(
-        por_nome.values(),
-        key=lambda item: normalizar(item["nome"]).lower(),
-    )
-
-
-def atualizar_html(projetos):
-    if not HTML_FILE.exists():
+    if not resultado:
         raise RuntimeError(
-            f"Arquivo nao encontrado: {HTML_FILE}"
+            "Não encontrei window.EMPREENDIMENTOS = [...] no HTML. "
+            "Nenhum arquivo foi alterado. Verifique se o arquivo "
+            "empreendimentos.html é o correto."
         )
 
-    html = HTML_FILE.read_text(encoding="utf-8")
+    conteudo = resultado.group(2)
 
-    if (
-        MARCADOR_INICIO not in html
-        or MARCADOR_FIM not in html
-    ):
+    try:
+        dados = json.loads(conteudo)
+    except json.JSONDecodeError as erro:
         raise RuntimeError(
-            "Os marcadores do catalogo nao existem no HTML. "
-            "Confira CATALOGO_DATA_INICIO e CATALOGO_DATA_FIM."
-        )
+            "O array window.EMPREENDIMENTOS existe, mas não está "
+            "em formato JSON válido. Nenhum arquivo foi alterado."
+        ) from erro
 
-    if not projetos:
+    if not isinstance(dados, list):
         raise RuntimeError(
-            "Nenhum empreendimento encontrado. "
-            "O HTML nao sera alterado."
+            "O catálogo existente não é uma lista. "
+            "Nenhum arquivo foi alterado."
         )
 
-    dados_json = json.dumps(
-        projetos,
+    return dados
+
+
+# ============================================================
+# MESCLAGEM DOS DADOS
+# ============================================================
+
+def mesclar_catalogo(existentes, encontrados):
+    existentes_por_nome = {}
+
+    for item in existentes:
+        if not isinstance(item, dict):
+            continue
+
+        nome = (
+            item.get("nome")
+            or item.get("titulo")
+            or item.get("empreendimento")
+            or ""
+        )
+
+        chave = normalizar_nome(nome)
+
+        if chave:
+            existentes_por_nome[chave] = dict(item)
+
+    resultado = []
+    vistos = set()
+
+    for encontrado in encontrados:
+        nome = limpar_texto(encontrado.get("nome"))
+        chave = normalizar_nome(nome)
+
+        if not nome or chave in vistos:
+            continue
+
+        vistos.add(chave)
+
+        antigo = existentes_por_nome.get(chave, {})
+        item = dict(antigo)
+
+        item["nome"] = nome
+
+        # Atualiza o link quando a origem oferece um.
+        if encontrado.get("link"):
+            item["link"] = encontrado["link"]
+        elif not item.get("link"):
+            item["link"] = URL_CATALOGO
+
+        # Não apaga uma imagem antiga se a extração não encontrar outra.
+        if encontrado.get("imagem"):
+            item["imagem"] = encontrado["imagem"]
+        else:
+            item.setdefault("imagem", "")
+
+        if encontrado.get("status"):
+            item["status"] = encontrado["status"]
+
+        # Os demais campos já existentes são preservados.
+        resultado.append(item)
+
+    return resultado
+
+
+# ============================================================
+# ATUALIZAÇÃO SEGURA DO HTML
+# ============================================================
+
+def atualizar_html():
+    print("=" * 55)
+    print("ATUALIZADOR DO CATÁLOGO DE EMPREENDIMENTOS")
+    print("=" * 55)
+
+    print(f"\nArquivo HTML: {ARQUIVO_HTML}")
+
+    if not ARQUIVO_HTML.exists():
+        raise FileNotFoundError(
+            "Não encontrei empreendimentos.html na mesma pasta "
+            "do script atualizar_catalogo.py."
+        )
+
+    html_original = ARQUIVO_HTML.read_text(encoding="utf-8")
+
+    existentes = ler_catalogo_existente(html_original)
+
+    print(f"Registros atuais no HTML: {len(existentes)}")
+
+    encontrados = extrair_catalogo()
+
+    print(f"Registros encontrados no site: {len(encontrados)}")
+
+    atualizados = mesclar_catalogo(existentes, encontrados)
+
+    if len(atualizados) < MINIMO_EMPREENDIMENTOS:
+        raise RuntimeError(
+            "A lista final ficou pequena demais. "
+            "O HTML não será alterado."
+        )
+
+    resultado = localizar_array(html_original)
+
+    array_novo = json.dumps(
+        atualizados,
         ensure_ascii=False,
         indent=2,
     )
 
-    bloco = (
-        f"{MARCADOR_INICIO}\n"
-        "<script>\n"
-        f"window.EMPREENDIMENTOS = {dados_json};\n"
-        "</script>\n"
-        f"{MARCADOR_FIM}"
+    html_novo = (
+        html_original[:resultado.start(2)]
+        + array_novo
+        + html_original[resultado.end(2):]
     )
 
-    padrao = re.compile(
-        re.escape(MARCADOR_INICIO)
-        + r".*?"
-        + re.escape(MARCADOR_FIM),
-        re.DOTALL,
+    if html_novo == html_original:
+        print("\nO catálogo já está atualizado.")
+        print("Nenhuma alteração foi necessária.")
+        return
+
+    # Backup automático antes de escrever.
+    horario = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+    arquivo_backup = ARQUIVO_HTML.with_name(
+        f"{ARQUIVO_HTML.stem}_{horario}.bak.html"
     )
 
-    novo_html, alteracoes = padrao.subn(
-        lambda _: bloco,
-        html,
-        count=1,
-    )
-
-    if alteracoes != 1:
-        raise RuntimeError(
-            "Nao foi possivel atualizar o bloco de dados."
-        )
-
-    # Grava o arquivo somente depois de validar tudo.
-    HTML_FILE.write_text(
-        novo_html,
+    arquivo_backup.write_text(
+        html_original,
         encoding="utf-8",
     )
 
-    print(
-        f"[OK] {len(projetos)} empreendimentos "
-        f"gravados em {HTML_FILE}"
+    # Grava em arquivo temporário e depois substitui o HTML.
+    arquivo_temporario = ARQUIVO_HTML.with_name(
+        ARQUIVO_HTML.name + ".tmp"
     )
 
-
-def main():
-    print("=== Atualizacao do catalogo Econ ===")
-
-    listagens, urls_detalhes = descobrir_listagens()
-
-    projetos = []
-
-    # Aproveita primeiro os cards das paginas de listagem.
-    for url, soup in listagens:
-        cards, _ = extrair_cards_listagem(soup, url)
-        projetos.extend(cards)
-
-    print(
-        f"[INFO] Paginas de listagem visitadas: "
-        f"{len(listagens)}"
-    )
-
-    print(
-        f"[INFO] Links individuais encontrados: "
-        f"{len(urls_detalhes)}"
-    )
-
-    # Complementa os dados acessando as paginas individuais.
-    urls = sorted(urls_detalhes)
-
-    for indice, url in enumerate(urls, start=1):
-        soup = obter(url)
-
-        if soup:
-            projeto = extrair_dados_detalhe(soup, url)
-
-            if projeto.get("nome"):
-                projetos.append(projeto)
-
-        if indice % 20 == 0:
-            print(
-                f"[DETALHES] Processados "
-                f"{indice}/{len(urls)}"
-            )
-
-        time.sleep(PAUSA_SEGUNDOS)
-
-    projetos = deduplicar(projetos)
-
-    print(
-        f"[RESULTADO] Empreendimentos unicos: "
-        f"{len(projetos)}"
-    )
-
-    if not projetos:
-        raise RuntimeError(
-            "Nenhum empreendimento foi identificado. "
-            "O HTML existente foi preservado."
+    try:
+        arquivo_temporario.write_text(
+            html_novo,
+            encoding="utf-8",
         )
 
-    atualizar_html(projetos)
+        arquivo_temporario.replace(ARQUIVO_HTML)
 
+    finally:
+        if arquivo_temporario.exists():
+            arquivo_temporario.unlink()
+
+    print("\nATUALIZAÇÃO CONCLUÍDA!")
+    print(f"Empreendimentos no HTML: {len(atualizados)}")
+    print(f"Backup criado: {arquivo_backup.name}")
+    print("O HTML foi atualizado automaticamente.")
+    print("Nenhuma edição manual do HTML foi necessária.")
+
+
+# ============================================================
+# EXECUÇÃO
+# ============================================================
 
 if __name__ == "__main__":
-    main()
+    try:
+        atualizar_html()
 
+    except requests.RequestException as erro:
+        print("\nERRO DE CONEXÃO:")
+        print(erro)
+        print("O HTML original foi mantido.")
+
+        sys.exit(1)
+
+    except Exception as erro:
+        print("\nNÃO FOI POSSÍVEL ATUALIZAR:")
+        print(erro)
+        print("O HTML original foi mantido.")
+
+        sys.exit(1)
