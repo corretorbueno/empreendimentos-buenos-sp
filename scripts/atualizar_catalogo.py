@@ -1,286 +1,178 @@
 
 import json
 import re
-from datetime import datetime
+import sys
+from datetime import datetime, timezone
 from pathlib import Path
-from urllib.parse import urljoin, urlparse
+from urllib.parse import urljoin
 
 import requests
 from bs4 import BeautifulSoup
 
 SITE = "https://www.econconstrutora.com.br/imoveis"
-ARQUIVO = Path("empreendimentos.json")
-TIMEOUT = 30
+RAIZ = Path(__file__).resolve().parent.parent
+ARQUIVO_SAIDA = RAIZ / "empreendimentos.json"
 
 HEADERS = {
     "User-Agent": (
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
         "AppleWebKit/537.36 (KHTML, like Gecko) "
-        "Chrome/130.0 Safari/537.36"
-    ),
-    "Accept-Language": "pt-BR,pt;q=0.9,en;q=0.8",
+        "Chrome/131.0.0.0 Safari/537.36"
+    )
 }
 
+def texto_limpo(texto):
+    return re.sub(r"\s+", " ", texto or "").strip()
 
-def limpar(valor):
-    return re.sub(r"\s+", " ", valor or "").strip()
-
-
-def url_absoluta(valor, pagina=SITE):
-    if not valor:
+def url_imagem(img, pagina):
+    """Retorna uma URL de imagem encontrada no HTML da Econ."""
+    if img is None:
         return ""
 
-    valor = valor.strip()
-
-    if valor.startswith(("data:", "javascript:")):
-        return ""
-
-    return urljoin(pagina, valor)
-
-
-def imagem_do(elemento):
-    """Retorna uma imagem encontrada no card do projeto."""
-    for img in elemento.select("img"):
-        alt = limpar(img.get("alt", "")).lower()
-        caminho = " ".join([
-            str(img.get("src", "")),
-            str(img.get("class", "")),
-            alt,
-        ]).lower()
-
-        if "selo de zoneamento" in alt:
-            continue
-
-        if "logo" in caminho or "icone" in caminho or "ícone" in caminho:
-            continue
-
-        candidatos = [
-            img.get("src"),
-            img.get("data-src"),
-            img.get("data-lazy-src"),
-            img.get("data-original"),
-            img.get("data-image"),
-        ]
-
-        for atributo in ("srcset", "data-srcset"):
-            srcset = img.get(atributo, "")
-            if srcset:
-                primeiro = srcset.split(",")[0].strip().split()
-                if primeiro:
-                    candidatos.append(primeiro[0])
-
-        for candidato in candidatos:
-            url = url_absoluta(candidato)
-            if not url:
-                continue
-
-            caminho_url = urlparse(url).path.lower()
-
-            if caminho_url.endswith((".svg", ".ico")):
-                continue
-
-            if "selo" in caminho_url or "logo" in caminho_url:
-                continue
-
-            return url
-
-    # Algumas páginas usam background-image.
-    for elemento_css in elemento.select("[style]"):
-        estilo = elemento_css.get("style", "")
-        encontrado = re.search(
-            r"background(?:-image)?\s*:[^;]*url\(['\"]?(.*?)['\"]?\)",
-            estilo,
-            re.I,
-        )
-
-        if encontrado:
-            url = url_absoluta(encontrado.group(1))
-            if url:
-                return url
-
-    return ""
-
-
-def identificar_status(texto):
-    texto = texto.lower()
-
-    opcoes = [
-        ("futuro lançamento", "Futuro Lançamento"),
-        ("breve lançamento", "Breve Lançamento"),
-        ("lançamento", "Lançamento"),
-        ("em construção", "Em Construção"),
-        ("pronto para morar", "Pronto para Morar"),
+    atributos = [
+        img.get("src"),
+        img.get("data-src"),
+        img.get("data-lazy-src"),
+        img.get("data-original"),
+        img.get("data-image"),
     ]
 
-    for chave, nome in opcoes:
-        if chave in texto:
-            return nome
+    srcset = img.get("srcset") or img.get("data-srcset")
+    if srcset:
+        candidatos = [
+            parte.strip().split(" ")[0]
+            for parte in srcset.split(",")
+            if parte.strip()
+        ]
+        atributos.extend(candidatos)
+
+    for valor in atributos:
+        if not valor:
+            continue
+
+        valor = valor.strip()
+        if valor.startswith("data:"):
+            continue
+
+        resultado = urljoin(pagina, valor)
+        if resultado.startswith(("https://", "http://")):
+            return resultado
 
     return ""
 
+def extrair_catalogo():
+    print(f"Acessando catálogo: {SITE}")
 
-def identificar_dormitorios(texto):
-    encontrado = re.search(
-        r"\b\d+(?:\s*e\s*\d+)?\s*dorms?\.?",
-        texto,
-        re.I,
-    )
-    return limpar(encontrado.group(0)) if encontrado else ""
-
-
-def encontrar_card(titulo):
-    """
-    Sobe pela árvore HTML procurando um contêiner compacto
-    com o título e uma imagem. Evita usar a página inteira.
-    """
-    melhor = titulo
-
-    atual = titulo
-    for _ in range(8):
-        pai = atual.parent
-
-        if pai is None:
-            break
-
-        atual = pai
-        texto = limpar(atual.get_text(" ", strip=True))
-
-        if len(texto) > 1600:
-            break
-
-        if atual.find("img"):
-            melhor = atual
-
-            if len(texto) < 650:
-                break
-
-    return melhor
-
-
-def coletar():
     resposta = requests.get(
         SITE,
         headers=HEADERS,
-        timeout=TIMEOUT,
+        timeout=35,
     )
     resposta.raise_for_status()
 
     soup = BeautifulSoup(resposta.text, "html.parser")
-    projetos = {}
+    projetos = []
+    vistos = set()
 
-    for titulo in soup.find_all(["h2", "h3", "h4"]):
-        nome = limpar(titulo.get_text(" ", strip=True))
-
-        if not nome or len(nome) > 100:
+    # Procura links de projetos e tenta localizar imagem e título.
+    for link in soup.select("a[href]"):
+        href = link.get("href", "").strip()
+        if not href:
             continue
 
-        card = encontrar_card(titulo)
-        texto_card = limpar(card.get_text(" ", strip=True))
-        imagem = imagem_do(card)
+        href_completo = urljoin(SITE, href)
+        texto_link = texto_limpo(link.get_text(" ", strip=True))
 
-        link = ""
-        for ancora in card.find_all("a", href=True):
-            candidato = url_absoluta(ancora["href"])
-            caminho = urlparse(candidato).path
+        imagem_tag = link.find("img")
+        alt = texto_limpo(imagem_tag.get("alt", "")) if imagem_tag else ""
 
-            if "/detalhes/" in caminho:
-                link = candidato
-                break
-
-        # Se o card não expôs a imagem, tenta os pais mais próximos.
-        if not imagem:
-            atual = titulo
-            for _ in range(5):
-                if atual.parent is None:
-                    break
-                atual = atual.parent
-                imagem = imagem_do(atual)
-                if imagem:
-                    break
-
-        # Não incluir títulos genéricos da navegação.
-        nome_normalizado = nome.lower()
-        ignorar = {
-            "imóveis", "empreendimentos", "destaques",
-            "ver todos", "buscar empreendimento ou região",
-        }
-
-        if nome_normalizado in ignorar:
+        titulo = texto_link or alt
+        if not titulo:
             continue
 
-        projeto = {
-            "nome": nome,
-            "imagem": imagem,
-            "link": link or SITE,
-            "status": identificar_status(texto_card),
-            "localizacao": "",
-            "dormitorios": identificar_dormitorios(texto_card),
-            "descricao": texto_card[:500],
-            "fonte": SITE,
-        }
+        # Ignora navegação, redes sociais e links que não parecem projetos.
+        if not any(palavra in href_completo.lower() for palavra in (
+            "/imoveis", "/imovel", "/empreendimento", "/detalhe", "/produto"
+        )):
+            continue
 
-        # A localização costuma aparecer como "Zona Norte|Santana".
-        local = re.search(
-            r"(Zona\s+(?:Norte|Sul|Leste|Oeste)|Centro|"
-            r"Santo André|Guarulhos|Diadema|Osasco|Mauá)"
-            r"\s*\|\s*([^|]{2,80})",
-            texto_card,
-            re.I,
-        )
+        if href_completo.rstrip("/") == SITE.rstrip("/"):
+            continue
 
-        if local:
-            projeto["localizacao"] = limpar(local.group(0))
+        chave = href_completo.split("#")[0].rstrip("/")
+        if chave in vistos:
+            continue
 
-        # Mantém uma única entrada por nome.
-        chave = nome.casefold()
-        existente = projetos.get(chave)
+        # Escolhe o menor bloco próximo do link para obter contexto.
+        bloco = link
+        for _ in range(4):
+            if bloco.parent and bloco.parent.name not in ("body", "html"):
+                bloco = bloco.parent
 
-        if existente is None:
-            projetos[chave] = projeto
-        elif not existente["imagem"] and projeto["imagem"]:
-            projetos[chave] = projeto
+        if len(titulo) > 110:
+            titulo = alt or texto_link
 
-    resultado = sorted(
-        projetos.values(),
-        key=lambda p: p["nome"].casefold(),
-    )
+        if not titulo or len(titulo) > 110:
+            continue
 
-    # Não sobrescreve o JSON publicado se a página mudar ou a coleta falhar.
-    if len(resultado) < 5:
+        foto = url_imagem(imagem_tag, SITE) if imagem_tag else ""
+
+        # Se não houver imagem no link, tenta encontrar uma no mesmo bloco.
+        if not foto:
+            outra_img = bloco.find("img")
+            foto = url_imagem(outra_img, SITE) if outra_img else ""
+
+        texto_bloco = texto_limpo(bloco.get_text(" ", strip=True))
+
+        projetos.append({
+            "nome": titulo,
+            "titulo": titulo,
+            "local": "",
+            "regiao": "",
+            "bairro": "",
+            "dormitorios": "",
+            "status": "",
+            "imagem": foto,
+            "image": foto,
+            "url": href_completo,
+            "descricao": texto_bloco[:500],
+        })
+        vistos.add(chave)
+
+    if len(projetos) < 5:
         raise RuntimeError(
-            f"A coleta encontrou apenas {len(resultado)} projetos. "
-            "O arquivo anterior será preservado. "
-            "Verifique a estrutura atual do site da Econ."
+            "Foram encontrados menos de 5 projetos. "
+            "O site pode ter alterado o HTML ou carregado os dados via JavaScript. "
+            "O JSON anterior será preservado."
         )
 
-    com_imagem = sum(bool(p["imagem"]) for p in resultado)
+    return projetos
+
+def main():
+    try:
+        projetos = extrair_catalogo()
+    except Exception as erro:
+        print(f"ERRO ao consultar o catálogo: {erro}", file=sys.stderr)
+        sys.exit(1)
 
     dados = {
         "origem": SITE,
-        "atualizado_em": datetime.now().astimezone().isoformat(
-            timespec="seconds"
-        ),
-        "quantidade": len(resultado),
-        "com_imagem": com_imagem,
-        "empreendimentos": resultado,
+        "atualizado_em": datetime.now(timezone.utc).isoformat(),
+        "quantidade": len(projetos),
+        "com_imagem": sum(bool(p["imagem"]) for p in projetos),
+        "empreendimentos": projetos,
     }
 
-    # Escreve primeiro em arquivo temporário e só depois substitui o JSON.
-    temporario = ARQUIVO.with_suffix(".tmp")
-
+    temporario = ARQUIVO_SAIDA.with_suffix(".json.tmp")
     temporario.write_text(
         json.dumps(dados, ensure_ascii=False, indent=2),
         encoding="utf-8",
     )
-    temporario.replace(ARQUIVO)
+    temporario.replace(ARQUIVO_SAIDA)
 
-    print("Catálogo atualizado.")
-    print("Total de empreendimentos:", len(resultado))
-    print("Com imagem:", com_imagem)
-    print("Sem imagem:", len(resultado) - com_imagem)
-    print("JSON salvo em:", ARQUIVO)
-
+    print(f"Projetos encontrados: {len(projetos)}")
+    print(f"Projetos com imagem: {dados['com_imagem']}")
+    print(f"Arquivo salvo: {ARQUIVO_SAIDA}")
 
 if __name__ == "__main__":
-    coletar()
-
+    main()
