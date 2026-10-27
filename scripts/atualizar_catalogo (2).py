@@ -1,13 +1,7 @@
-
 import json
 import re
 from datetime import datetime, timezone
-from pathlib import Path
-from urllib.parse import urljoin
-
-import requests
-from bs4 import BeautifulSoup
-
+@@ -10,11 +11,13 @@
 URL_CATALOGO = "https://www.econconstrutora.com.br/imoveis"
 ARQUIVO_SAIDA = Path("empreendimentos.json")
 
@@ -17,22 +11,12 @@ def texto_limpo(texto):
 
 
 def main():
+    print("Acessando o catálogo da Econ...")
     print("Acessando o catalogo publico da Econ...")
 
     resposta = requests.get(
         URL_CATALOGO,
-        headers={"User-Agent": "Mozilla/5.0"},
-        timeout=30,
-    )
-    resposta.raise_for_status()
-
-    soup = BeautifulSoup(resposta.text, "html.parser")
-    projetos = {}
-
-    for titulo in soup.find_all(["h2", "h3", "h4"]):
-        nome = texto_limpo(titulo.get_text(" ", strip=True))
-
-        if not nome or len(nome) > 100:
+@@ -33,27 +36,31 @@ def main():
             continue
 
         bloco = titulo
@@ -46,8 +30,10 @@ def main():
             if bloco.find("img"):
                 break
 
+        imagens = bloco.find_all("img")
         imagem = ""
 
+        for img in imagens:
         for img in bloco.find_all("img"):
             imagem = (
                 img.get("src")
@@ -64,21 +50,12 @@ def main():
         if not ancora:
             ancora = bloco.find("a", href=True)
 
-        link = urljoin(
-            URL_CATALOGO,
-            ancora["href"] if ancora and ancora.get("href") else ""
-        )
-
-        projetos[nome.casefold()] = {
-            "nome": nome,
-            "imagem": urljoin(URL_CATALOGO, imagem) if imagem else "",
-            "link": link,
-            "fonte": URL_CATALOGO,
-        }
-
+@@ -72,8 +79,10 @@ def main():
     lista = list(projetos.values())
 
     if not lista:
+        print("Nenhum empreendimento encontrado. Precisamos verificar como o catálogo carrega os dados.")
+        return
         raise RuntimeError(
             "Nenhum empreendimento encontrado. "
             "Precisamos verificar como o catalogo carrega os dados."
@@ -86,12 +63,7 @@ def main():
 
     documento = {
         "atualizado_em": datetime.now(timezone.utc).isoformat(),
-        "quantidade": len(lista),
-        "empreendimentos": lista,
-    }
-
-    ARQUIVO_SAIDA.write_text(
-        json.dumps(documento, ensure_ascii=False, indent=2),
+@@ -86,8 +95,14 @@ def main():
         encoding="utf-8",
     )
 
@@ -105,4 +77,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
