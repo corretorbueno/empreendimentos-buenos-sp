@@ -1,10 +1,7 @@
-
-name: Atualizar catalogo Econ
+name: Atualizar catálogo completo da Econ
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "17 12 * * *"
 
 permissions:
   contents: write
@@ -16,66 +13,24 @@ concurrency:
 jobs:
   atualizar:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-
+    timeout-minutes: 20
     steps:
-      - name: Baixar repositorio
+      - name: Baixar repositório
         uses: actions/checkout@v4
-
       - name: Configurar Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
-
-      - name: Instalar dependencias
+          python-version: '3.12'
+      - name: Instalar otimizador de imagens
+        run: python -m pip install Pillow
+      - name: Importar catálogo completo e capas
+        run: python -u scripts/atualizar_catalogo.py
+      - name: Salvar atualização
         run: |
-          python -m pip install --upgrade pip
-          python -m pip install requests beautifulsoup4
-
-      - name: Buscar empreendimentos e imagens
-        run: python scripts/atualizar_catalogo.py
-
-      - name: Validar catalogo
-        run: |
-          python - <<'PY'
-          import json
-          from pathlib import Path
-
-          arquivo = Path("empreendimentos.json")
-          if not arquivo.exists():
-              raise SystemExit("ERRO: empreendimentos.json não foi criado.")
-
-          dados = json.loads(arquivo.read_text(encoding="utf-8"))
-          projetos = dados.get("empreendimentos", [])
-
-          if len(projetos) < 5:
-              raise SystemExit("ERRO: catálogo vazio ou incompleto.")
-
-          com_imagem = sum(
-              bool(p.get("imagem")) for p in projetos
-          )
-
-          print("Total:", len(projetos))
-          print("Com imagem:", com_imagem)
-          print("Sem imagem:", len(projetos) - com_imagem)
-          PY
-
-      - name: Salvar atualizacao
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          git add empreendimentos.json
-
-          if git diff --cached --quiet; then
-            echo "O catálogo não teve alterações."
-          else
-            git commit -m "Atualiza catalogo Econ"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add catalogo-dados.js relatorio-importacao.json images/econ
+          if ! git diff --cached --quiet; then
+            git commit -m 'Atualiza catálogo completo da Econ e capas locais'
             git push
           fi
-
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add empreendimentos.json
-          git diff --cached --quiet || git commit -m "Atualiza catalogo Econ"
-          git push
